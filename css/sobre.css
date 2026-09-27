@@ -1,0 +1,340 @@
+/* ═══════════════════════════════════════════════════════════════
+   Sobre de bienvenida
+   Un sobre de papel de algodón a pantalla completa, con sello de
+   lacre A&V. Lo construye js/sobre.js dentro de <div id="sobre">.
+   Solo se animan transform y opacity.
+   ═══════════════════════════════════════════════════════════════ */
+
+#sobre {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  overflow: hidden;
+  background: #EFE6D3;
+  color: var(--cafe);
+  /* Medidas propias del módulo */
+  --sobre-sello: clamp(88px, min(27vw, 17vh), 136px);
+  --sobre-punta: 56%;
+  contain: layout paint style;
+  -webkit-user-select: none;
+  user-select: none;
+  touch-action: none;
+}
+/* Al terminar, el fondo propio se apaga para que solo queden las capas */
+#sobre.sobre--abriendo { background: transparent; }
+
+.sobre__defs { position: absolute; width: 0; height: 0; overflow: hidden; }
+
+.sobre__escena {
+  position: absolute;
+  inset: 0;
+  perspective: max(1200px, 170vh);
+  perspective-origin: 50% 34%;
+}
+.sobre__escena > * { position: absolute; inset: 0; }
+.sobre__escena svg { width: 100%; height: 100%; overflow: visible; }
+
+/* ── Interior: el fondo del sobre, con la acuarela como forro ── */
+.sobre__interior {
+  background: linear-gradient(180deg, #EADFC8 0%, #F3EBDB 40%, #F1E8D6 100%);
+  will-change: opacity;
+}
+.sobre__forro {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  will-change: transform;
+  transform-origin: 50% 0%;
+}
+/* Lavado de acuarela que sostiene la ilustración */
+.sobre__forro::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(70% 26% at 50% 28%, rgba(233, 195, 154, .38) 0%, rgba(233, 195, 154, 0) 70%),
+    radial-gradient(60% 22% at 22% 10%, rgba(187, 179, 142, .30) 0%, rgba(187, 179, 142, 0) 70%),
+    radial-gradient(60% 22% at 80% 8%, rgba(201, 141, 98, .20) 0%, rgba(201, 141, 98, 0) 70%),
+    linear-gradient(180deg, #F3EBDB 0%, #F8F4EB 60%);
+}
+.sobre__forro-imagen {
+  position: absolute;
+  left: 50%;
+  top: clamp(34px, 6vh, 70px);
+  width: max(100%, 660px);
+  aspect-ratio: 1400 / 658;
+  transform: translateX(-50%);
+  background: url('../assets/img/castillo.jpg') center / cover no-repeat;
+  mix-blend-mode: multiply;
+  -webkit-mask-image:
+    linear-gradient(180deg, transparent 0%, #000 24%, #000 74%, transparent 100%),
+    linear-gradient(90deg, transparent 0%, #000 10%, #000 90%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-image:
+    linear-gradient(180deg, transparent 0%, #000 24%, #000 74%, transparent 100%),
+    linear-gradient(90deg, transparent 0%, #000 10%, #000 90%, transparent 100%);
+  mask-composite: intersect;
+  will-change: opacity;
+}
+/* Sombra del doblez superior sobre el forro */
+.sobre__forro::after {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 13%;
+  background: linear-gradient(180deg, rgba(74, 58, 30, .26) 0%, rgba(74, 58, 30, .08) 38%, rgba(74, 58, 30, 0) 100%);
+}
+
+/* ── Bolsa y solapa ── */
+.sobre__bolsa { will-change: transform; }
+.sobre__sombra { will-change: transform, opacity; pointer-events: none; }
+.sobre__solapa {
+  transform-origin: 50% 0%;
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.sobre__solapa-luz {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  background: linear-gradient(180deg, rgba(74, 58, 30, .55) 0%, rgba(74, 58, 30, .9) 100%);
+  clip-path: polygon(0 0, 100% 0, 50% calc(var(--sobre-punta) + 1%));
+  will-change: opacity;
+  pointer-events: none;
+}
+
+/* ── Textos impresos en el sobre ── */
+.sobre__nombres {
+  position: absolute;
+  left: 0; right: 0;
+  top: clamp(34px, 8.5vh, 84px);
+  padding-top: env(safe-area-inset-top, 0px);
+  text-align: center;
+  font-family: var(--f-serif);
+  font-weight: 600;
+  font-size: clamp(12px, 3.3vw, 15px);
+  letter-spacing: .42em;
+  text-indent: .42em;           /* compensa el espaciado de la última letra */
+  text-transform: uppercase;
+  color: var(--dorado-hondo);
+}
+.sobre__nombres i {
+  font-family: var(--f-script);
+  font-style: normal;
+  font-weight: 600;
+  font-size: 1.7em;
+  letter-spacing: 0;
+  text-transform: none;
+  margin: 0 .45em 0 .2em;
+  color: var(--dorado);
+  vertical-align: -.08em;
+}
+.sobre__filete {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 12px;
+  color: var(--dorado);
+}
+.sobre__filete::before,
+.sobre__filete::after {
+  content: '';
+  width: clamp(26px, 8vw, 44px);
+  height: 1px;
+  background: currentColor;
+  opacity: .7;
+}
+.sobre__filete b {
+  width: 5px; height: 5px;
+  background: currentColor;
+  transform: rotate(45deg);
+}
+
+.sobre__pie {
+  position: absolute;
+  left: 0; right: 0;
+  top: calc(var(--sobre-punta) + var(--sobre-sello) * .5 + clamp(20px, 3.6vh, 38px));
+  text-align: center;
+  padding: 0 24px;
+  will-change: opacity;
+}
+.sobre__toca {
+  font-family: var(--f-serif);
+  font-weight: 600;
+  font-size: clamp(11.5px, 3.1vw, 13.5px);
+  letter-spacing: .36em;
+  text-indent: .36em;
+  text-transform: uppercase;
+  color: var(--cafe);
+}
+.sobre__fecha {
+  margin-top: clamp(8px, 1.6vh, 16px);
+  font-family: var(--f-serif);
+  font-style: italic;
+  font-weight: 500;
+  font-size: clamp(17px, 4.6vw, 21px);
+  letter-spacing: .2em;
+  text-indent: .2em;
+  color: var(--dorado-hondo);
+}
+
+/* ── Sello de lacre ── */
+.sobre__sello-lugar {
+  position: absolute;
+  inset: auto;
+  left: 50%;
+  top: var(--sobre-punta);
+  width: var(--sobre-sello);
+  height: var(--sobre-sello);
+  margin: calc(var(--sobre-sello) * -.5) 0 0 calc(var(--sobre-sello) * -.5);
+}
+.sobre__halo,
+.sobre__destello,
+.sobre__sombra-sello {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  pointer-events: none;
+}
+.sobre__halo {
+  inset: -6%;
+  border: 1px solid rgba(201, 154, 69, .9);
+  background: radial-gradient(circle, rgba(240, 220, 168, 0) 52%, rgba(240, 220, 168, .5) 68%, rgba(201, 154, 69, 0) 100%);
+  opacity: 0;
+  animation: sobre-halo 3.4s var(--suave) 1.2s infinite;
+  will-change: transform, opacity;
+}
+.sobre__halo--eco { animation-delay: 2.9s; }
+.sobre__destello {
+  inset: -4%;
+  background: radial-gradient(circle, rgba(240, 220, 168, .9) 0%, rgba(240, 220, 168, .45) 45%, rgba(201, 154, 69, 0) 70%);
+  opacity: 0;
+  will-change: transform, opacity;
+}
+.sobre__sombra-sello {
+  inset: -10%;
+  transform: translate(3%, 9%);
+  background: radial-gradient(circle, rgba(58, 30, 16, .5) 0%, rgba(58, 30, 16, .34) 48%, rgba(58, 30, 16, 0) 70%);
+  will-change: opacity;
+}
+.sobre__sello {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-width: 44px;
+  min-height: 44px;
+  border-radius: 50%;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  animation: sobre-respira 3.8s ease-in-out infinite alternate;
+  will-change: transform;
+}
+.sobre__sello:focus-visible {
+  outline: 1.5px solid var(--dorado-hondo);
+  outline-offset: 7px;
+  border-radius: 50%;
+}
+.sobre__prensa {
+  position: absolute;
+  inset: 0;
+  display: block;
+  transition: transform .5s var(--suave);
+  will-change: transform;
+}
+@media (hover: hover) {
+  .sobre__sello:hover .sobre__prensa { transform: scale(1.045) rotate(-1.5deg); }
+}
+.sobre__sello:active .sobre__prensa { transform: scale(.965); transition-duration: .15s; }
+
+.sobre__mitad {
+  position: absolute;
+  inset: -4%;
+  display: block;
+  will-change: transform, opacity;
+}
+.sobre__mitad svg { width: 100%; height: 100%; overflow: visible; }
+/* La grieta: una línea quebrada; las mitades se traslapan un pelo */
+.sobre__mitad--izq {
+  clip-path: polygon(0 0, 52.6% 0, 47.6% 17%, 54.6% 33%, 46.6% 50%, 53.6% 67%, 48.6% 83%, 51.6% 100%, 0 100%);
+  transform-origin: 30% 60%;
+}
+.sobre__mitad--der {
+  clip-path: polygon(52% 0, 100% 0, 100% 100%, 51% 100%, 48% 83%, 53% 67%, 46% 50%, 54% 33%, 47% 17%);
+  transform-origin: 70% 60%;
+}
+
+/* ── Grano de papel sobre todo el conjunto ── */
+.sobre__grano {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: .62;
+  background-image: url('../assets/svg/grano.svg');
+  background-size: 320px 320px;
+}
+/* Viñeta muy leve: da volumen al papel */
+.sobre__grano::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(120% 90% at 50% 45%, rgba(92, 81, 56, 0) 55%, rgba(92, 81, 56, .13) 100%);
+}
+
+/* ── Entrada al cargar ── */
+.sobre__nombres, .sobre__pie { animation: sobre-aparece 1.4s var(--suave) .5s both; }
+.sobre__pie { animation-delay: .9s; }
+.sobre__sello-lugar { animation: sobre-posa 1.3s var(--entrada) .15s both; }
+
+@keyframes sobre-aparece {
+  from { opacity: 0; transform: translate3d(0, 10px, 0); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes sobre-posa {
+  from { opacity: 0; transform: scale(1.14); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes sobre-respira {
+  from { transform: scale(1); }
+  to { transform: scale(1.035); }
+}
+@keyframes sobre-halo {
+  0% { opacity: 0; transform: scale(.92); }
+  18% { opacity: .75; }
+  100% { opacity: 0; transform: scale(1.62); }
+}
+
+/* En pausa: pestaña oculta o sobre abriéndose */
+.sobre--pausa .sobre__sello,
+.sobre--pausa .sobre__halo,
+.sobre--abriendo .sobre__sello { animation-play-state: paused; }
+.sobre--abriendo .sobre__halo { animation: none; opacity: 0; }
+.sobre--abriendo .sobre__sello { pointer-events: none; cursor: default; }
+.sobre--abriendo { pointer-events: none; }
+
+/* ── Pantallas apaisadas: la acuarela sube para asomarse por la abertura ── */
+@media (min-aspect-ratio: 1/1) {
+  .sobre__forro-imagen {
+    top: -7vh;
+    width: clamp(660px, 72vw, 1100px);
+  }
+}
+
+/* ── Pantallas bajas (celular acostado) ── */
+@media (max-height: 480px) {
+  #sobre { --sobre-punta: 52%; }
+  .sobre__nombres { top: 18px; }
+  .sobre__filete { display: none; }
+  .sobre__fecha { display: none; }
+}
+
+/* ── Movimiento reducido: sin respiración ni halo en movimiento ── */
+@media (prefers-reduced-motion: reduce) {
+  .sobre__sello, .sobre__halo { animation: none; }
+  .sobre__halo:not(.sobre__halo--eco) { opacity: .6; transform: scale(1.08); }
+  .sobre__prensa { transition: none; }
+}

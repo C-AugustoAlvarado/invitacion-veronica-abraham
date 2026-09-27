@@ -1,0 +1,25 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Veronica y Abraham//Invitacion de boda//ES
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:boda-veronica-abraham-20270306T220000Z@invitacion
+DTSTAMP:20260926T000000Z
+DTSTART:20270306T220000Z
+DTEND:20270307T080000Z
+SUMMARY:Boda de Verónica y Abraham
+DESCRIPTION:Ceremonia religiosa: 4:00 p.m. en la Catedral de Morelia. Recep
+ ción: Hotel Boutique Casa Grande\, Portal Matamoros 98\, Centro Históric
+ o. Código de vestimenta: etiqueta rigurosa.
+LOCATION:Catedral de Morelia\, Av. Francisco I. Madero Poniente S/N\, Centr
+ o Histórico\, 58000 Morelia\, Michoacán\, México
+STATUS:CONFIRMED
+TRANSP:OPAQUE
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Mañana: Boda de Verónica y Abraham
+TRIGGER:-P1D
+END:VALARM
+END:VEVENT
+END:VCALENDAR

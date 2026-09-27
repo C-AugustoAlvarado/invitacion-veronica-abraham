@@ -1,0 +1,552 @@
+/* ═══════════════════════════════════════════════════════════════
+   Secciones de la invitación (portada, historia, ceremonia,
+   recepción, atardecer y cierre). Las demás secciones tienen su
+   propio archivo. Ninguna sección pinta fondo: todas flotan sobre
+   el ambiente continuo de base.css.
+   ═══════════════════════════════════════════════════════════════ */
+
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+/* Los decorados se salen de la pantalla sin provocar scroll lateral */
+main { overflow-x: clip; }
+/* Respaldo para Safari anterior a 16 (iOS 15), que no conoce overflow: clip */
+@supports not (overflow: clip) {
+  .portada, .fecha, .historia, .ceremonia, .recepcion { overflow: hidden; }
+}
+
+/* Mientras el sobre se monta, la pantalla ya es papel crema */
+.js #sobre:empty {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: var(--crema-calida);
+}
+
+.icono { flex: none; }
+
+.ornamento--izq { justify-content: flex-start; margin-left: 0; }
+.ornamento--izq::before { display: none; }
+
+.dato-hora { line-height: 1.1; color: var(--cafe); }
+.recepcion__texto .dato-hora { margin-bottom: .5em; }
+
+.direccion {
+  font-style: normal;
+  font-size: clamp(16px, 2vw, 19px);
+  letter-spacing: .06em;
+  line-height: 1.65;
+  margin: 1.2em 0 1.6em;
+  padding-left: 18px;
+  border-left: 1px solid var(--dorado);
+}
+
+/* ═══════════ 1 · Portada ═══════════ */
+.portada {
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding-top: clamp(54px, 9vh, 100px);
+  padding-bottom: clamp(30px, 5vh, 60px);
+}
+.portada__contenido {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.portada__sobretitulo { margin-bottom: clamp(6px, 1.4vh, 14px); }
+.portada__titulo { font-size: clamp(52px, 11.5vw, 104px); }
+.portada__nombres { margin-top: clamp(2px, 1vh, 12px); }
+.portada__nombres .amp { font-style: italic; padding: 0 .08em; }
+
+.portada__ilustracion {
+  position: relative;
+  width: 128vw;   /* en celular la acuarela sangra por los lados: se ve más grande */
+  margin: clamp(14px, 3.4vh, 42px) 0 clamp(12px, 3vh, 36px);
+}
+@media (min-width: 700px) {
+  /* En pantallas apaisadas todo se mide también contra el alto, para que
+     título, acuarela, fecha, lugar y botón quepan en la primera pantalla
+     (la acuarela mide 1400:658 → ancho = alto × 2.128) */
+  .portada {
+    padding-top: clamp(34px, 5.5vh, 100px);
+    padding-bottom: clamp(24px, 4vh, 60px);
+  }
+  .portada__titulo { font-size: clamp(52px, min(11.5vw, 11vh), 104px); }
+  .portada__nombres { font-size: clamp(30px, min(6.5vw, 6vh), 58px); }
+  .portada__fecha { font-size: clamp(28px, min(5.6vw, 5.6vh), 52px); }
+  .portada__ilustracion {
+    width: min(92vw, 1040px, max(440px, calc((100vh - 600px) * 2.128)));
+    width: min(92vw, 1040px, max(440px, calc((100svh - 600px) * 2.128)));
+    margin: clamp(8px, 2.4vh, 42px) 0 clamp(6px, 2vh, 36px);
+  }
+  .portada__accion { margin-top: clamp(14px, 2.8vh, 40px); }
+}
+.portada__castillo img {
+  width: 100%;
+  height: auto;
+  mix-blend-mode: multiply;
+  -webkit-mask-image:
+    linear-gradient(90deg, transparent 0, #000 7%, #000 93%, transparent 100%),
+    linear-gradient(180deg, transparent 0, #000 9%, #000 90%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-image:
+    linear-gradient(90deg, transparent 0, #000 7%, #000 93%, transparent 100%),
+    linear-gradient(180deg, transparent 0, #000 9%, #000 90%, transparent 100%);
+  mask-composite: intersect;
+}
+.portada__lavado {
+  width: 104%;
+  left: -2%;
+  top: 50%;
+  translate: 0 -52%;
+  opacity: .42;
+}
+.portada__lugar { margin-top: clamp(10px, 2vh, 20px); }
+.portada__accion { margin-top: clamp(22px, 4vh, 40px); }
+
+.portada__esquina {
+  width: clamp(230px, 38vw, 520px);
+  height: auto;
+  top: -2%;
+  opacity: .92;
+}
+.portada__esquina--izq { left: clamp(-90px, -5vw, -40px); }
+.portada__esquina--der {
+  right: clamp(-90px, -5vw, -40px);
+  transform-origin: center;
+}
+/* La esquina derecha es la misma ilustración reflejada: el reflejo va en el
+   contenedor de parallax, así que se hace con escala negativa en la imagen */
+.portada__esquina--der { scale: -1 1; }
+/* En celulares angostos (360 px) el mínimo de 230 px encima las flores en el título */
+@media (max-width: 380px) {
+  .portada__esquina { width: 52vw; }
+}
+
+.portada__nube { width: clamp(300px, 52vw, 760px); height: auto; opacity: .8; }
+.portada__nube--a { left: -14%; top: 30%; }
+.portada__nube--b { right: -18%; top: 58%; opacity: .65; }
+
+.portada__bajar {
+  margin-top: clamp(20px, 3.6vh, 44px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  color: var(--dorado-hondo);
+  text-decoration: none;
+  opacity: 0;
+  transition: opacity 1.4s var(--suave) 2.2s;
+}
+.portada__bajar-texto {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .42em;
+  text-transform: uppercase;
+  padding-left: .42em;
+}
+.portada__bajar svg { animation: bajar 2.6s var(--suave) infinite; }
+html:not(.js) .portada__bajar,
+.portada.es-abierta .portada__bajar { opacity: .85; }
+@keyframes bajar {
+  0%, 100% { transform: translateY(-4px); opacity: .5; }
+  50% { transform: translateY(5px); opacity: 1; }
+}
+/* En pantallas apaisadas la portada llena la primera pantalla con el botón;
+   el aviso no cabe y se omite (en tableta vertical y celular sí se muestra) */
+@media (min-width: 700px) and (orientation: landscape) {
+  .portada__bajar { display: none; }
+}
+
+/* ═══════════ 3 · Nuestra historia ═══════════ */
+.historia { padding-top: clamp(110px, 20vh, 220px); }
+
+.historia__rejilla {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: center;
+  gap: clamp(22px, 4vh, 40px);
+  text-align: center;
+}
+.historia__lado { font-size: clamp(22px, 4.4vw, 34px); }
+.historia__lado--izq { color: var(--dorado-hondo); }
+
+.historia__marco {
+  width: min(74vw, 340px);
+  aspect-ratio: 3 / 4.3;
+  padding: 10px;
+  border-radius: 999px 999px 6px 6px;
+  background: linear-gradient(160deg, #FFFDF8 0%, #F4ECDB 100%);
+  box-shadow:
+    0 0 0 1px rgba(201, 154, 69, .45),
+    0 40px 70px -40px rgba(78, 70, 50, .6),
+    0 14px 26px -18px rgba(78, 70, 50, .35);
+}
+.historia__cielo {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 999px 999px 3px 3px;
+  box-shadow: inset 0 0 0 1px rgba(201, 154, 69, .35);
+  background:
+    radial-gradient(90% 60% at 30% 12%, #FFFFFF 0%, rgba(255, 255, 255, 0) 70%),
+    linear-gradient(180deg, #F7EBD6 0%, #F3DFC2 48%, #EBCFA6 100%);
+  isolation: isolate;
+}
+.historia__cielo img { position: absolute; max-width: none; }
+.historia__cielo-nube--1 { width: 120%; left: -42%; top: 8%; opacity: .95; }
+.historia__cielo-nube--2 { width: 110%; right: -40%; bottom: 10%; opacity: .9; }
+.historia__paracaidas--a { width: 50%; left: 8%; top: 20%; }
+.historia__paracaidas--b { width: 40%; right: 9%; top: 42%; }
+.historia__foto { inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 2; }
+.historia__cielo.con-foto img:not(.historia__foto) { display: none; }
+
+.historia__texto { max-width: 680px; }
+.historia__frase { margin-bottom: .5em; color: var(--cafe); }
+
+.historia__lavado { width: min(120vw, 1000px); left: 50%; top: 4%; translate: -50% 0; opacity: .55; }
+.historia__rama { width: clamp(260px, 44vw, 600px); height: auto; right: -12%; top: -3%; }
+.historia__nube { width: clamp(320px, 50vw, 720px); height: auto; left: -18%; top: 40%; opacity: .85; }
+.historia__vuelo { width: clamp(70px, 10vw, 140px); height: auto; opacity: .9; }
+.historia__vuelo--a { right: 7%; top: 46%; }
+@media (max-width: 899px) {
+  .historia__vuelo--a { top: 36%; right: 2%; }
+}
+
+@media (min-width: 900px) {
+  .historia__rejilla {
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: center;
+    column-gap: clamp(36px, 6vw, 90px);
+  }
+  .historia__lado--izq { justify-self: end; text-align: right; }
+  .historia__lado--der { justify-self: start; text-align: left; }
+  .historia__marco { width: min(30vw, 380px); }
+  .historia__texto { grid-column: 1 / -1; margin-top: clamp(20px, 5vh, 50px); }
+  .historia__vuelo--a { right: clamp(8px, calc(50% - 490px), 12%); top: 58%; }
+}
+
+/* ═══════════ 4 · Ceremonia y 5 · Recepción ═══════════ */
+.ceremonia__rejilla,
+.recepcion__rejilla {
+  display: grid;
+  /* minmax(0, …): la ilustración sangra fuera de la columna sin ensancharla */
+  grid-template-columns: minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(30px, 6vh, 64px);
+}
+.ceremonia__arte,
+.recepcion__arte {
+  position: relative;
+  width: min(124vw, 760px);
+  justify-self: center;
+}
+.ceremonia__dibujo img,
+.recepcion__dibujo img { width: 100%; height: auto; }
+
+.ceremonia__lavado,
+.recepcion__lavado { width: 118%; left: -9%; top: 50%; translate: 0 -50%; opacity: .55; }
+
+.ceremonia__texto .t-script,
+.recepcion__texto .t-script { font-size: clamp(40px, 7.4vw, 72px); }
+.ceremonia__texto .t-dato,
+.recepcion__texto .t-dato { color: var(--cafe); margin: .3em 0 1.3em; }
+.ceremonia__texto .t-sobretitulo,
+.recepcion__texto .t-sobretitulo { margin-bottom: 10px; }
+.recepcion__texto .t-cuerpo:first-of-type { margin-top: .9em; }
+@media (min-width: 700px) and (max-width: 899.98px) {
+  .historia__texto .t-cuerpo,
+  .ceremonia__texto .t-cuerpo,
+  .recepcion__texto .t-cuerpo { max-width: 30em; }
+  .historia__texto .t-cuerpo { margin-inline: auto; }
+}
+
+.ceremonia__rama { width: clamp(200px, 30vw, 420px); height: auto; left: -9%; top: 2%; }
+.ceremonia__flor { width: clamp(130px, 17vw, 250px); height: auto; right: -3%; bottom: 3%; }
+.recepcion__rama { width: clamp(240px, 40vw, 560px); height: auto; right: -16%; top: -5%; }
+.recepcion__flor { width: clamp(130px, 18vw, 270px); height: auto; left: -7%; top: 47%; }
+
+@media (min-width: 900px) {
+  .ceremonia__rejilla { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); column-gap: clamp(40px, 6vw, 90px); }
+  .recepcion__rejilla { grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); column-gap: clamp(40px, 6vw, 90px); }
+  .ceremonia__arte,
+  .recepcion__arte { width: 100%; }
+  .ceremonia__arte { margin-left: clamp(-80px, -5vw, -30px); }
+  .recepcion__arte { margin-right: clamp(-80px, -5vw, -30px); }
+}
+
+/* Tarjetas de datos prácticos */
+.recepcion__datos {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(18px, 3vw, 30px);
+  margin-top: clamp(50px, 9vh, 100px);
+}
+@media (min-width: 760px) {
+  .recepcion__datos { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .recepcion__datos .papel { padding-inline: clamp(20px, calc(7vw - 34px), 52px); }
+}
+.dato { text-align: center; }
+.dato__icono {
+  width: 46px;
+  height: 46px;
+  margin: 0 auto 14px;
+  color: var(--dorado);
+}
+.dato__titulo { color: var(--dorado-tinta); }
+.dato__principal {
+  font-family: var(--f-script);
+  font-weight: 600;
+  font-style: normal;
+  font-size: clamp(28px, 4vw, 36px);
+  line-height: 1.2;
+  color: var(--cafe);
+  margin: .3em 0 .35em;
+}
+.dato__accion { margin: 13px 0 -8px; }
+.dato__accion .enlace {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 14px;
+}
+.dato__muestras {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 16px;
+}
+.muestra {
+  position: relative;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px rgba(78, 70, 50, .22);
+  overflow: hidden;
+}
+.muestra::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: -10%;
+  width: 1.4px;
+  height: 120%;
+  background: var(--vino);
+  transform: rotate(45deg);
+  opacity: .85;
+}
+.muestra--olivo { background: #6F7141; }
+.muestra--claro { background: #FFFFFF; }
+.muestra--marfil { background: #EFE4CC; }
+
+/* ═══════════ 6 · Atardecer ═══════════
+   Escena fija (sticky) mientras la sección pasa: el sol baja y las
+   siluetas suben según el avance --p que escribe el motor. El scroll
+   sigue siendo el del dedo. */
+.atardecer {
+  position: relative;
+  height: 230vh;
+  height: 230lvh;
+  /* Tramo en que la escena está fija: de p≈.303 a p≈.697 */
+  --q: clamp(0, calc((var(--p, 0) - .303) * 2.54), 1);
+  color: var(--crema);
+}
+.atardecer__escena {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100lvh;
+  width: 100%;
+}
+.atardecer__escena > * { position: absolute; }
+
+.atardecer__sol {
+  left: 50%;
+  /* El sol arranca debajo del último renglón de la frase (3 renglones en
+     pantallas angostas; los 26 px son el sobretítulo con su margen) */
+  --frase-fin: calc(clamp(64px, 11vh, 120px) + 3vh + 26px + 3 * 1.2 * clamp(34px, 6.4vw, 66px));
+  --sol-ini: max(27vh, calc(var(--frase-fin) + 16px));
+  top: var(--sol-ini);
+  width: clamp(120px, 30vw, 230px);
+  aspect-ratio: 1;
+  margin-left: calc(clamp(120px, 30vw, 230px) / -2);
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 46%, #FFF6DF 0%, #FBE3AE 42%, #F2C27E 72%, #EBAE6C 100%);
+  box-shadow:
+    0 0 60px 18px rgba(248, 214, 150, .55),
+    0 0 160px 70px rgba(240, 176, 110, .38);
+  transform: translate3d(0, calc(var(--q) * (72vh - var(--sol-ini))), 0) scale(calc(1 + var(--q) * .2));
+  opacity: calc(1 - var(--q) * .5);
+  will-change: transform;
+}
+/* Desde 600 px la frase cabe en 2 renglones */
+@media (min-width: 600px) {
+  .atardecer__sol {
+    --frase-fin: calc(clamp(64px, 11vh, 120px) + 3vh + 26px + 2 * 1.2 * clamp(34px, 6.4vw, 66px));
+  }
+}
+
+.atardecer__frase {
+  left: 0;
+  right: 0;
+  top: clamp(64px, 11vh, 120px);
+  padding: 0 var(--margen);
+  text-align: center;
+  opacity: clamp(0, calc(var(--p, 0) * 4 - .62), 1);
+  transform: translate3d(0, calc((1 - var(--q)) * 3vh), 0);
+}
+.atardecer__frase .t-sobretitulo { color: var(--dorado-brillo); margin-bottom: 12px; }
+.atardecer__frase .t-script {
+  color: var(--crema);
+  font-size: clamp(34px, 6.4vw, 66px);
+  max-width: 15em;
+  margin: 0 auto;
+  text-shadow: 0 2px 30px rgba(43, 40, 32, .45);
+}
+
+.atardecer__capa {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  max-width: none;
+  object-fit: cover;
+  object-position: 50% 100%;
+  will-change: transform;
+}
+.atardecer__capa--cerros { height: 50%; transform: translate3d(0, calc((1 - var(--q)) * 5vh), 0); }
+.atardecer__capa--ciudad { height: 52%; transform: translate3d(0, calc((1 - var(--q)) * 12vh), 0); }
+.atardecer__capa--acueducto { height: 44%; transform: translate3d(0, calc((1 - var(--q)) * 24vh), 0); }
+
+/* Al anochecer, un velo oscurece la ciudad desde abajo */
+.atardecer__velo {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 56%;
+  background: linear-gradient(0deg, rgba(43, 40, 32, .92) 0%, rgba(43, 40, 32, .7) 38%, rgba(43, 40, 32, 0) 100%);
+  opacity: var(--q);
+  pointer-events: none;
+}
+
+/* El primer plano se funde con la noche que sigue: sin costura */
+.atardecer__suelo {
+  left: 0;
+  right: 0;
+  top: calc(100% - 2px);
+  height: 46vh;
+  background: linear-gradient(180deg, var(--noche) 0%, var(--noche) 30%, rgba(43, 40, 32, 0) 100%);
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .atardecer { height: auto; --q: 1; }
+  .atardecer__escena { position: relative; }
+  .atardecer__frase { opacity: 1; }
+  /* La frase entra cuando el ambiente aún es claro: lleva su propio halo */
+  .atardecer__frase::before {
+    content: '';
+    position: absolute;
+    inset: -90px 0;
+    z-index: -1;
+    pointer-events: none;
+    background: radial-gradient(ellipse 75% 50% at 50% 50%, rgba(74, 58, 46, .72) 0%, rgba(74, 58, 46, .6) 55%, rgba(74, 58, 46, 0) 100%);
+  }
+  .atardecer__frase .t-script { text-shadow: 0 2px 30px rgba(43, 40, 32, .45), 0 1px 3px rgba(43, 40, 32, .55); }
+}
+
+/* Sin JavaScript nadie escribe --p ni oscurece el ambiente: la escena
+   queda quieta, con la frase visible y su propio cielo de ocaso */
+html:not(.js) .atardecer {
+  height: auto;
+  --q: 1;
+  background: linear-gradient(180deg, #4A3A2E 0%, #7A4A3A 34%, #B9744F 66%, #E2A66B 100%);
+}
+html:not(.js) .atardecer__escena { position: relative; }
+html:not(.js) .atardecer__frase { opacity: 1; }
+
+/* ═══════════ 11 · Cierre ═══════════ */
+.cierre { padding-bottom: clamp(70px, 12vh, 140px); }
+.cierre__nota { margin-top: .7em; opacity: .92; }
+
+.planner {
+  max-width: 460px;
+  margin: clamp(30px, 6vh, 56px) auto 0;
+  text-align: center;
+}
+.planner__nombre {
+  font-family: var(--f-serif);
+  font-weight: 500;
+  font-size: clamp(28px, 5vw, 40px);
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  line-height: 1.2;
+  color: var(--cafe);
+  margin-top: 10px;
+}
+.planner__medios {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+}
+.planner__medios .boton { padding: 14px 26px; min-height: 48px; }
+.planner__pendiente { font-style: italic; }
+
+.cierre__despedida { margin-top: clamp(90px, 18vh, 200px); }
+.cierre__medallon {
+  width: min(62vw, 300px);
+  margin: 0 auto clamp(26px, 5vh, 46px);
+}
+.cierre__sello {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 34% 26%, #FFFFFF 0%, rgba(255, 255, 255, 0) 55%),
+    linear-gradient(160deg, #FDFBF5 0%, #F1E8D6 100%);
+  box-shadow:
+    0 0 0 1px rgba(201, 154, 69, .5),
+    0 0 0 9px rgba(248, 244, 235, .06),
+    0 0 90px 10px rgba(226, 194, 136, .22),
+    0 34px 60px -30px rgba(0, 0, 0, .7);
+}
+.cierre__sello img {
+  position: absolute;
+  inset: 4%;
+  width: 92%;
+  height: 92%;
+}
+.cierre__monograma {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--f-script);
+  font-weight: 600;
+  font-size: clamp(50px, 15vw, 78px);
+  line-height: 1;
+  color: var(--dorado);
+}
+.cierre__monograma span { font-size: .62em; padding: 0 .06em; color: var(--cafe); }
+.cierre__frase { color: var(--crema); }
+.cierre__nombres { margin-top: clamp(12px, 2.4vh, 24px); color: var(--petalo); }
+.cierre__lugar {
+  margin-top: clamp(16px, 3vh, 28px);
+  color: var(--crema);
+  opacity: .8;
+  font-size: clamp(12px, 2.2vw, 16px);
+}
+.cierre__lugar span { white-space: nowrap; }
+@media (max-width: 420px) {
+  .cierre__lugar span { display: block; }
+  .cierre__lugar .cierre__raya { display: none; }
+}

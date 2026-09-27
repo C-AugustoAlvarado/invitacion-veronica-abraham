@@ -1,0 +1,424 @@
+/* ═══════════════════════════════════════════════════════════════
+   Galería — «Nuestros momentos»
+   Polaroids que se pasan con el dedo. El scroll horizontal es
+   nativo (scroll-snap); galeria.js solo escribe transform y opacity.
+   ═══════════════════════════════════════════════════════════════ */
+
+.galeria {
+  /* Medidas de la polaroid: todo lo demás se deriva de aquí */
+  --gal-ancho: clamp(232px, 66vw, 320px);
+  --gal-separacion: clamp(14px, 4.5vw, 34px);
+  --gal-marco: clamp(11px, 3.4vw, 16px);
+  --gal-pie: clamp(70px, 20vw, 88px);
+  --gal-papel: #FFFCF5;
+  padding-left: 0;
+  padding-right: 0;
+  overflow: hidden;            /* las vecinas giradas nunca provocan scroll lateral */
+  overflow: clip;
+}
+.galeria__encabezado {
+  padding: 0 var(--margen);
+}
+.galeria__titulo { margin-top: .28em; }
+
+@media (min-width: 900px) {
+  .galeria {
+    --gal-ancho: 340px;
+    --gal-separacion: 44px;
+    --gal-marco: 17px;
+    --gal-pie: 92px;
+  }
+}
+
+/* ═══════════ Chispas del fondo ═══════════ */
+.galeria__chispas { inset: 0; }
+.galeria__chispa {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: 5px;
+  height: 5px;
+}
+.galeria__chispa::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--dorado-brillo) 0%, rgba(240, 220, 168, .55) 38%, rgba(240, 220, 168, 0) 72%);
+  opacity: .25;
+  transform: scale(2.6);
+  animation: galeria-titilar var(--t, 6s) ease-in-out var(--r, 0s) infinite;
+  animation-play-state: paused;
+}
+.galeria__chispa--chica { width: 3px; height: 3px; }
+.galeria.es-en-pantalla .galeria__chispa::before { animation-play-state: running; }
+@keyframes galeria-titilar {
+  0%, 100% { opacity: .18; transform: scale(2); }
+  50% { opacity: .95; transform: scale(3.2); }
+}
+
+/* ═══════════ Carrusel ═══════════ */
+.galeria__carrusel {
+  position: relative;
+  margin-top: clamp(14px, 3vh, 34px);
+}
+
+/* Luz cálida detrás de la foto del centro, como una lámpara */
+.galeria__halo {
+  position: absolute;
+  left: 50%;
+  top: 44%;
+  width: min(150vw, 980px);
+  height: min(150vw, 760px);
+  transform: translate(-50%, -50%);
+  background: radial-gradient(closest-side, rgba(240, 220, 168, .2) 0%, rgba(201, 154, 69, .1) 42%, rgba(201, 154, 69, 0) 100%);
+  pointer-events: none;
+}
+
+.galeria__pista {
+  position: relative;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  /* Aire vertical: el giro y la sombra no se recortan */
+  padding: clamp(34px, 6vh, 56px) 0 clamp(54px, 8vh, 78px);
+  outline: none;
+}
+.galeria__pista::-webkit-scrollbar { display: none; width: 0; height: 0; }
+.galeria__pista:focus-visible .galeria__item.es-activa .galeria__polaroid {
+  outline: 2px solid var(--dorado);
+  outline-offset: 6px;
+}
+/* Durante el arrastre con ratón y su inercia, el imán se suelta */
+.galeria__pista.es-libre { scroll-snap-type: none; }
+
+.galeria__lista {
+  display: flex;
+  align-items: center;
+  gap: var(--gal-separacion);
+  width: max-content;
+  list-style: none;
+  /* La primera y la última también pueden quedar al centro */
+  padding: 0 calc(50% - var(--gal-ancho) / 2);
+}
+
+.galeria__item {
+  flex: 0 0 var(--gal-ancho);
+  width: var(--gal-ancho);
+  scroll-snap-align: center;
+  scroll-snap-stop: always;
+  perspective: 1100px;
+  position: relative;
+}
+/* La del centro siempre queda encima de sus vecinas */
+.galeria__item.es-activa { z-index: 2; }
+
+/* ═══════════ Polaroid ═══════════ */
+.galeria__polaroid {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: var(--gal-marco) var(--gal-marco) 0;
+  background:
+    radial-gradient(130% 80% at 0% 0%, rgba(255, 255, 255, .9) 0%, rgba(255, 255, 255, 0) 60%),
+    linear-gradient(168deg, var(--gal-papel) 0%, #F7F0E1 100%);
+  color: var(--cafe-texto);
+  border-radius: 2px;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, .95) inset,
+    0 34px 60px -26px rgba(0, 0, 0, .78),
+    0 12px 22px -12px rgba(0, 0, 0, .5);
+  transform-origin: 50% 60%;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  text-align: center;
+  -webkit-user-select: none;
+  user-select: none;
+}
+/* Sin JavaScript activo sobre ella, cada una conserva su giro */
+.galeria__polaroid:not([style]) { transform: rotate(var(--giro, 0deg)); }
+
+.galeria__ventana {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: #F1E6D0;
+  border-radius: 1px;
+  /* El papel fotográfico queda apenas hundido en el marco */
+  box-shadow: inset 0 0 0 1px rgba(92, 81, 56, .14), inset 0 2px 8px -3px rgba(43, 40, 32, .35);
+}
+.galeria__ventana > svg,
+.galeria__ventana > img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.galeria__foto {
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 1.1s var(--suave);
+  -webkit-user-drag: none;
+}
+.galeria__foto.es-cargada { opacity: 1; }
+
+/* Brillo del papel: acompaña la inclinación en escritorio */
+.galeria__brillo {
+  position: absolute;
+  inset: -40%;
+  background: linear-gradient(115deg, rgba(255, 255, 255, 0) 38%, rgba(255, 255, 255, .34) 50%, rgba(255, 255, 255, 0) 62%);
+  opacity: 0;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+/* Leyenda del marco ilustrado */
+.galeria__pronto {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 9.5%;
+  font-family: var(--f-serif);
+  font-weight: 600;
+  font-size: clamp(11px, 3.1vw, 13.5px);
+  letter-spacing: .42em;
+  text-indent: .42em;
+  text-transform: uppercase;
+  color: var(--dorado-hondo);
+}
+.galeria__pronto::before,
+.galeria__pronto::after {
+  content: '';
+  display: inline-block;
+  vertical-align: middle;
+  width: 18px;
+  height: 1px;
+  margin: 0 10px 2px;
+  background: currentColor;
+  opacity: .6;
+}
+
+.galeria__pie {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--gal-pie);
+  padding: 6px 4px 10px;
+  font-family: var(--f-script);
+  font-weight: 600;
+  font-size: clamp(21px, 5.9vw, 27px);
+  line-height: 1.12;
+  color: var(--cafe);
+  text-wrap: balance;
+}
+
+/* Las fotos reales son botones: se abren en grande */
+button.galeria__polaroid { cursor: zoom-in; font: inherit; }
+button.galeria__polaroid:focus-visible {
+  outline: 2px solid var(--dorado-brillo);
+  outline-offset: 6px;
+}
+.galeria__item:not(.es-activa) .galeria__polaroid { cursor: pointer; }
+
+@media (hover: hover) and (pointer: fine) {
+  .galeria__pista { cursor: grab; }
+  .galeria__pista.es-arrastrando,
+  .galeria__pista.es-arrastrando .galeria__polaroid { cursor: grabbing; }
+}
+
+/* ═══════════ Controles ═══════════ */
+.galeria__controles {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(4px, 2vw, 18px);
+  margin-top: clamp(-22px, -2vh, -8px);
+  padding: 0 var(--margen);
+}
+.galeria__flecha {
+  position: relative;
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  color: var(--dorado-brillo);
+  box-shadow: inset 0 0 0 1px rgba(226, 194, 136, .55);
+  transition: transform .5s var(--suave), opacity .5s var(--suave), background-color .4s var(--suave);
+}
+.galeria__flecha[aria-disabled="true"] { opacity: .32; cursor: default; }
+@media (hover: hover) {
+  .galeria__flecha:not([aria-disabled="true"]):hover {
+    background: rgba(226, 194, 136, .14);
+    transform: scale(1.06);
+  }
+}
+.galeria__flecha:not([aria-disabled="true"]):active { transform: scale(.95); }
+
+.galeria__puntos {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  list-style: none;
+  min-width: 0;
+}
+.galeria__punto {
+  position: relative;
+  display: grid;
+  place-items: center;
+  /* Área táctil de 44 px aunque el punto sea pequeño */
+  width: clamp(30px, 8.4vw, 44px);
+  height: 44px;
+}
+.galeria__punto::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  background: var(--petalo);
+  transform: rotate(45deg) scale(.72);
+  opacity: .42;
+  transition: transform .6s var(--elastica), opacity .6s var(--suave);
+}
+.galeria__punto[aria-current="true"]::before {
+  transform: rotate(45deg) scale(1.3);
+  opacity: 1;
+  background: var(--dorado-brillo);
+}
+
+.galeria__pista-texto {
+  margin-top: clamp(14px, 2.4vh, 22px);
+  padding: 0 var(--margen);
+  text-align: center;
+  font-style: italic;
+  color: var(--petalo);
+}
+.galeria__solo-raton { display: none; }
+@media (hover: hover) and (pointer: fine) {
+  .galeria__solo-tacto { display: none; }
+  .galeria__solo-raton { display: inline; }
+}
+
+/* ═══════════ Foto en grande ═══════════ */
+.galeria-visor {
+  position: fixed;
+  inset: 0;
+  /* Sin <dialog> nativo no hay capa superior: por encima de los pétalos de frente */
+  z-index: 1200;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--crema);
+  overflow: hidden;
+  overscroll-behavior: contain;
+}
+.galeria-visor:not([open]) { display: none; }
+.galeria-visor::backdrop { background: transparent; }
+
+.galeria-visor__fondo {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(80% 60% at 50% 45%, rgba(58, 53, 39, .86) 0%, rgba(30, 28, 22, .96) 70%),
+    var(--noche-honda);
+  opacity: 0;
+  transition: opacity .6s var(--suave);
+}
+.galeria-visor__escena {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  padding: max(66px, env(safe-area-inset-top)) 16px max(84px, env(safe-area-inset-bottom));
+}
+.galeria-visor__marco {
+  position: relative;
+  max-width: 100%;
+  padding: clamp(10px, 2.2vw, 18px) clamp(10px, 2.2vw, 18px) 0;
+  background: linear-gradient(168deg, #FFFCF5 0%, #F7F0E1 100%);
+  color: var(--cafe);
+  border-radius: 2px;
+  box-shadow: 0 50px 90px -30px rgba(0, 0, 0, .9), 0 0 0 1px rgba(168, 124, 47, .2);
+  opacity: 0;
+  transform: translate3d(0, 26px, 0) scale(.94) rotate(-1.2deg);
+  transition: opacity .6s var(--suave), transform .9s var(--entrada);
+}
+.galeria-visor__foto {
+  display: block;
+  max-width: min(100%, 1100px);
+  max-height: calc(100vh - 280px); /* respaldo donde no existe svh */
+  max-height: calc(100svh - 280px);
+  width: auto;
+  height: auto;
+  margin: 0 auto;
+  border-radius: 1px;
+  transition: opacity .45s var(--suave);
+}
+.galeria-visor__foto.es-cambiando { opacity: 0; }
+.galeria-visor__pie {
+  min-height: clamp(58px, 9vh, 84px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 8px 8px;
+  font-family: var(--f-script);
+  font-weight: 600;
+  font-size: clamp(23px, 3.4vw, 34px);
+  line-height: 1.15;
+  text-align: center;
+}
+.galeria-visor.es-abierto .galeria-visor__fondo { opacity: 1; }
+.galeria-visor.es-abierto .galeria-visor__marco { opacity: 1; transform: none; }
+
+.galeria-visor__boton {
+  position: absolute;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  color: var(--dorado-brillo);
+  background: rgba(30, 28, 22, .55);
+  box-shadow: inset 0 0 0 1px rgba(226, 194, 136, .55);
+  opacity: 0;
+  transition: opacity .6s var(--suave) .15s, transform .5s var(--suave), background-color .4s var(--suave);
+}
+.galeria-visor.es-abierto .galeria-visor__boton { opacity: 1; }
+.galeria-visor__boton[hidden] { display: none; }
+.galeria-visor__boton:focus-visible { outline: 2px solid var(--dorado-brillo); outline-offset: 4px; }
+.galeria-visor__boton--cerrar { top: max(12px, env(safe-area-inset-top)); right: 14px; }
+.galeria-visor__boton--anterior { bottom: max(18px, env(safe-area-inset-bottom)); left: calc(50% - 64px); }
+.galeria-visor__boton--siguiente { bottom: max(18px, env(safe-area-inset-bottom)); right: calc(50% - 64px); }
+@media (hover: hover) {
+  .galeria-visor__boton:hover { background: rgba(226, 194, 136, .18); transform: scale(1.06); }
+}
+@media (min-width: 900px) {
+  .galeria-visor__boton--anterior { top: 50%; bottom: auto; left: 28px; margin-top: -25px; }
+  .galeria-visor__boton--siguiente { top: 50%; bottom: auto; right: 28px; margin-top: -25px; }
+  .galeria-visor__escena { padding: 56px 110px; }
+  .galeria-visor__foto { max-height: calc(100vh - 240px); max-height: calc(100svh - 240px); }
+}
+
+/* Mientras el visor está abierto, la página no se desplaza */
+html.galeria-sin-scroll { overflow: hidden; }
+
+/* ═══════════ Movimiento reducido ═══════════ */
+@media (prefers-reduced-motion: reduce) {
+  .galeria__chispa::before { animation: none; opacity: .6; }
+  .galeria__pista { scroll-behavior: auto; }
+  .galeria-visor__marco { transform: none; }
+}

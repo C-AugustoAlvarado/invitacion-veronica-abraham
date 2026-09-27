@@ -1,0 +1,330 @@
+/* ═══════════════════════════════════════════════════════════════
+   Mesa de regalos (#regalos) y botón de copiar (.copiar)
+   Sección nocturna: texto suelto en crema, datos en tarjetas de papel.
+   Solo se animan transform y opacity (y el trazo de la palomita).
+   ═══════════════════════════════════════════════════════════════ */
+
+.regalos { overflow: hidden; overflow: clip; }
+
+/* ── Encabezado ── */
+.regalos__encabezado {
+  max-width: 720px;
+  margin: 0 auto;
+}
+.regalos__titulo {
+  font-size: clamp(36px, 6.6vw, 62px);
+  line-height: 1.18;
+  margin-top: clamp(14px, 2.4vh, 22px);
+  text-wrap: balance;
+}
+.regalos__texto {
+  max-width: 34em;
+  margin: 0 auto;
+  color: rgba(248, 244, 235, .9);
+  text-wrap: pretty;
+}
+
+/* ── Chispas ── */
+.regalos__chispas { inset: 0; }
+.regalos__capa { position: absolute; inset: 0; }
+.regalos__chispa {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: calc(22px * var(--t, 1));
+  height: calc(22px * var(--t, 1));
+  background: radial-gradient(circle, #FFF6DC 0%, var(--dorado-brillo) 35%, var(--dorado) 100%);
+  clip-path: polygon(50% 0, 56% 44%, 100% 50%, 56% 56%, 50% 100%, 44% 56%, 0 50%, 44% 44%);
+  opacity: .5;
+  animation: regalos-titilar 5.2s var(--suave) var(--d, 0s) infinite alternate;
+  animation-play-state: paused;
+}
+.regalos.es-activa .regalos__chispa { animation-play-state: running; }
+@keyframes regalos-titilar {
+  0%   { opacity: .12; transform: scale(.6) rotate(0deg); }
+  100% { opacity: .85; transform: scale(1) rotate(18deg); }
+}
+
+/* ── Lista de tarjetas ── */
+.regalos__lista {
+  list-style: none;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(30px, 4vw, 36px);
+  max-width: 440px;
+  margin: clamp(52px, 9vh, 84px) auto 0;
+}
+.regalos__celda { display: flex; min-width: 0; }
+
+@media (min-width: 900px) {
+  .regalos__lista {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    max-width: 1080px;
+    align-items: stretch;
+  }
+  /* La del centro baja un poco: se leen como tres papeles sobre una mesa */
+  .regalos { --regalos-caida: 34px; }
+  .regalos__celda--centro { margin-top: 34px; margin-bottom: -34px; }
+  /* Los tres nombres ocupan el mismo alto aunque uno pase a dos renglones */
+  .regalo__tienda {
+    min-height: 2.3em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+/* ── Tarjeta ── */
+.regalo {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: clamp(34px, 6vw, 46px) clamp(24px, 4vw, 34px) clamp(30px, 5vw, 40px);
+}
+
+.regalo__icono {
+  width: 76px;
+  height: 76px;
+  overflow: visible;
+}
+.regalo__lavado {
+  fill: var(--durazno);
+  opacity: .42;
+  transform: translate(2px, 3px);
+}
+.regalo[data-regalo="liverpool"] .regalo__lavado { fill: var(--petalo); opacity: .5; }
+.regalo[data-regalo="transferencia"] .regalo__lavado { fill: var(--oliva-claro); opacity: .42; }
+.regalo__tinta {
+  fill: none;
+  stroke: #6B6445;
+  stroke-width: 1.35;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.regalo__sello { stroke: var(--vino); }
+
+.regalo__tienda {
+  margin-top: 16px;
+  font-family: var(--f-serif);
+  font-weight: 600;
+  font-size: clamp(25px, 3vw, 29px);
+  line-height: 1.15;
+  letter-spacing: .13em;
+  font-variant-caps: small-caps;
+  color: var(--cafe);
+  text-wrap: balance;
+}
+
+.regalo__filete {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 16px 0 18px;
+  color: var(--dorado);
+}
+.regalo__filete::before,
+.regalo__filete::after {
+  content: '';
+  width: 34px;
+  height: 1px;
+  background: currentColor;
+  opacity: .7;
+}
+.regalo__filete i {
+  width: 5px; height: 5px;
+  background: currentColor;
+  transform: rotate(45deg);
+}
+
+.regalo__etiqueta {
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: .3em;
+  text-indent: .3em;
+  text-transform: uppercase;
+  color: var(--cafe);
+  opacity: .82;
+}
+
+.regalo__dato {
+  width: 100%;
+  margin-top: 8px;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* «Por confirmar»: un renglón en blanco de papelería, esperando la tinta */
+.regalo__pendiente {
+  position: relative;
+  display: inline-block;
+  min-width: 190px;
+  padding: 4px 18px 9px;
+  font-style: italic;
+  font-weight: 500;
+  font-size: 23px;
+  line-height: 1.3;
+  letter-spacing: .03em;
+  color: var(--cafe);
+}
+.regalo__pendiente::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 1px;
+  background-image: linear-gradient(90deg, var(--dorado-hondo) 0 3px, transparent 3px 8px);
+  background-size: 8px 1px;
+  opacity: .75;
+}
+
+/* Valor confirmado */
+.regalo__valor {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2px .42em;
+  font-weight: 600;
+  font-size: clamp(25px, 6.6vw, 29px);
+  line-height: 1.25;
+  letter-spacing: .04em;
+  font-variant-numeric: tabular-nums lining-nums;
+  font-feature-settings: 'tnum' 1, 'lnum' 1;
+  color: var(--cafe);
+  user-select: all;
+  -webkit-user-select: all;
+}
+.regalo__valor--largo { font-size: clamp(21px, 5.6vw, 23px); gap: 2px .34em; letter-spacing: .02em; }
+.regalo__grupo { white-space: nowrap; }
+
+.regalo__detalles {
+  margin-top: 14px;
+  display: grid;
+  gap: 8px;
+  width: 100%;
+}
+.regalo__detalle dt {
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: .26em;
+  text-transform: uppercase;
+  color: var(--cafe);
+  opacity: .78;
+}
+.regalo__detalle dd {
+  font-size: 19px;
+  line-height: 1.3;
+  color: var(--cafe-texto);
+  overflow-wrap: anywhere;
+}
+
+.regalo__acciones {
+  margin-top: 22px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px 12px;
+  position: relative;
+  z-index: 1; /* por encima del filete interior de .papel */
+}
+.regalo__acciones[hidden] { display: none; }
+
+.regalos__nota {
+  margin-top: calc(clamp(40px, 7vh, 84px) + var(--regalos-caida, 0px));
+  font-style: italic;
+  font-size: clamp(18px, 2.2vw, 21px);
+  color: var(--petalo);
+  opacity: 1;
+}
+
+/* ═══════════ Botón de copiar y enlace «Ver mesa» ═══════════ */
+.copiar,
+.regalo__enlace {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-height: 46px;
+  min-width: 172px;
+  padding: 10px 20px;
+  font-family: var(--f-serif);
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--cafe);
+  border-radius: 2px;
+  box-shadow: inset 0 0 0 1px var(--dorado);
+  transition: transform .5s var(--suave), background-color .4s var(--suave), color .4s var(--suave);
+}
+.regalo__enlace { box-shadow: inset 0 0 0 1px rgba(92, 81, 56, .4); }
+.regalo__enlace svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
+
+@media (hover: hover) {
+  .copiar:hover,
+  .regalo__enlace:hover { transform: translateY(-2px); background-color: rgba(201, 154, 69, .12); }
+}
+.copiar:active,
+.regalo__enlace:active { transform: translateY(1px) scale(.99); }
+
+.copiar__icono {
+  position: relative;
+  width: 18px;
+  height: 18px;
+  flex: none;
+}
+.copiar__icono svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: opacity .35s var(--suave), transform .5s var(--entrada);
+}
+.copiar__palomita {
+  opacity: 0;
+  stroke: var(--dorado-hondo);
+  stroke-width: 1.9;
+}
+.copiar__palomita path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+
+/* Los dos textos ocupan la misma celda: el botón no cambia de ancho */
+.copiar__textos { display: inline-grid; }
+.copiar__textos > span {
+  grid-area: 1 / 1;
+  transition: opacity .35s var(--suave), transform .5s var(--entrada);
+}
+.copiar__hecho { opacity: 0; transform: translate3d(0, 6px, 0); }
+
+.copiar.es-copiado { background-color: rgba(201, 154, 69, .14); }
+.copiar.es-copiado .copiar__hojas { opacity: 0; transform: scale(.7); }
+.copiar.es-copiado .copiar__palomita { opacity: 1; }
+.copiar.es-copiado .copiar__palomita path {
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset .55s var(--suave) .08s;
+}
+.copiar.es-copiado .copiar__accion { opacity: 0; transform: translate3d(0, -6px, 0); }
+.copiar.es-copiado .copiar__hecho { opacity: 1; transform: none; }
+
+.copiar.es-fallido { box-shadow: inset 0 0 0 1px var(--vino); }
+
+/* Sobre la noche (fuera de una tarjeta de papel) el botón va en crema */
+.seccion--noche .copiar { color: var(--crema); }
+.seccion--noche .papel .copiar { color: var(--cafe); }
+
+@media (prefers-reduced-motion: reduce) {
+  .regalos__chispa { animation: none; opacity: .5; }
+}

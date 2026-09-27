@@ -1,0 +1,30 @@
+/* ═══════════════════════════════════════════════════════════════
+   Pétalos — dos lienzos fijos a pantalla completa.
+   «fondo» queda detrás del contenido (main está en z-index 1) y
+   «frente» por encima de todo, incluido el sobre (z-index 1000).
+   Ninguno recibe toques ni clics.
+   ═══════════════════════════════════════════════════════════════ */
+
+.petalos-lienzo {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  max-width: none;
+  /* Alto de la ventana «grande»: cuando la barra del navegador móvil se
+     esconde no hay que volver a medir ni queda una franja sin pétalos. */
+  height: 100vh;
+  height: 100lvh;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+  contain: strict;
+}
+
+.petalos-lienzo--fondo { z-index: 0; }
+.petalos-lienzo--frente { z-index: 1100; }
+
+@media print {
+  .petalos-lienzo { display: none; }
+}
