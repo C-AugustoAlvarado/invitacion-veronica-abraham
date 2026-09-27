@@ -227,7 +227,7 @@ ${definiciones()}
     <div class="sobre__dibujo" data-dibujo="bolsa"></div>
     <div class="sobre__pie">
       <p class="sobre__toca">Toca el sello para abrir</p>
-      <p class="sobre__fecha" aria-label="6 de marzo de 2027">06 · 03 · 2027</p>
+      <p class="sobre__lugar">Morelia, Michoacán</p>
     </div>
   </div>
   <div class="sobre__sombra" data-dibujo="sombra" aria-hidden="true"></div>

@@ -15,6 +15,9 @@ export function iniciarMotor(opciones = {}) {
   const consultaReducido = window.matchMedia('(prefers-reduced-motion: reduce)');
   const consultaMovil = window.matchMedia('(max-width: 760px)');
   let reducido = consultaReducido.matches;
+  // Animaciones CSS ligadas al scroll (Chrome 115+, Safari 26+)
+  const animaConScroll = !reducido && typeof CSS !== 'undefined'
+    && CSS.supports?.('animation-timeline: view()') === true;
 
   let alto = window.innerHeight;
   let ancho = window.innerWidth;
@@ -194,9 +197,14 @@ export function iniciarMotor(opciones = {}) {
       return dato;
     });
 
-    avances = [...document.querySelectorAll('[data-progreso]')].map((el) => {
+    // Donde el navegador liga animaciones CSS al scroll, los elementos marcados
+    // con data-progreso-css se mueven solos (los calcula el compositor): el
+    // motor no les escribe --p, salvo con movimiento reducido.
+    avances = [...document.querySelectorAll('[data-progreso]')].filter((el) => (
+      !(animaConScroll && el.hasAttribute('data-progreso-css'))
+    )).map((el) => {
       const caja = el.getBoundingClientRect();
-      return { el, arriba: caja.top + y, altura: caja.height, modo: el.dataset.progreso, ultimo: -1 };
+      return { el, arriba: caja.top + y, altura: caja.height, modo: el.dataset.progreso, ultimo: '' };
     });
 
     ambientes = [];
@@ -295,22 +303,33 @@ export function iniciarMotor(opciones = {}) {
     for (const a of avances) {
       const recorrido = a.modo === 'centro' ? alto / 2 + a.altura / 2 : alto + a.altura;
       const p = limitar((y + alto - a.arriba) / recorrido, 0, 1);
-      if (Math.abs(p - a.ultimo) > 0.0008 || forzar) {
-        a.el.style.setProperty('--p', p.toFixed(4));
-        a.ultimo = p;
+      // Sin umbral: al desplazar despacio cada cuadro cuenta (un umbral hacía
+      // que la escena avanzara a saltos).
+      const texto = p.toFixed(4);
+      if (texto !== a.ultimo || forzar) {
+        a.el.style.setProperty('--p', texto);
+        a.ultimo = texto;
       }
     }
 
     calcularAmbiente(y);
   }
 
-  function bucle() {
+  let ultimoCuadro = 0;
+  function bucle(ahora) {
     cuadro = 0;
     objetivo = window.scrollY;
     const resto = objetivo - ySuave;
-    ySuave = reducido || Math.abs(resto) < 0.15 ? objetivo : ySuave + resto * 0.14;
+    // El suavizado depende del tiempo, no del número de cuadros: se siente
+    // igual a 30 (bajo consumo), 60 o 120 cuadros por segundo.
+    const tiempo = typeof ahora === 'number' ? ahora : performance.now();
+    const dt = ultimoCuadro ? limitar(tiempo - ultimoCuadro, 4, 64) : 16.667;
+    ultimoCuadro = tiempo;
+    const avance = 1 - Math.pow(1 - 0.14, dt / 16.667);
+    ySuave = reducido || Math.abs(resto) < 0.15 ? objetivo : ySuave + resto * avance;
     pintar(false);
     if (ySuave !== objetivo) cuadro = requestAnimationFrame(bucle);
+    else ultimoCuadro = 0;   // en reposo: el siguiente arranque no hereda un dt viejo
   }
   const pedirCuadro = () => { if (!cuadro) cuadro = requestAnimationFrame(bucle); };
 

@@ -78,10 +78,9 @@ main { overflow-x: clip; }
   }
   .portada__titulo { font-size: clamp(52px, min(11.5vw, 11vh), 104px); }
   .portada__nombres { font-size: clamp(30px, min(6.5vw, 6vh), 58px); }
-  .portada__fecha { font-size: clamp(28px, min(5.6vw, 5.6vh), 52px); }
   .portada__ilustracion {
-    width: min(92vw, 1040px, max(440px, calc((100vh - 600px) * 2.128)));
-    width: min(92vw, 1040px, max(440px, calc((100svh - 600px) * 2.128)));
+    width: min(92vw, 1040px, max(440px, calc((100vh - 556px) * 2.128)));
+    width: min(92vw, 1040px, max(440px, calc((100svh - 556px) * 2.128)));
     margin: clamp(8px, 2.4vh, 42px) 0 clamp(6px, 2vh, 36px);
   }
   .portada__accion { margin-top: clamp(14px, 2.8vh, 40px); }
@@ -106,7 +105,8 @@ main { overflow-x: clip; }
   translate: 0 -52%;
   opacity: .42;
 }
-.portada__lugar { margin-top: clamp(10px, 2vh, 20px); }
+.portada__ornamento { margin: clamp(2px, 1vh, 12px) auto clamp(8px, 1.6vh, 16px); }
+.portada__lugar { margin-top: 0; }
 .portada__accion { margin-top: clamp(22px, 4vh, 40px); }
 
 .portada__esquina {
@@ -445,6 +445,52 @@ html:not(.js) .portada__bajar,
   background: linear-gradient(180deg, var(--noche) 0%, var(--noche) 30%, rgba(43, 40, 32, 0) 100%);
   pointer-events: none;
 }
+
+/* ── Movimiento ligado al scroll ──
+   Donde el navegador lo permite (Chrome 115+, Safari 26+), el sol y las
+   siluetas se mueven con animaciones CSS atadas al scroll. Las calcula el
+   compositor, no JavaScript: van al ritmo exacto del dedo aunque el teléfono
+   esté ocupado o en modo de bajo consumo. En los demás navegadores queda el
+   respaldo de arriba, con --p escrito por el motor.
+   «contain» es justo el tramo en que la escena está fija; «cover», todo el
+   paso de la sección por la pantalla. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .js .atardecer { view-timeline: --atardecer block; }
+
+    .js .atardecer__sol,
+    .js .atardecer__capa,
+    .js .atardecer__velo,
+    .js .atardecer__frase {
+      animation-duration: 1ms;   /* lo exige algún navegador; el avance lo marca el scroll */
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: --atardecer;
+      animation-range: contain 0% contain 100%;
+    }
+    .js .atardecer__sol { animation-name: atardecer-sol; }
+    .js .atardecer__capa--cerros { --sube: 5vh; animation-name: atardecer-sube; }
+    .js .atardecer__capa--ciudad { --sube: 12vh; animation-name: atardecer-sube; }
+    .js .atardecer__capa--acueducto { --sube: 24vh; animation-name: atardecer-sube; }
+    .js .atardecer__velo { animation-name: atardecer-velo; }
+    .js .atardecer__frase {
+      animation-name: atardecer-frase-entra, atardecer-sube;
+      --sube: 3vh;
+      animation-timeline: --atardecer, --atardecer;
+      animation-range: cover 15.5% cover 40.5%, contain 0% contain 100%;
+    }
+  }
+}
+@keyframes atardecer-sol {
+  from { transform: translate3d(0, 0, 0) scale(1); opacity: 1; }
+  to { transform: translate3d(0, calc(72vh - var(--sol-ini)), 0) scale(1.2); opacity: .5; }
+}
+@keyframes atardecer-sube {
+  from { transform: translate3d(0, var(--sube), 0); }
+  to { transform: translate3d(0, 0, 0); }
+}
+@keyframes atardecer-velo { from { opacity: 0; } to { opacity: 1; } }
+@keyframes atardecer-frase-entra { from { opacity: 0; } to { opacity: 1; } }
 
 @media (prefers-reduced-motion: reduce) {
   .atardecer { height: auto; --q: 1; }

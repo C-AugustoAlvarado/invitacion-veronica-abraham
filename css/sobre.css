@@ -169,7 +169,7 @@
   text-transform: uppercase;
   color: var(--cafe);
 }
-.sobre__fecha {
+.sobre__lugar {
   margin-top: clamp(8px, 1.6vh, 16px);
   font-family: var(--f-serif);
   font-style: italic;
@@ -329,7 +329,7 @@
   #sobre { --sobre-punta: 52%; }
   .sobre__nombres { top: 18px; }
   .sobre__filete { display: none; }
-  .sobre__fecha { display: none; }
+  .sobre__lugar { display: none; }
 }
 
 /* ── Movimiento reducido: sin respiración ni halo en movimiento ── */
