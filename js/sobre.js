@@ -446,6 +446,13 @@ ${definiciones()}
     fundido.finished.then(terminar, () => {});
   }
 
+  /* ── Comprobación: si css/sobre.css no llegó, el sello no se puede tocar ── */
+  if (getComputedStyle(raiz).position !== 'fixed' || sello.offsetWidth < 40 || sello.offsetHeight < 40) {
+    raiz.remove();
+    document.body.classList.remove('bloqueado');
+    return null;
+  }
+
   /* ── Montaje ── */
   document.body.classList.add('bloqueado');
   apartarPagina();

@@ -35,6 +35,11 @@
     radial-gradient(38% 44% at 60% 50%, rgba(233, 195, 154, .26) 0%, rgba(233, 195, 154, 0) 100%),
     radial-gradient(29% 38% at 30% 60%, rgba(201, 154, 69, .14) 0%, rgba(201, 154, 69, 0) 100%);
 }
+/* Respaldo sin aspect-ratio (Safari anterior a 15, Chrome anterior a 88) */
+@supports not (aspect-ratio: 1) {
+  .fecha__lavado--a { height: calc(min(120vw, 760px) / 1.5); }
+  .fecha__lavado--b { height: calc(min(90vw, 560px) / 1.2); }
+}
 .fecha__rama {
   width: clamp(120px, 30vw, 230px);
   z-index: 0;
@@ -67,6 +72,11 @@
   letter-spacing: .03em;
   font-variant-numeric: lining-nums;
 }
+/* Más angosto que cualquier teléfono (zoom de página): la fecha se achica
+   para no salirse de la tarjeta. A 320 px o más queda igual. */
+@media (max-width: 319px) {
+  .fecha__numeros { font-size: clamp(26px, 11.25vw, 36px); }
+}
 .fecha__filete {
   display: block;
   width: 56px;
@@ -92,7 +102,7 @@
 /* ── Lámina dorada (la crea js/raspar.js) ── */
 .raspar__lamina {
   position: absolute;
-  inset: 15px;
+  top: 15px; right: 15px; bottom: 15px; left: 15px;
   width: calc(100% - 30px);
   height: calc(100% - 30px);
   max-width: none;
@@ -114,7 +124,7 @@
 /* Sombra fina que asienta la lámina sobre el papel */
 .raspar__sombra {
   position: absolute;
-  inset: 15px;
+  top: 15px; right: 15px; bottom: 15px; left: 15px;
   border-radius: 2px;
   z-index: 1;
   pointer-events: none;
@@ -227,7 +237,9 @@
   from { opacity: 0; transform: translate3d(0, 22px, 0); }
   to   { opacity: 1; transform: none; }
 }
+/* Sin motor la fecha ya está a la vista: sobra el título que invita a raspar */
 html:not(.js) .fecha__lema,
+html:not(.js) .fecha__titulo,
 html:not(.js) .cuenta { display: none; }
 
 /* ── Cuenta regresiva ── */
@@ -258,6 +270,11 @@ html:not(.js) .cuenta { display: none; }
   bottom: 14%;
   width: 1px;
   background: linear-gradient(180deg, rgba(201, 154, 69, 0), rgba(201, 154, 69, .85) 30%, rgba(201, 154, 69, .85) 70%, rgba(201, 154, 69, 0));
+}
+/* Pantallas muy angostas o con zoom de página: la cuenta pasa a 2 × 2 */
+@media (max-width: 300px) {
+  .cuenta__rejilla { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 14px; }
+  .cuenta__unidad:nth-child(odd)::before { display: none; }
 }
 .cuenta:not(.cuenta--visible) .cuenta__unidad,
 .cuenta:not(.cuenta--visible) .cuenta__mensaje {
@@ -321,9 +338,16 @@ html:not(.js) .cuenta { display: none; }
 
 /* ── Calendario ── */
 .fecha__calendario .boton {
-  white-space: nowrap;
+  /* Si no cabe (zoom o letra agrandada) pasa a dos renglones en vez de
+     recortarse. El relleno lateral es el de siempre (6vw, tope de 38 px) desde
+     360 px de ancho; más angosto se encoge para que el texto siga cabiendo en
+     un renglón, como hasta ahora. */
+  white-space: normal;
+  text-align: center;
   max-width: 100%;
-  padding-inline: clamp(20px, 6vw, 38px);
+  padding-left: clamp(4px, calc(45vw - 140px), min(6vw, 38px));    /* respaldo donde no existe padding-inline */
+  padding-right: clamp(4px, calc(45vw - 140px), min(6vw, 38px));
+  padding-inline: clamp(4px, calc(45vw - 140px), min(6vw, 38px));
   letter-spacing: clamp(.12em, 1.1vw, .22em);
 }
 .fecha__opciones {
@@ -355,7 +379,7 @@ html:not(.js) .cuenta { display: none; }
 @media (min-width: 761px) {
   .fecha__rama--izq { left: max(2vw, calc(50% - 520px)); top: 34%; }
   .fecha__rama--der { right: max(2vw, calc(50% - 540px)); top: 8%; }
-  .raspar__lamina, .raspar__sombra { inset: 17px; }
+  .raspar__lamina, .raspar__sombra { top: 17px; right: 17px; bottom: 17px; left: 17px; }
   .raspar__lamina { width: calc(100% - 34px); height: calc(100% - 34px); }
 }
 

@@ -219,7 +219,7 @@
 .prog-icono::before {
   content: '';
   position: absolute;
-  inset: -22%;
+  top: -22%; right: -22%; bottom: -22%; left: -22%;
   border-radius: 46% 54% 52% 48% / 55% 45% 55% 45%;
   background: radial-gradient(closest-side, rgba(226, 194, 136, .2) 0%, rgba(201, 141, 98, .1) 50%, rgba(201, 154, 69, 0) 100%);
   opacity: calc(.3 + var(--luz) * .7);
@@ -321,6 +321,10 @@
   transform: translate(-50%, -50%);
   border-radius: 50%;
   background: radial-gradient(circle, rgba(240, 220, 168, .2) 0%, rgba(226, 194, 136, .08) 38%, rgba(226, 194, 136, 0) 68%);
+}
+/* Respaldo sin aspect-ratio: el alto sale del relleno (78 % del ancho del contenedor) */
+@supports not (aspect-ratio: 1) {
+  .prog-remate__halo { height: 0; padding-top: 78%; }
 }
 .prog-remate__frase {
   margin-top: clamp(10px, 2vh, 20px);

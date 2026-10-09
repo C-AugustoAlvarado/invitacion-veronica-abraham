@@ -1,0 +1,82 @@
+/* ═══════════════════════════════════════════════════════════════
+   IMPRESIÓN — css/impresion.css (se enlaza al final, con media="print")
+   Imprimir o «Guardar como PDF»: todo el contenido a la vista, tinta
+   café sobre papel blanco, sin sobre, sin capas de ambiente y sin
+   nada que espere a un revelado. En pantalla no cambia nada.
+   Va en hoja propia y al final para ganarle a las demás por orden.
+   ═══════════════════════════════════════════════════════════════ */
+
+@media print {
+  html, body { background: #fff !important; }
+  body, body.bloqueado { overflow: visible !important; height: auto !important; }
+
+  /* Lo que solo tiene sentido en pantalla */
+  #sobre, #ambiente, .petalos-lienzo, .decorado,
+  .raspar__lamina, .raspar__sombra, .raspar__gesto, .raspar__destello,
+  .fecha__descubrir, .fecha__lema, .fecha__titulo,
+  .portada__bajar, .prog-chispa, .prog-cielo,
+  .atardecer__sol, .atardecer__capa, .atardecer__velo, .atardecer__suelo,
+  .galeria, .rsvp__halo, .rsvp__formulario, [data-calendario] { display: none !important; }
+
+  /* Nada espera a un revelado ni a que se raspe la fecha */
+  [data-revelar], [data-letras] .palabra,
+  .cuenta .cuenta__unidad, .cuenta .cuenta__mensaje {
+    opacity: 1 !important;
+    -webkit-transform: none !important;
+    transform: none !important;
+    -webkit-filter: none !important;
+    filter: none !important;
+    -webkit-clip-path: none !important;
+    clip-path: none !important;
+  }
+  [data-parallax], [data-raspar-contenido] {
+    -webkit-transform: none !important;
+    transform: none !important;
+  }
+  .fecha .fecha__despues { display: block !important; }
+  .fecha__calendario { animation: none !important; opacity: 1 !important; }
+  .rsvp .rsvp__directo { display: block !important; }
+
+  /* Secciones compactas */
+  .seccion, .portada { min-height: 0 !important; padding-top: 28px !important; padding-bottom: 28px !important; }
+  .atardecer { height: auto !important; padding: 28px 0 !important; background: none !important; }
+  .atardecer__escena { position: static !important; height: auto !important; }
+  .atardecer__frase {
+    position: static !important;
+    opacity: 1 !important;
+    -webkit-transform: none !important;
+    transform: none !important;
+    animation: none !important;
+  }
+
+  /* Los fondos no se imprimen: la tinta clara de la noche pasa a café */
+  .seccion--noche, .seccion--noche *,
+  .atardecer, .atardecer * {
+    color: #4E4632 !important;
+    text-shadow: none !important;
+  }
+  .seccion--noche { background: none !important; }
+  .boton { box-shadow: none !important; border: 1px solid #5C5138; }
+
+  .portada__castillo img {
+    -webkit-mask-image: none !important;
+    mask-image: none !important;
+    mix-blend-mode: normal !important;
+  }
+
+  /* Una sola columna, centrada */
+  .historia__rejilla, .ceremonia__rejilla, .recepcion__rejilla, .recepcion__datos, .regalos__lista {
+    grid-template-columns: minmax(0, 1fr) !important;
+    max-width: 460px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+  .historia__lado--izq, .historia__lado--der { justify-self: center !important; text-align: center !important; }
+  .ceremonia__arte, .recepcion__arte { width: 100% !important; margin: 0 !important; }
+  .regalos__celda--centro { margin-top: 0 !important; margin-bottom: 0 !important; }
+
+  .papel, .dato, .prog-hito, .regalo, .planner, .cierre__medallon, .cierre__despedida {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+}

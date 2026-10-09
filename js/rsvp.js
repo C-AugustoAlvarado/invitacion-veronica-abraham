@@ -356,6 +356,9 @@ export function iniciarRsvp(opciones = {}) {
   pintarPersonas(0);
   alElegirAsistencia();
 
+  // El formulario ya responde: se muestra en lugar del enlace directo (css/rsvp.css)
+  (seccion || formulario.closest('section'))?.classList.add('es-funcional');
+
   formulario._rsvp = { armarMensaje, validar };
   return formulario._rsvp;
 }

@@ -23,8 +23,8 @@
 .rsvp__limite strong { font-weight: 600; color: var(--petalo); white-space: nowrap; }
 
 /* ── Chispas ── */
-.rsvp__chispas { inset: 0; }
-.rsvp__capa { position: absolute; inset: 0; }
+.rsvp__chispas { top: 0; right: 0; bottom: 0; left: 0; }
+.rsvp__capa { position: absolute; top: 0; right: 0; bottom: 0; left: 0; }
 .rsvp__chispa {
   position: absolute;
   left: var(--x);
@@ -52,7 +52,7 @@
 /* Resplandor cálido detrás del papel, como una vela tras la ventana */
 .rsvp__halo {
   position: absolute;
-  inset: -16% -30% -8%;
+  top: -16%; right: -30%; bottom: -8%; left: -30%;
   background: radial-gradient(50% 50% at 50% 42%, rgba(240, 220, 168, .2) 0%, rgba(201, 154, 69, .1) 42%, rgba(201, 154, 69, 0) 72%);
   pointer-events: none;
 }
@@ -73,7 +73,7 @@
 .rsvp__tarjeta::before {
   content: '';
   position: absolute;
-  inset: 14px;
+  top: 14px; right: 14px; bottom: 14px; left: 14px;
   border: 1px solid rgba(201, 154, 69, .2);
   border-radius: calc(var(--rsvp-radio) - 14px) calc(var(--rsvp-radio) - 14px) 1px 1px;
   pointer-events: none;
@@ -84,8 +84,9 @@
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  gap: clamp(6px, 2vw, 12px);
 }
+/* Separación con márgenes: «gap» en flex no existe en navegadores de 2020 o antes */
+.rsvp__remate > * + * { margin-left: clamp(6px, 2vw, 12px); }
 .rsvp__rama {
   width: clamp(30px, 9vw, 40px);
   height: auto;
@@ -133,7 +134,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
   margin: 14px 0 0;
   color: var(--dorado);
 }
@@ -145,7 +145,7 @@
   background: currentColor;
   opacity: .7;
 }
-.rsvp__filete i { width: 5px; height: 5px; background: currentColor; transform: rotate(45deg); }
+.rsvp__filete i { width: 5px; height: 5px; margin: 0 10px; background: currentColor; transform: rotate(45deg); }
 
 /* ── Formulario ── */
 .rsvp__formulario {
@@ -153,11 +153,18 @@
   z-index: 1; /* por encima de los filetes del papel */
   margin-top: clamp(20px, 4vw, 30px);
   display: grid;
+  /* La columna no crece con su contenido: con zoom el formulario sigue cabiendo */
+  grid-template-columns: minmax(0, 1fr);
   gap: clamp(26px, 5vw, 32px);
   text-align: left;
   transition: opacity .4s var(--suave), transform .5s var(--suave);
 }
 .rsvp__formulario[hidden] { display: none; }
+/* El formulario solo aparece cuando js/rsvp.js está activo; si no, el enlace directo */
+.rsvp__directo { position: relative; z-index: 1; margin-top: 24px; text-align: center; }
+.rsvp__directo p + p { margin-top: 18px; }
+.rsvp:not(.es-funcional) .rsvp__formulario { display: none; }
+.rsvp.es-funcional .rsvp__directo { display: none; }
 .rsvp__formulario.es-saliendo { opacity: 0; transform: translate3d(0, -10px, 0); pointer-events: none; }
 
 /* Campo de línea fina con etiqueta flotante */
@@ -272,7 +279,7 @@ textarea.rsvp-campo__entrada {
 .rsvp-opcion { position: relative; display: block; cursor: pointer; }
 .rsvp-opcion__radio {
   position: absolute;
-  inset: 0;
+  top: 0; right: 0; bottom: 0; left: 0;
   width: 100%;
   height: 100%;
   margin: 0;
@@ -284,7 +291,6 @@ textarea.rsvp-campo__entrada {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
   min-height: 60px;
   padding: 12px 16px;
   border-radius: 2px;
@@ -302,7 +308,7 @@ textarea.rsvp-campo__entrada {
 .rsvp-opcion__cara::before {
   content: '';
   position: absolute;
-  inset: 0;
+  top: 0; right: 0; bottom: 0; left: 0;
   z-index: -1;
   border-radius: inherit;
   background: linear-gradient(160deg, #6A5E42 0%, var(--cafe) 55%, #4A412C 100%);
@@ -322,6 +328,7 @@ textarea.rsvp-campo__entrada {
   stroke-linecap: round;
   stroke-linejoin: round;
   margin-left: -30px;       /* no ocupa lugar hasta que se elige */
+  margin-right: 10px;
   opacity: 0;
   transition: opacity .3s var(--suave);
 }
@@ -352,9 +359,9 @@ textarea.rsvp-campo__entrada {
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  gap: 14px;
   animation: rsvp-aparecer .7s var(--entrada) both;
 }
+.rsvp-personas > * + * { margin-top: 14px; }
 .rsvp-personas__texto {
   display: flex;
   flex-wrap: wrap;
@@ -362,9 +369,15 @@ textarea.rsvp-campo__entrada {
   justify-content: space-between;
   gap: 2px 12px;
 }
+/* Respaldo sin gap en flexbox (los navegadores modernos ignoran el bloque) */
+@supports not (inset: 0) {
+  .rsvp-personas__texto { gap: 0; }
+  .rsvp-personas__texto > * + * { margin-top: 2px; }
+}
 .rsvp-contador { justify-content: space-between; }
 @media (min-width: 560px) {
-  .rsvp-personas { flex-direction: row; align-items: center; justify-content: space-between; gap: 16px; }
+  .rsvp-personas { flex-direction: row; align-items: center; justify-content: space-between; }
+  .rsvp-personas > * + * { margin-top: 0; margin-left: 16px; }
   .rsvp-personas__texto { display: block; }
 }
 .rsvp-personas[hidden] { display: none; }
@@ -372,7 +385,6 @@ textarea.rsvp-campo__entrada {
 .rsvp-contador {
   display: flex;
   align-items: center;
-  gap: 4px;
   flex: none;
   padding: 6px;
   border-radius: 999px;
@@ -404,6 +416,7 @@ textarea.rsvp-campo__entrada {
 .rsvp-contador__valor {
   display: block;
   min-width: 52px;
+  margin: 0 4px;
   text-align: center;
   font-size: 34px;
   font-weight: 500;
@@ -418,7 +431,8 @@ textarea.rsvp-campo__entrada {
 
 /* ── Envío ── */
 .rsvp__envio { text-align: center; margin-top: 4px; }
-.rsvp__enviar { width: 100%; padding-left: 14px; padding-right: 14px; letter-spacing: .18em; white-space: nowrap; }
+/* Con zoom o letra agrandada el texto pasa a dos renglones en vez de cortarse */
+.rsvp__enviar { width: 100%; padding-left: 14px; padding-right: 14px; letter-spacing: .18em; white-space: normal; text-align: center; }
 .rsvp-aviso {
   font-size: 19px;
   font-style: italic;
@@ -489,9 +503,9 @@ textarea.rsvp-campo__entrada {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
   width: 100%;
 }
+.rsvp__gracias-acciones > .boton:not([hidden]) + * { margin-top: 10px; }
 .rsvp__gracias-acciones .boton { width: 100%; }
 .rsvp__gracias-acciones .boton[hidden] { display: none; }
 .rsvp__editar {

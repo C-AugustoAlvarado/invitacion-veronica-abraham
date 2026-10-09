@@ -5,6 +5,8 @@
 // De noche los pétalos se funden hacia chispas doradas y estrellas.
 // No importa otros módulos: escucha 'petalos:rafaga' y 'ambiente:cambio'
 // en document (DISENO.md §4). No emite eventos.
+// La calidad se ajusta sola: si el teléfono no sostiene el ritmo, bajan los
+// píxeles y la cantidad de pétalos (ver «Calidad»). En uno rápido no cambia nada.
 
 const limitar = (v, a, b) => Math.min(b, Math.max(a, v));
 const mezclar = (a, b, t) => a + (b - a) * t;
@@ -53,6 +55,23 @@ const DESENFOQUES = [
   { util: 0.64, radio: 0.04 }
 ];
 
+// Niveles de calidad: 0 = completa (la de siempre), 1 = ligera, 2 = mínima.
+// Lo caro no es calcular los pétalos sino los píxeles de dos lienzos a
+// pantalla completa: por eso lo primero que baja es la resolución.
+const CALIDADES = [
+  { dpr: 2, dprFrente: 1.5, densidad: 1, frente: true },
+  { dpr: 1.5, dprFrente: 1, densidad: 0.75, frente: true },
+  { dpr: 1, dprFrente: 1, densidad: 0.5, frente: false }
+];
+// Un cuadro «lento» dura más de 42 ms (menos de 24 por segundo): un iPhone en
+// bajo consumo (33 ms) no cuenta. Para volver a subir se pide un ritmo
+// claramente mejor (36 ms) y sostenido mucho más tiempo: así no oscila.
+const CUADRO_LENTO = 0.042;
+const CUADRO_AGIL = 0.036;
+const CUADRO_PAUSA = 0.25;      // más que esto no es lentitud: la pestaña estuvo detenida
+const LENTOS_PARA_BAJAR = 90;
+const AGILES_PARA_SUBIR = 1200;
+
 let instancia = null;
 
 export function iniciarPetalos(opciones = {}) {
@@ -70,6 +89,20 @@ export function iniciarPetalos(opciones = {}) {
   const consultaReducido = window.matchMedia('(prefers-reduced-motion: reduce)');
   const consultaPuntero = window.matchMedia('(hover: hover) and (pointer: fine)');
   let reducido = consultaReducido.matches;
+
+  /* ── Calidad ── */
+  // Pista inicial, cuando el navegador la da. La memoria solo la informan
+  // Chrome y Samsung; los núcleos no bastan para bajar la calidad (Safari los
+  // redondea), solo hacen que la medición decida más pronto.
+  const memoria = +navigator.deviceMemory || 0;
+  const nucleos = +navigator.hardwareConcurrency || 0;
+  let calidad = memoria > 0 && memoria <= 1 ? 2 : (memoria > 0 && memoria <= 2 ? 1 : 0);
+  const sospechoso = calidad > 0 || (nucleos > 0 && nucleos <= 4);
+  let lentos = 0;
+  let agiles = 0;
+  let subidas = 0;
+  let calidadFija = false;      // ya subió y volvió a bajar: se queda donde está
+  if (calidad === 2) raiz.classList.add('modesto');
 
   /* ── Lienzos ── */
   function crearLienzo(capa) {
@@ -379,14 +412,15 @@ export function iniciarPetalos(opciones = {}) {
     // De ~18 en un celular chico a ~60 en un escritorio grande
     const area = ancho * alto;
     const base = mezclar(18, 60, limitar((area - 260000) / (2000000 - 260000), 0, 1));
-    const total = Math.round(base * ajustes.densidad);
-    const nFrente = Math.max(3, Math.round(total * 0.11));
+    const nivel = CALIDADES[calidad];
+    const total = Math.round(base * ajustes.densidad * nivel.densidad);
+    const nFrente = nivel.frente ? Math.max(3, Math.round(total * 0.11)) : 0;
     const nFondo = Math.max(0, total - nFrente);
 
     ajustarLista(fondo, nFondo, () => crearPetalo('fondo', true));
     ajustarLista(frente, nFrente, () => crearPetalo('frente', true));
     ajustarLista(chispas, Math.round(total * 1.15), () => crearChispa(false));
-    ajustarLista(destellos, Math.max(2, Math.round(total * 0.07)), () => crearChispa(true));
+    ajustarLista(destellos, nivel.frente ? Math.max(2, Math.round(total * 0.07)) : 0, () => crearChispa(true));
     ajustarLista(estrellas, Math.round(mezclar(12, 30, limitar(ancho / 1600, 0, 1))), crearEstrella);
 
     for (const p of fondo) if (p.x > ancho + p.tamano || p.y > alto + p.tamano) colocar(p, true);
@@ -399,13 +433,14 @@ export function iniciarPetalos(opciones = {}) {
   function medir(forzar) {
     const w = lienzoFondo.clientWidth || window.innerWidth;
     const h = lienzoFondo.clientHeight || window.innerHeight;
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const nivel = CALIDADES[calidad];
+    const dpr = Math.min(window.devicePixelRatio || 1, nivel.dpr);
     if (!forzar && w === ancho && h === alto && dpr === dprFondo) return false;
     ancho = w;
     alto = h;
     dprFondo = dpr;
     // El frente es casi todo desenfoque: no necesita toda la resolución
-    dprFrente = Math.min(dpr, 1.5);
+    dprFrente = Math.min(dpr, nivel.dprFrente);
     escala = limitar(Math.sqrt(ancho / 900), 0.82, 1.3);
 
     lienzoFondo.width = Math.round(ancho * dprFondo);
@@ -416,6 +451,38 @@ export function iniciarPetalos(opciones = {}) {
     if (!sprites || dprSprites !== dprFondo) crearSprites();
     poblar();
     return true;
+  }
+
+  /* ── Calidad: cambio de nivel y vigilancia del ritmo ── */
+  function fijarCalidad(nivel) {
+    const nuevo = limitar(Math.round(nivel) || 0, 0, CALIDADES.length - 1);
+    lentos = 0;
+    agiles = 0;
+    if (nuevo === calidad) return;
+    calidad = nuevo;
+    // La hoja de estilos aligera el grano del fondo con esta clase
+    raiz.classList.toggle('modesto', calidad === 2);
+    medir(true);              // nueva resolución, sprites y cantidad de pétalos
+    if (reducido) pedirEstatico();
+  }
+
+  // Recibe la duración real de cada cuadro, en segundos
+  function vigilarRitmo(real) {
+    if (!(real > 0) || real > CUADRO_PAUSA) return;
+    if (real > CUADRO_LENTO) {
+      lentos++;
+      agiles = Math.max(0, agiles - 30);
+    } else {
+      lentos = Math.max(0, lentos - 1);
+      if (real < CUADRO_AGIL && calidad < CALIDADES.length - 1) agiles++;   // el nivel mínimo es definitivo
+    }
+    if (calidad < CALIDADES.length - 1 && lentos > (sospechoso ? LENTOS_PARA_BAJAR / 2 : LENTOS_PARA_BAJAR)) {
+      if (subidas) calidadFija = true;
+      fijarCalidad(calidad + 1);
+    } else if (calidad > 0 && !calidadFija && agiles > AGILES_PARA_SUBIR) {
+      subidas++;
+      fijarCalidad(calidad - 1);
+    }
   }
 
   /* ── Ambiente ── */
@@ -565,6 +632,7 @@ export function iniciarPetalos(opciones = {}) {
 
   let frenteSucio = true;
   let fondoSucio = true;
+  let frenteVisible = true;
 
   function cuadroAnimado(t, dt) {
     // Scroll: desplazamiento exacto de este cuadro + velocidad suavizada
@@ -612,7 +680,16 @@ export function iniciarPetalos(opciones = {}) {
     }
 
     /* Frente */
-    limpiar(ctxFrente, lienzoFrente);
+    // Sin nada que pintar delante, el lienzo de frente no se toca y se esconde
+    // (una capa menos que componer). Las ráfagas lo vuelven a encender
+    // mientras duran: por eso no se usa display: none.
+    const hayFrente = frente.length > 0 || destellos.length > 0 || rafagas.length > 0;
+    if (hayFrente !== frenteVisible) {
+      frenteVisible = hayFrente;
+      lienzoFrente.style.visibility = hayFrente ? '' : 'hidden';
+    }
+    if (hayFrente || frenteSucio) limpiar(ctxFrente, lienzoFrente);
+    frenteSucio = hayFrente;
     for (const p of frente) {
       moverPetalo(p, dt, dy, agitacion);
       if (conPuntero) apartar(p, 220, 520, dt);
@@ -640,7 +717,7 @@ export function iniciarPetalos(opciones = {}) {
       pintarPetalo(ctxFrente, dprFrente, p, p.alfa * entra * sale, calido * 0.6);
       p.tamano = tamano;
     }
-    fondoSucio = frenteSucio = true;
+    fondoSucio = true;
   }
 
   // Movimiento reducido: unos pocos pétalos quietos y tenues (o chispas, de noche)
@@ -652,6 +729,7 @@ export function iniciarPetalos(opciones = {}) {
   function dibujarEstatico() {
     limpiar(ctxFondo, lienzoFondo);
     limpiar(ctxFrente, lienzoFrente);
+    frenteSucio = false;
     const noche = pesos.noche;
     const verPetalos = 1 - noche;
     const calido = limitar(pesos.ocaso + noche * 0.7, 0, 1) * 0.9;
@@ -675,12 +753,21 @@ export function iniciarPetalos(opciones = {}) {
   let pausado = false;
   let destruido = false;
   let relojManual = 0;
+  let pintado = 0;        // momento del último cuadro pintado
 
   function bucle(ahora) {
     cuadro = 0;
     if (destruido || pausado || reducido || document.hidden) return;
-    const dt = anterior ? Math.min((ahora - anterior) / 1000, 0.05) : 0.016;
+    if (anterior) vigilarRitmo((ahora - anterior) / 1000);
     anterior = ahora;
+    // En calidad mínima los pétalos se pintan a lo sumo unas 30 veces por
+    // segundo: el resto de los cuadros queda libre para el scroll.
+    if (calidad === 2 && pintado && ahora - pintado < 30) {
+      cuadro = requestAnimationFrame(bucle);
+      return;
+    }
+    const dt = pintado ? Math.min((ahora - pintado) / 1000, 0.05) : 0.016;
+    pintado = ahora;
     cuadroAnimado(ahora / 1000, dt);
     cuadro = requestAnimationFrame(bucle);
   }
@@ -690,6 +777,7 @@ export function iniciarPetalos(opciones = {}) {
     if (reducido) { pedirEstatico(); return; }
     if (pausado || document.hidden) return;
     anterior = 0;
+    pintado = 0;
     yScroll = window.scrollY;
     cuadro = requestAnimationFrame(bucle);
   }
@@ -812,6 +900,7 @@ export function iniciarPetalos(opciones = {}) {
       if (consultaReducido.removeEventListener) consultaReducido.removeEventListener('change', alCambiarMovimiento);
       lienzoFondo.remove();
       lienzoFrente.remove();
+      raiz.classList.remove('modesto');
       fondo = []; frente = []; rafagas = []; chispas = []; destellos = []; estrellas = [];
       sprites = null;
       instancia = null;
@@ -828,9 +917,26 @@ export function iniciarPetalos(opciones = {}) {
         cuadroAnimado(relojManual, paso);
       }
     },
+    // Fuerza un nivel de calidad (0, 1 o 2) y lo deja fijo
+    calidad(nivel) {
+      if (destruido) return calidad;
+      calidadFija = true;
+      fijarCalidad(nivel);
+      return calidad;
+    },
+    // Simula cuadros de cierta duración (en segundos) para probar la vigilancia
+    ritmo(real, cuadros = 1) {
+      if (destruido) return calidad;
+      for (let i = 0; i < cuadros; i++) vigilarRitmo(real);
+      return calidad;
+    },
     estado() {
       return {
-        ancho, alto, dprFondo, dprFrente, reducido, pausado,
+        ancho, alto, dprFondo, dprFrente, reducido, pausado, calidad,
+        lienzoFondo: `${lienzoFondo.width}x${lienzoFondo.height}`,
+        lienzoFrente: `${lienzoFrente.width}x${lienzoFrente.height}`,
+        frenteVisible,
+        destellos: destellos.length,
         animando: !!cuadro,
         fondo: fondo.length, frente: frente.length, rafagas: rafagas.length,
         chispas: chispas.length, estrellas: estrellas.length,
@@ -843,5 +949,8 @@ export function iniciarPetalos(opciones = {}) {
 }
 
 function apiVacia() {
-  return { rafaga() { return 0; }, pausar() {}, reanudar() {}, destruir() {}, avanzar() {}, estado() { return null; } };
+  return {
+    rafaga() { return 0; }, pausar() {}, reanudar() {}, destruir() {}, avanzar() {},
+    calidad() { return 0; }, ritmo() { return 0; }, estado() { return null; }
+  };
 }

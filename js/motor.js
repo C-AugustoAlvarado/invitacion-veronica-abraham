@@ -8,14 +8,19 @@ const suavizar = (t) => t * t * (3 - 2 * t);
 // Orden de las capas de #ambiente, de abajo hacia arriba.
 const ORDEN = ['dia', 'dorado', 'ocaso', 'noche'];
 
+// Color de la barra del navegador para cada ambiente (meta theme-color)
+const FONDOS = { dia: '#F8F4EB', dorado: '#EBDDC2', ocaso: '#7A4A3A', noche: '#2B2820' };
+
 export function iniciarMotor(opciones = {}) {
   const raiz = document.documentElement;
   // Las variables --amb-* se escriben aquí y no en :root: así solo se recalculan sus capas
   const fondoAmbiente = document.getElementById('ambiente') || raiz;
+  const metaTema = document.querySelector('meta[name="theme-color"]');
   const consultaReducido = window.matchMedia('(prefers-reduced-motion: reduce)');
   const consultaMovil = window.matchMedia('(max-width: 760px)');
   let reducido = consultaReducido.matches;
-  // Animaciones CSS ligadas al scroll (Chrome 115+, Safari 26+)
+  // Animaciones CSS ligadas al scroll (Chrome 115+, Safari 26+; en Safari las
+  // calcula el compositor solo desde 26.4, antes el hilo principal)
   const animaConScroll = !reducido && typeof CSS !== 'undefined'
     && CSS.supports?.('animation-timeline: view()') === true;
 
@@ -172,8 +177,19 @@ export function iniciarMotor(opciones = {}) {
     for (const entrada of entradas) {
       const dato = entrada.target._motor;
       if (dato) dato.visible = entrada.isIntersecting;
+      // Solo las capas cercanas a la ventana piden capa propia (will-change en CSS)
+      entrada.target.classList.toggle('en-vista', entrada.isIntersecting);
     }
   }, { rootMargin: '30% 0px 30% 0px' });
+
+  // Capa reflejada (data-parallax-espejo): el reflejo va dentro del transform
+  // que escribe el motor, porque la propiedad «scale» no existe en navegadores
+  // viejos. Si la hoja de estilos ya la refleja con «scale», no se repite.
+  function conEspejo(el) {
+    if (!el.hasAttribute('data-parallax-espejo')) return false;
+    const propia = getComputedStyle(el).scale;
+    return !(typeof propia === 'string' && /^-1\b/.test(propia.trim()));
+  }
 
   function medir() {
     alto = window.innerHeight;
@@ -191,6 +207,7 @@ export function iniciarMotor(opciones = {}) {
         vx: parseFloat(el.dataset.parallaxX) || 0,
         giro: parseFloat(el.dataset.parallaxGiro) || 0,
         escala: parseFloat(el.dataset.parallaxEscala) || 0,
+        espejo: conEspejo(el),
         ultimo: ''
       });
       if (!el._motor) { el._motor = dato; observadorVisibles.observe(el); }
@@ -198,17 +215,26 @@ export function iniciarMotor(opciones = {}) {
     });
 
     // Donde el navegador liga animaciones CSS al scroll, los elementos marcados
-    // con data-progreso-css se mueven solos (los calcula el compositor): el
-    // motor no les escribe --p, salvo con movimiento reducido.
+    // con data-progreso-css se mueven solos (en Chrome 115+ y Safari 26.4+ los
+    // calcula el compositor): el motor no les escribe --p, salvo con
+    // movimiento reducido.
     avances = [...document.querySelectorAll('[data-progreso]')].filter((el) => (
       !(animaConScroll && el.hasAttribute('data-progreso-css'))
     )).map((el) => {
       const caja = el.getBoundingClientRect();
-      return { el, arriba: caja.top + y, altura: caja.height, modo: el.dataset.progreso, ultimo: '' };
+      return {
+        el,
+        arriba: caja.top + y,
+        altura: caja.height,
+        modo: el.dataset.progreso,
+        // Respaldo de una escena con animación CSS: sigue la posición real
+        directo: el.hasAttribute('data-progreso-css'),
+        ultimo: ''
+      };
     });
 
     ambientes = [];
-    document.querySelectorAll('[data-ambiente]').forEach((el) => {
+    document.querySelectorAll('body [data-ambiente]').forEach((el) => {
       const nombres = el.dataset.ambiente.trim().split(/\s+/).filter((n) => ORDEN.includes(n));
       if (!nombres.length) return;
       const caja = el.getBoundingClientRect();
@@ -276,6 +302,8 @@ export function iniciarMotor(opciones = {}) {
       if (nombre !== ultimoAmbiente) {
         ultimoAmbiente = nombre;
         raiz.dataset.ambiente = nombre;
+        // Solo al cambiar de ambiente (unas pocas veces en todo el recorrido)
+        if (metaTema && FONDOS[nombre]) metaTema.setAttribute('content', FONDOS[nombre]);
       }
       document.dispatchEvent(new CustomEvent('ambiente:cambio', { detail: { nombre, pesos } }));
     }
@@ -296,13 +324,20 @@ export function iniciarMotor(opciones = {}) {
         let valor = `translate3d(${tx.toFixed(2)}px, ${ty.toFixed(2)}px, 0)`;
         if (c.giro) valor += ` rotate(${((d / alto) * c.giro).toFixed(3)}deg)`;
         if (c.escala) valor += ` scale(${(1 + c.escala * limitar(0.5 - d / alto, 0, 1)).toFixed(4)})`;
+        // Al principio, igual que «scale» (se aplica antes que transform): no invierte el giro
+        if (c.espejo) valor = `scaleX(-1) ${valor}`;
         if (valor !== c.ultimo) { c.el.style.transform = valor; c.ultimo = valor; }
       }
     }
 
+    // Las escenas con respaldo (data-progreso-css, el atardecer) siguen la
+    // posición real del scroll: ahí el suavizado lo hace una transición CSS,
+    // que el navegador interpola también entre cuadros. Los demás avances, el
+    // parallax y el ambiente siguen con el valor suavizado.
+    const yReal = window.scrollY;
     for (const a of avances) {
       const recorrido = a.modo === 'centro' ? alto / 2 + a.altura / 2 : alto + a.altura;
-      const p = limitar((y + alto - a.arriba) / recorrido, 0, 1);
+      const p = limitar(((a.directo ? yReal : y) + alto - a.arriba) / recorrido, 0, 1);
       // Sin umbral: al desplazar despacio cada cuadro cuenta (un umbral hacía
       // que la escena avanzara a saltos).
       const texto = p.toFixed(4);
@@ -370,6 +405,9 @@ export function iniciarMotor(opciones = {}) {
   raiz.classList.add('js');
   prepararRevelados();
   medir();
+  // Si el cielo fijo no tiene tamaño, las secciones nocturnas traen su propio fondo
+  const capaNoche = document.querySelector('#ambiente > .amb--noche');
+  if (capaNoche && (!capaNoche.offsetWidth || !capaNoche.offsetHeight)) raiz.classList.add('sin-ambiente');
   if (opciones.revelarAlIniciar !== false) activarRevelados();
 
   return {

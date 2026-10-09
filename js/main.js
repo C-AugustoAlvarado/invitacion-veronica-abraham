@@ -72,47 +72,143 @@ function enlacesInternos() {
   });
 }
 
-/* Si la tarjeta para raspar no pudo montarse, la fecha ya se lee: se da por revelada
-   para que aparezcan la cuenta regresiva y el calendario. */
+/* Recuerdos de la pestaña (sessionStorage): al recargar, o al volver de Maps a una
+   pestaña que el teléfono descartó, no se repite el sobre ni el raspadito.
+   En modo privado el almacén puede fallar: entonces simplemente no se recuerda. */
+const CLAVE_ABIERTA = 'boda:abierta';
+const CLAVE_FECHA = 'boda:fecha-revelada';
+const recordar = (clave) => {
+  try { window.sessionStorage.setItem(clave, '1'); } catch (error) { /* modo privado */ }
+};
+const recordado = (clave) => {
+  try { return window.sessionStorage.getItem(clave) === '1'; } catch (error) { return false; }
+};
+
+/* Si la tarjeta para raspar no pudo montarse (o la fecha ya se raspó en esta pestaña),
+   la fecha ya se lee: se da por revelada para que aparezcan la cuenta regresiva y el
+   calendario. */
 function revelarSinRaspar() {
-  const ambito = document.querySelector('[data-raspar]')?.closest('[data-raspar-ambito], section');
+  const tarjeta = document.querySelector('[data-raspar]');
+  const ambito = tarjeta?.closest('[data-raspar-ambito], section');
   if (!ambito || ambito.dataset.rasparEstado === 'revelado') return;
   ambito.dataset.rasparEstado = 'revelado';
+  tarjeta.classList.add('raspar--revelada');
   const boton = ambito.querySelector('[data-raspar-boton]');
   if (boton) boton.hidden = true;
   document.dispatchEvent(new CustomEvent('raspar:revelado'));
 }
 
+/* Modo básico: lo decide el script en línea de <head> (navegador que no puede con la
+   experiencia completa, o ?basico), o se llega a él porque el seguro ya mostró la página
+   o el motor falló. Sin sobre, sin motor, sin pétalos ni raspadito: el invitado quizá ya
+   está leyendo y no se vuelve a ocultar nada. Solo se activa lo que sirve para algo. */
+async function iniciarBasico() {
+  clearTimeout(window.__seguro);
+  if (typeof window.__basico === 'function') window.__basico();
+  else {
+    document.documentElement.classList.remove('js');
+    document.body.classList.remove('bloqueado');
+    document.getElementById('sobre')?.remove();
+  }
+  const [, , rsvp] = await Promise.all([
+    cargar('./calendario.js', 'iniciarCalendario'),
+    cargar('./copiar.js', 'iniciarCopiar'),
+    cargar('./rsvp.js', 'iniciarRsvp')
+  ]);
+  if (rsvp) document.documentElement.classList.add('funcional');
+}
+
 async function iniciar() {
-  aplicarDatos();
-  enlacesInternos();
+  // Un dato mal escrito en config.js no debe impedir que la página se libere
+  try { aplicarDatos(); } catch (error) { console.error('[invitación] no se pudieron aplicar los datos:', error); }
+  try { enlacesInternos(); } catch (error) { console.error('[invitación] no se pudieron preparar los enlaces:', error); }
+
+  if (window.__liberado || document.documentElement.classList.contains('basico')) return iniciarBasico();
 
   // El motor prepara todo, pero los revelados esperan a que se abra el sobre.
-  // Si el motor falla, se aplican las reglas de «sin JavaScript» y todo queda visible.
+  // Si el motor falla, la página pasa a modo básico y todo queda visible.
   let motor;
   try {
     motor = iniciarMotor({ revelarAlIniciar: false });
   } catch (error) {
     console.error('[invitación] no se pudo iniciar el motor:', error);
-    document.documentElement.classList.remove('js');
-    motor = { activarRevelados() {}, medir() {}, actualizar() {} };
+    return iniciarBasico();
   }
+
+  const sobre = document.getElementById('sobre');
+  // Se omite el sobre con ?abierta o si ya se abrió en esta pestaña
+  const omitir = new URLSearchParams(location.search).has('abierta')
+    || window.__omitir === true || recordado(CLAVE_ABIERTA);
+
+  // Al abrir el sobre la página se coloca ya con el alto final: en la sección
+  // del ancla (#rsvp, #fecha…) si la URL trae una, y si no en la portada.
+  // Sin sobre no se toca nada: el navegador ya restauró la posición.
+  const colocar = () => {
+    if (omitir) return;
+    let destino = null;
+    try {
+      if (location.hash.length > 1) destino = document.getElementById(decodeURIComponent(location.hash.slice(1)));
+    } catch (error) { /* ancla mal escrita: portada */ }
+    const y = destino ? Math.max(0, Math.round(destino.getBoundingClientRect().top + window.pageYOffset)) : 0;
+    if (Math.abs(window.pageYOffset - y) < 2) return;
+    const raiz = document.documentElement;
+    const previo = raiz.style.scrollBehavior;
+    raiz.style.scrollBehavior = 'auto';   // html tiene scroll-behavior: smooth
+    window.scrollTo(0, y);
+    raiz.style.scrollBehavior = previo;
+  };
+
   let abierto = false;
   const alAbrir = () => {
     if (abierto) return;
     abierto = true;
     clearTimeout(window.__seguro);
+    recordar(CLAVE_ABIERTA);
     document.body.classList.remove('bloqueado');
+    colocar();
     document.getElementById('portada')?.classList.add('es-abierta');
     motor.activarRevelados();
     motor.medir();
   };
   document.addEventListener('sobre:abierto', alAbrir, { once: true });
 
-  cargar('./petalos.js', 'iniciarPetalos');
+  // El sobre sirve si está montado, cubre la pantalla y su sello se puede tocar
+  let control = null;
+  const sobreSirve = () => {
+    if (!control || !sobre || !sobre.isConnected) return false;
+    // Ventana sin medidas (pestaña que carga en segundo plano): no se puede comprobar
+    if (window.innerWidth < 50 || window.innerHeight < 50) return true;
+    const caja = sobre.getBoundingClientRect();
+    const sello = sobre.querySelector('.sobre__sello');
+    const c = sello ? sello.getBoundingClientRect() : null;
+    const tocado = c && c.width > 0
+      ? document.elementFromPoint(c.left + c.width / 2, c.top + c.height / 2) : null;
+    return caja.width >= window.innerWidth * 0.9 && caja.height >= window.innerHeight * 0.5
+      && !!tocado && sobre.contains(tocado);
+  };
+  // La invitación se muestra sin sobre. destruir() devuelve la página sin emitir el
+  // evento, así que se emite aquí: «la invitación ya es visible» (DISENO.md §4).
+  const abrirSinSobre = () => {
+    if (control && typeof control.destruir === 'function') control.destruir();
+    if (sobre && sobre.isConnected) sobre.remove();
+    document.dispatchEvent(new CustomEvent('sobre:abierto'));
+    alAbrir();
+  };
 
-  const sobre = document.getElementById('sobre');
-  const omitir = new URLSearchParams(location.search).has('abierta');
+  // Desde aquí main.js responde por la página: el seguro, el botón «Ver la invitación»
+  // de la pantalla de espera y el aviso de error del <head> llegan a esta función.
+  // Un sobre sano no se toca (lo abre el invitado); uno que no sirve se retira solo.
+  let avisarLimite = () => {};
+  const limite = new Promise((resolver) => { avisarLimite = resolver; });
+  window.__liberar = () => {
+    if (abierto) return;
+    if (sobreSirve()) { clearTimeout(window.__seguro); return; }
+    abrirSinSobre();
+    avisarLimite(null);
+  };
+  clearTimeout(window.__seguro);
+
+  cargar('./petalos.js', 'iniciarPetalos');
 
   // Con el sobre puesto la página espera en la portada (ancla en la URL o
   // posición restaurada). Sin animación: html tiene scroll-behavior: smooth.
@@ -127,20 +223,30 @@ async function iniciar() {
   alInicio();
   window.addEventListener('load', alInicio, { once: true });
 
-  if (sobre) {
-    sobre.dataset.listo = '1';
-    clearTimeout(window.__seguro);
-    // Si sobre.js se queda colgado, a los 8 s la invitación se muestra sin sobre.
-    const limite = new Promise((resolver) => setTimeout(resolver, 8000, null));
-    const resultado = await Promise.race([cargar('./sobre.js', 'iniciarSobre', { omitir }), limite]);
-    // Si el sobre no pudo montarse (o se omitió), la invitación se muestra directo.
-    if (resultado === null || omitir) { sobre.remove(); alAbrir(); }
+  if (sobre && !omitir) {
+    // Si sobre.js se queda colgado, a los 5 s la invitación se muestra sin sobre.
+    window.__seguro = setTimeout(() => window.__liberar(), 5000);
+    control = await Promise.race([cargar('./sobre.js', 'iniciarSobre'), limite]);
+    if (!abierto) {
+      if (sobreSirve()) {
+        sobre.dataset.listo = '1';
+        clearTimeout(window.__seguro);
+      } else {
+        // No pudo montarse, no cubre la pantalla o su sello no se puede tocar
+        abrirSinSobre();
+      }
+    }
   } else {
-    alAbrir();
+    abrirSinSobre();
   }
 
+  // La fecha ya raspada en esta pestaña no se vuelve a tapar
+  const fechaVista = recordado(CLAVE_FECHA);
+  document.addEventListener('raspar:revelado', () => recordar(CLAVE_FECHA));
+  if (fechaVista) revelarSinRaspar();
+
   await Promise.all([
-    cargar('./raspar.js', 'iniciarRaspar').then((r) => { if (r === null) revelarSinRaspar(); }),
+    fechaVista ? null : cargar('./raspar.js', 'iniciarRaspar').then((r) => { if (r === null) revelarSinRaspar(); }),
     cargar('./cuenta.js', 'iniciarCuenta'),
     cargar('./calendario.js', 'iniciarCalendario'),
     cargar('./programa.js', 'iniciarPrograma'),
@@ -149,8 +255,31 @@ async function iniciar() {
     cargar('./rsvp.js', 'iniciarRsvp')
   ]);
 
+  // Sin sobre y con ancla (p. ej. ?abierta#rsvp): el salto del navegador ocurrió
+  // antes de que la página tuviera su alto final. Solo se corrige en una carga
+  // nueva y si el invitado sigue a menos de una pantalla del destino.
+  if (omitir && location.hash.length > 1) {
+    const entrada = performance.getEntriesByType?.('navigation')[0];
+    if (!entrada || entrada.type === 'navigate') {
+      let destino = null;
+      try { destino = document.getElementById(decodeURIComponent(location.hash.slice(1))); } catch (error) { /* ancla mal escrita */ }
+      const distancia = destino ? destino.getBoundingClientRect().top : 0;
+      if (destino && Math.abs(distancia) > 2 && Math.abs(distancia) < window.innerHeight) {
+        const raiz = document.documentElement;
+        const previo = raiz.style.scrollBehavior;
+        raiz.style.scrollBehavior = 'auto';
+        window.scrollTo(0, Math.round(distancia + window.pageYOffset));
+        raiz.style.scrollBehavior = previo;
+      }
+    }
+  }
+
   // Los módulos pudieron agregar contenido: el motor vuelve a buscar y a medir.
   motor.actualizar();
 }
 
-iniciar();
+// Pase lo que pase en el arranque, la página no se queda detrás del sobre
+iniciar().catch((error) => {
+  console.error('[invitación] falló el arranque:', error);
+  if (typeof window.__liberar === 'function') window.__liberar();
+});

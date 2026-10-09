@@ -25,8 +25,8 @@
 }
 
 /* ── Chispas ── */
-.regalos__chispas { inset: 0; }
-.regalos__capa { position: absolute; inset: 0; }
+.regalos__chispas { top: 0; right: 0; bottom: 0; left: 0; }
+.regalos__capa { position: absolute; top: 0; right: 0; bottom: 0; left: 0; }
 .regalos__chispa {
   position: absolute;
   left: var(--x);
@@ -138,6 +138,11 @@
   background: currentColor;
   transform: rotate(45deg);
 }
+/* Sin «gap» en flexbox (ver base.css) */
+@supports not (inset: 0) {
+  .regalo__filete { gap: 0; }
+  .regalo__filete i { margin: 0 10px; }
+}
 
 .regalo__etiqueta {
   font-weight: 600;
@@ -199,6 +204,12 @@
 }
 .regalo__valor--largo { font-size: clamp(21px, 5.6vw, 23px); gap: 2px .34em; letter-spacing: .02em; }
 .regalo__grupo { white-space: nowrap; }
+@supports not (inset: 0) {
+  .regalo__valor,
+  .regalo__valor--largo { gap: 0; }
+  .regalo__grupo { margin: 1px .21em; }
+  .regalo__valor--largo .regalo__grupo { margin: 1px .17em; }
+}
 
 .regalo__detalles {
   margin-top: 14px;
@@ -231,6 +242,10 @@
   z-index: 1; /* por encima del filete interior de .papel */
 }
 .regalo__acciones[hidden] { display: none; }
+@supports not (inset: 0) {
+  .regalo__acciones { gap: 0; margin-top: 17px; }
+  .regalo__acciones > * { margin: 5px 6px; }
+}
 
 .regalos__nota {
   margin-top: calc(clamp(40px, 7vh, 84px) + var(--regalos-caida, 0px));
@@ -263,6 +278,13 @@
   transition: transform .5s var(--suave), background-color .4s var(--suave), color .4s var(--suave);
 }
 .regalo__enlace { box-shadow: inset 0 0 0 1px rgba(92, 81, 56, .4); }
+/* En el botón el icono va antes del texto; en el enlace, después */
+@supports not (inset: 0) {
+  .copiar,
+  .regalo__enlace { gap: 0; }
+  .copiar__icono { margin-right: 9px; }
+  .regalo__enlace > svg { margin-left: 9px; }
+}
 .regalo__enlace svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
 
 @media (hover: hover) {
@@ -280,7 +302,7 @@
 }
 .copiar__icono svg {
   position: absolute;
-  inset: 0;
+  top: 0; right: 0; bottom: 0; left: 0;
   width: 100%;
   height: 100%;
   overflow: visible;

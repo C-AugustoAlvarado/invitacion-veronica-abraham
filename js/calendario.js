@@ -98,8 +98,11 @@ function detectarDispositivo() {
   const esMac = /Macintosh/.test(ua) && !esIos;
   // Safari de verdad: Chrome, Firefox, Edge y los navegadores internos de las
   // apps también son WebKit en iOS, pero no abren igual un archivo .ics
+  // Se exigen las marcas que solo traen Safari y su vista dentro de otras apps
+  // (Version/ y Safari/): un navegador interno sin marca no pasa por Safari.
   const esSafariIos = esIos
-    && !/CriOS|FxiOS|EdgiOS|OPiOS|OPT\/|GSA\/|FBAN|FBAV|FB_IAB|Instagram|Line\/|MicroMessenger|WhatsApp/.test(ua);
+    && /Version\/\d/.test(ua) && /Safari\//.test(ua)
+    && !/CriOS|FxiOS|EdgiOS|OPiOS|OPT\/|GSA\/|FBAN|FBAV|FB_IAB|Instagram|Line\/|MicroMessenger|WhatsApp|LinkedInApp|Snapchat|musical_ly|Bytedance|Twitter|DuckDuckGo/.test(ua);
   return { esIos, esMac, esSafariIos, esApple: esIos || esMac };
 }
 
@@ -150,8 +153,15 @@ function montar(raiz, opciones) {
   }
 
   function abrirGoogle() {
-    window.open(urlGoogle, '_blank', 'noopener');
-    avisar('Abrimos Google Calendar en otra pestaña.');
+    let ventana = null;
+    try { ventana = window.open(urlGoogle, '_blank'); } catch (e) { /* nada */ }
+    if (ventana) {
+      try { ventana.opener = null; } catch (e) { /* nada */ }
+      avisar('Abrimos Google Calendar en otra pestaña.');
+    } else {
+      // La app no deja abrir ventanas: se abre aquí mismo
+      window.location.href = urlGoogle;
+    }
   }
 
   if (enlaceGoogle) {
@@ -170,11 +180,18 @@ function montar(raiz, opciones) {
     });
   }
   if (principal) {
-    principal.addEventListener('click', () => {
+    // Es un enlace a Google Calendar que sirve sin JavaScript; aquí se vuelve botón
+    principal.href = urlGoogle;
+    principal.setAttribute('role', 'button');
+    principal.addEventListener('click', (e) => {
+      e.preventDefault();
       // En iOS fuera de Safari el .ics no es confiable: la acción principal es Google
       const d = detectarDispositivo();
       if (d.esMac || d.esSafariIos) descargarIcs();
       else abrirGoogle();
+    });
+    principal.addEventListener('keydown', (e) => {
+      if (e.key === ' ') { e.preventDefault(); principal.click(); }
     });
   }
 

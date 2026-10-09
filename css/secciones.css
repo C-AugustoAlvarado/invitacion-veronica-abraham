@@ -18,7 +18,7 @@ main { overflow-x: clip; }
 /* Mientras el sobre se monta, la pantalla ya es papel crema */
 .js #sobre:empty {
   position: fixed;
-  inset: 0;
+  top: 0; right: 0; bottom: 0; left: 0;
   z-index: 1000;
   background: var(--crema-calida);
 }
@@ -27,6 +27,10 @@ main { overflow-x: clip; }
 
 .ornamento--izq { justify-content: flex-start; margin-left: 0; }
 .ornamento--izq::before { display: none; }
+/* Sin «gap» en flexbox (ver base.css): el rombo no se separa del borde */
+@supports not (inset: 0) {
+  .ornamento--izq i { margin-left: 0; }
+}
 
 .dato-hora { line-height: 1.1; color: var(--cafe); }
 .recepcion__texto .dato-hora { margin-bottom: .5em; }
@@ -105,6 +109,13 @@ main { overflow-x: clip; }
   translate: 0 -52%;
   opacity: .42;
 }
+/* Respaldo sin la propiedad «translate» (Chrome anterior a 104, Safari anterior
+   a 14.1): se centra con margen negativo, porque transform lo escribe el motor.
+   La imagen (1000:800) mide el ancho del contenedor, porque max-width: 100 %
+   la limita: 100 % × 0.8 × 0.52, y el margen se mide contra ese mismo ancho */
+@supports not (translate: 0) {
+  .portada__lavado { margin-top: -41.6%; }
+}
 .portada__ornamento { margin: clamp(2px, 1vh, 12px) auto clamp(8px, 1.6vh, 16px); }
 .portada__lugar { margin-top: 0; }
 .portada__accion { margin-top: clamp(22px, 4vh, 40px); }
@@ -123,6 +134,11 @@ main { overflow-x: clip; }
 /* La esquina derecha es la misma ilustración reflejada: el reflejo va en el
    contenedor de parallax, así que se hace con escala negativa en la imagen */
 .portada__esquina--der { scale: -1 1; }
+/* Respaldo sin la propiedad «scale»: el reflejo va en transform. Mientras el
+   motor mueve la capa, él mismo antepone scaleX(-1) (data-parallax-espejo) */
+@supports not (scale: 1) {
+  .portada__esquina--der { transform: scaleX(-1); }
+}
 /* En celulares angostos (360 px) el mínimo de 230 px encima las flores en el título */
 @media (max-width: 380px) {
   .portada__esquina { width: 52vw; }
@@ -143,6 +159,10 @@ main { overflow-x: clip; }
   text-decoration: none;
   opacity: 0;
   transition: opacity 1.4s var(--suave) 2.2s;
+}
+@supports not (inset: 0) {
+  .portada__bajar { gap: 0; }
+  .portada__bajar-texto { margin-bottom: 8px; }
 }
 .portada__bajar-texto {
   font-size: 11px;
@@ -205,13 +225,17 @@ html:not(.js) .portada__bajar,
 .historia__cielo-nube--2 { width: 110%; right: -40%; bottom: 10%; opacity: .9; }
 .historia__paracaidas--a { width: 50%; left: 8%; top: 20%; }
 .historia__paracaidas--b { width: 40%; right: 9%; top: 42%; }
-.historia__foto { inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 2; }
+.historia__foto { top: 0; right: 0; bottom: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 2; }
 .historia__cielo.con-foto img:not(.historia__foto) { display: none; }
 
 .historia__texto { max-width: 680px; }
 .historia__frase { margin-bottom: .5em; color: var(--cafe); }
 
 .historia__lavado { width: min(120vw, 1000px); left: 50%; top: 4%; translate: -50% 0; opacity: .55; }
+/* La mitad del ancho real: el de la sección, con tope de 1000 px */
+@supports not (translate: 0) {
+  .historia__lavado { margin-left: max(-50%, -500px); }
+}
 .historia__rama { width: clamp(260px, 44vw, 600px); height: auto; right: -12%; top: -3%; }
 .historia__nube { width: clamp(320px, 50vw, 720px); height: auto; left: -18%; top: 40%; opacity: .85; }
 .historia__vuelo { width: clamp(70px, 10vw, 140px); height: auto; opacity: .9; }
@@ -253,6 +277,11 @@ html:not(.js) .portada__bajar,
 
 .ceremonia__lavado,
 .recepcion__lavado { width: 118%; left: -9%; top: 50%; translate: 0 -50%; opacity: .55; }
+/* 100 % (tope de max-width) × 0.8 (imagen 1000:800) × 0.5 */
+@supports not (translate: 0) {
+  .ceremonia__lavado,
+  .recepcion__lavado { margin-top: -40%; }
+}
 
 .ceremonia__texto .t-script,
 .recepcion__texto .t-script { font-size: clamp(40px, 7.4vw, 72px); }
@@ -265,7 +294,11 @@ html:not(.js) .portada__bajar,
   .historia__texto .t-cuerpo,
   .ceremonia__texto .t-cuerpo,
   .recepcion__texto .t-cuerpo { max-width: 30em; }
-  .historia__texto .t-cuerpo { margin-inline: auto; }
+  .historia__texto .t-cuerpo {
+    margin-left: auto;    /* respaldo donde no existe margin-inline */
+    margin-right: auto;
+    margin-inline: auto;
+  }
 }
 
 .ceremonia__rama { width: clamp(200px, 30vw, 420px); height: auto; left: -9%; top: 2%; }
@@ -291,7 +324,11 @@ html:not(.js) .portada__bajar,
 }
 @media (min-width: 760px) {
   .recepcion__datos { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .recepcion__datos .papel { padding-inline: clamp(20px, calc(7vw - 34px), 52px); }
+  .recepcion__datos .papel {
+    padding-left: clamp(20px, calc(7vw - 34px), 52px);    /* respaldo donde no existe padding-inline */
+    padding-right: clamp(20px, calc(7vw - 34px), 52px);
+    padding-inline: clamp(20px, calc(7vw - 34px), 52px);
+  }
 }
 .dato { text-align: center; }
 .dato__icono {
@@ -322,6 +359,10 @@ html:not(.js) .portada__bajar,
   justify-content: center;
   gap: 12px;
   margin-top: 16px;
+}
+@supports not (inset: 0) {
+  .dato__muestras { gap: 0; }
+  .dato__muestras .muestra + .muestra { margin-left: 12px; }
 }
 .muestra {
   position: relative;
@@ -399,6 +440,7 @@ html:not(.js) .portada__bajar,
   top: clamp(64px, 11vh, 120px);
   padding: 0 var(--margen);
   text-align: center;
+  z-index: 2;   /* siempre encima de las siluetas y del velo */
   opacity: clamp(0, calc(var(--p, 0) * 4 - .62), 1);
   transform: translate3d(0, calc((1 - var(--q)) * 3vh), 0);
 }
@@ -436,6 +478,27 @@ html:not(.js) .portada__bajar,
   pointer-events: none;
 }
 
+/* Ventanas bajas (teléfono acostado, laptop con zoom): la frase sube y se
+   achica, y las siluetas bajan, para que no se encimen */
+@media (max-height: 480px) {
+  .atardecer__frase { top: 20px; }
+  .atardecer__frase .t-script { font-size: clamp(24px, 9vh, 40px); }
+  .atardecer__capa--cerros { height: 38%; }
+  .atardecer__capa--ciudad { height: 40%; }
+  .atardecer__capa--acueducto { height: 34%; }
+}
+
+/* Respaldo sin animation-timeline: el compositor interpola entre los
+   valores que escribe el motor (rellena cuadros a 30 por segundo) */
+@supports not (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .js .atardecer__sol,
+    .js .atardecer__frase { transition: transform .12s linear, opacity .12s linear; }
+    .js .atardecer__capa { transition: transform .12s linear; }
+    .js .atardecer__velo { transition: opacity .12s linear; }
+  }
+}
+
 /* El primer plano se funde con la noche que sigue: sin costura */
 .atardecer__suelo {
   left: 0;
@@ -448,10 +511,11 @@ html:not(.js) .portada__bajar,
 
 /* ── Movimiento ligado al scroll ──
    Donde el navegador lo permite (Chrome 115+, Safari 26+), el sol y las
-   siluetas se mueven con animaciones CSS atadas al scroll. Las calcula el
-   compositor, no JavaScript: van al ritmo exacto del dedo aunque el teléfono
-   esté ocupado o en modo de bajo consumo. En los demás navegadores queda el
-   respaldo de arriba, con --p escrito por el motor.
+   siluetas se mueven con animaciones CSS atadas al scroll, sin JavaScript.
+   En Chrome las calcula el compositor: van al ritmo exacto del dedo aunque el
+   teléfono esté ocupado o en modo de bajo consumo. En Safari las calcula el
+   compositor solo desde 26.4; antes, el hilo principal. En los demás
+   navegadores queda el respaldo de arriba, con --p escrito por el motor.
    «contain» es justo el tramo en que la escena está fija; «cover», todo el
    paso de la sección por la pantalla. */
 @supports (animation-timeline: view()) {
@@ -500,7 +564,7 @@ html:not(.js) .portada__bajar,
   .atardecer__frase::before {
     content: '';
     position: absolute;
-    inset: -90px 0;
+    top: -90px; right: 0; bottom: -90px; left: 0;
     z-index: -1;
     pointer-events: none;
     background: radial-gradient(ellipse 75% 50% at 50% 50%, rgba(74, 58, 46, .72) 0%, rgba(74, 58, 46, .6) 55%, rgba(74, 58, 46, 0) 100%);
@@ -517,6 +581,11 @@ html:not(.js) .atardecer {
 }
 html:not(.js) .atardecer__escena { position: relative; }
 html:not(.js) .atardecer__frase { opacity: 1; }
+/* Si el cielo fijo quedó sin tamaño (.sin-ambiente, lo marca el motor) la
+   escena solo necesita su fondo: aquí el motor sí escribe --p */
+.sin-ambiente .atardecer {
+  background: linear-gradient(180deg, #4A3A2E 0%, #7A4A3A 34%, #B9744F 66%, #E2A66B 100%);
+}
 
 /* ═══════════ 11 · Cierre ═══════════ */
 .cierre { padding-bottom: clamp(70px, 12vh, 140px); }
@@ -544,6 +613,10 @@ html:not(.js) .atardecer__frase { opacity: 1; }
   gap: 12px;
 }
 .planner__medios .boton { padding: 14px 26px; min-height: 48px; }
+@supports not (inset: 0) {
+  .planner__medios { gap: 0; }
+  .planner__medios .boton { margin: 6px; }
+}
 .planner__pendiente { font-style: italic; }
 
 .cierre__despedida { margin-top: clamp(90px, 18vh, 200px); }
@@ -566,13 +639,13 @@ html:not(.js) .atardecer__frase { opacity: 1; }
 }
 .cierre__sello img {
   position: absolute;
-  inset: 4%;
+  top: 4%; right: 4%; bottom: 4%; left: 4%;
   width: 92%;
   height: 92%;
 }
 .cierre__monograma {
   position: absolute;
-  inset: 0;
+  top: 0; right: 0; bottom: 0; left: 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -595,4 +668,18 @@ html:not(.js) .atardecer__frase { opacity: 1; }
 @media (max-width: 420px) {
   .cierre__lugar span { display: block; }
   .cierre__lugar .cierre__raya { display: none; }
+}
+
+/* ═══════════ Respaldo sin aspect-ratio ═══════════
+   (Safari anterior a 15, Chrome anterior a 88.) Sin él estas cajas medirían
+   0 de alto, porque su contenido es absoluto. Va al final para ganar por orden. */
+@supports not (aspect-ratio: 1) {
+  .historia__marco { height: calc(min(74vw, 340px) * 1.4333); }   /* 3 / 4.3 */
+  .atardecer__sol { height: clamp(120px, 30vw, 230px); }
+  .cierre__sello::before { content: ''; display: block; padding-top: 100%; }
+}
+@media (min-width: 900px) {
+  @supports not (aspect-ratio: 1) {
+    .historia__marco { height: calc(min(30vw, 380px) * 1.4333); }
+  }
 }

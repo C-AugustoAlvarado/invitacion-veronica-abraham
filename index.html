@@ -8,6 +8,7 @@
 <meta name="description" content="¡Nos casamos! Abre tu invitación.">
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#F8F4EB">
+<meta name="color-scheme" content="only light">
 <meta name="format-detection" content="telephone=no">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Verónica &amp; Abraham · ¡Nos casamos!">
@@ -32,25 +33,120 @@
 <link rel="stylesheet" href="css/galeria.css">
 <link rel="stylesheet" href="css/regalos.css">
 <link rel="stylesheet" href="css/rsvp.css">
-<script>
-  // Con JavaScript, la invitación empieza dentro del sobre. Si algo falla al
-  // cargar, a los 7 segundos se libera la página: nunca debe quedar trabada.
-  document.documentElement.classList.add('js');
-  window.__liberar = function () {
-    document.body.classList.remove('bloqueado');
-    var sobre = document.getElementById('sobre');
-    if (sobre && !sobre.dataset.listo) {
-      sobre.remove();
-      // main.js no arrancó: sin motor nadie pone .es-visible, así que se
-      // aplican las reglas de «sin JavaScript» y todo el contenido queda visible.
-      document.documentElement.classList.remove('js');
-    }
-  };
-  window.__seguro = setTimeout(window.__liberar, 7000);
-  // Con el sobre puesto, la invitación siempre empieza en la portada
-  if (!/[?&]abierta(=|&|$)/.test(location.search) && 'scrollRestoration' in history) {
-    history.scrollRestoration = 'manual';
+<link rel="stylesheet" href="css/basico.css">
+<link rel="stylesheet" href="css/impresion.css" media="print">
+<link rel="modulepreload" href="js/main.js">
+<link rel="modulepreload" href="js/config.js">
+<link rel="modulepreload" href="js/motor.js">
+<link rel="modulepreload" href="js/sobre.js">
+<style>
+  /* Pantalla de espera: va en línea para que exista aunque una hoja no llegue.
+     Se ve mientras el sobre se monta; el texto aparece solo si la espera se nota. */
+  .js #sobre:not(.sobre) {
+    position: fixed;
+    top: 0; right: 0; bottom: 0; left: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background: #F3EBDB;
+    color: #5C5138;
   }
+  .sobre__espera { padding: 24px; animation: sobre-espera .6s ease 1.4s both; }
+  .sobre__espera-nombres { font-size: 34px; line-height: 1.2; margin-bottom: 8px; }
+  .sobre__espera-boton {
+    margin-top: 22px;
+    padding: 13px 24px;
+    font: inherit;
+    color: inherit;
+    background: none;
+    border: 1px solid currentColor;
+    border-radius: 999px;
+    cursor: pointer;
+  }
+  @keyframes sobre-espera { from { opacity: 0; } to { opacity: 1; } }
+</style>
+<script>
+  // Decide entre la experiencia completa y el modo básico ANTES de pintar.
+  // Sintaxis ES5 a propósito: este script debe correr en cualquier navegador.
+  // Completa → clase «js» (sobre, motor, animaciones). Básico → clase «basico»
+  // (css/basico.css): página estática y legible, sin sobre y sin nada oculto.
+  // Para probar: ?basico fuerza el modo básico y ?abierta se salta el sobre.
+  (function () {
+    var raiz = document.documentElement;
+    var busqueda = location.search;
+    var completa = false;
+    try {
+      var admite = function (propiedad, valor) {
+        return !!(window.CSS && CSS.supports && CSS.supports(propiedad, valor));
+      };
+      var sintaxis = function () {
+        // ?. y ?? (js/main.js, js/motor.js) e import() dinámico (js/main.js).
+        // Solo se analiza; no se ejecuta nada.
+        try { new Function('a', 'u', 'var b = a?.b ?? 1; return function () { return import(u); };'); return true; }
+        catch (e) { return false; }
+      };
+      completa =
+        !/[?&]basico(=|&|$)/.test(busqueda) &&
+        'noModule' in document.createElement('script') &&      // módulos ES
+        sintaxis() &&
+        'IntersectionObserver' in window &&                     // js/motor.js: revelados
+        'ResizeObserver' in window &&                           // js/motor.js, js/raspar.js
+        typeof window.requestAnimationFrame === 'function' &&
+        admite('inset', '0') &&                                 // posición de capas y tarjetas
+        admite('aspect-ratio', '1 / 1') &&                      // galería, historia, sol, medallón
+        admite('width', 'clamp(1px, 2vw, 3px)') &&              // toda la tipografía y los márgenes
+        admite('color', 'var(--x)');                            // variables CSS
+    } catch (e) { completa = false; }
+
+    // Pasa la página a modo básico: sin sobre, sin bloqueo y con todo a la vista.
+    // main.js lo consulta (window.__liberado) para no volver a ocultar nada.
+    window.__basico = function () {
+      clearTimeout(window.__seguro);
+      window.__liberado = true;
+      raiz.className = raiz.className.replace(/(^|\s)(js|basico)(?=\s|$)/g, ' ') + ' basico';
+      if (document.body) document.body.className = document.body.className.replace(/(^|\s)bloqueado(?=\s|$)/g, ' ');
+      var sobre = document.getElementById('sobre');
+      if (sobre && sobre.parentNode) sobre.parentNode.removeChild(sobre);
+    };
+    // Hasta que main.js arranque, liberar la página es pasar a modo básico.
+    // Al arrancar, main.js pone aquí su propia versión (retira el sobre que no sirve).
+    window.__liberar = window.__basico;
+
+    if (!completa) { raiz.className += ' basico'; window.__liberado = true; return; }
+
+    raiz.className += ' js';
+    // Si main.js no arranca en 7 segundos (red lenta, archivo que no llegó),
+    // la página se libera sola: nunca debe quedar trabada detrás del sobre.
+    window.__seguro = setTimeout(function () { window.__liberar(); }, 7000);
+    // Si el arranque no carga o no compila, se sabe de inmediato: no hay que esperar.
+    // Solo cuentan esos tres archivos; una imagen que falla no quita el sobre.
+    window.addEventListener('error', function (e) {
+      var d = e.target;
+      var origen = d && d.tagName === 'SCRIPT' ? d.src : (e.filename || '');
+      if (/\/js\/(main|config|motor)\.js/.test(origen)) window.__liberar();
+    }, true);
+
+    // Si el sobre ya se abrió en esta pestaña (recarga o pestaña descartada),
+    // no se vuelve a mostrar y el navegador restaura la posición.
+    // Para volver a ver el sobre y el raspadito en la misma pestaña: ?sobre
+    var yaAbierta = false;
+    try {
+      if (/[?&]sobre(=|&|$)/.test(busqueda)) {
+        window.sessionStorage.removeItem('boda:abierta');
+        window.sessionStorage.removeItem('boda:fecha-revelada');
+      }
+      yaAbierta = window.sessionStorage.getItem('boda:abierta') === '1';
+    } catch (e) {}
+    window.__omitir = yaAbierta || /[?&]abierta(=|&|$)/.test(busqueda);
+    // Con el sobre puesto, la invitación siempre empieza en la portada; sin
+    // sobre (ya se abrió en esta pestaña) el navegador regresa a donde estaba.
+    // El valor se conserva en el historial: hay que escribir los dos casos.
+    if ('scrollRestoration' in history) {
+      history.scrollRestoration = window.__omitir ? 'auto' : 'manual';
+    }
+  })();
 </script>
 <noscript><style>#sobre{display:none}</style></noscript>
 </head>
@@ -64,13 +160,19 @@
   <div class="amb amb--grano"></div>
 </div>
 
-<div id="sobre"></div>
-<script>document.body.classList.add('bloqueado');</script>
+<div id="sobre"><div class="sobre__espera"><p class="sobre__espera-nombres">Verónica &amp; Abraham</p><p>Abriendo tu invitación…</p><button type="button" class="sobre__espera-boton" onclick="__liberar()">Ver la invitación</button></div></div>
+<script>
+  // Solo la experiencia completa empieza dentro del sobre. En modo básico el
+  // sobre se retira del documento: css/sobre.css lo dejaría fijo tapando todo.
+  if (/(^|\s)js(\s|$)/.test(document.documentElement.className)) {
+    if (!window.__omitir) document.body.className += ' bloqueado';
+  } else if (window.__basico) window.__basico();
+</script>
 
 <main id="invitacion">
   <section id="portada" class="seccion portada" data-ambiente="dia" aria-labelledby="portada-titulo">
     <picture><source srcset="assets/img/esquina-floral.avif" type="image/avif"><img class="decorado portada__esquina portada__esquina--izq" src="assets/img/esquina-floral.png" alt="" width="900" height="900" data-parallax="-0.14" data-parallax-giro="-4"></picture>
-    <picture><source srcset="assets/img/esquina-floral.avif" type="image/avif"><img class="decorado portada__esquina portada__esquina--der" src="assets/img/esquina-floral.png" alt="" width="900" height="900" data-parallax="-0.24" data-parallax-giro="5"></picture>
+    <picture><source srcset="assets/img/esquina-floral.avif" type="image/avif"><img class="decorado portada__esquina portada__esquina--der" src="assets/img/esquina-floral.png" alt="" width="900" height="900" data-parallax="-0.24" data-parallax-giro="5" data-parallax-espejo></picture>
     <picture><source srcset="assets/img/nube-a.avif" type="image/avif"><img class="decorado portada__nube portada__nube--a" src="assets/img/nube-a.png" alt="" width="900" height="400" data-parallax="0.34" data-parallax-x="0.05"></picture>
     <picture><source srcset="assets/img/nube-b.avif" type="image/avif"><img class="decorado portada__nube portada__nube--b" src="assets/img/nube-b.png" alt="" width="900" height="400" data-parallax="0.22" data-parallax-x="-0.06"></picture>
 
@@ -194,12 +296,14 @@
 
         <!-- Agregar al calendario -->
         <div class="fecha__calendario" data-calendario>
-          <button type="button" class="boton boton--lleno" data-calendario-principal>Agregar a mi calendario</button>
+          <!-- Enlace de verdad: sirve aunque js/calendario.js no llegue a cargar -->
+          <a class="boton boton--lleno" data-calendario-principal target="_blank" rel="noopener"
+             href="https://calendar.google.com/calendar/render?action=TEMPLATE&amp;text=Boda%20de%20Ver%C3%B3nica%20y%20Abraham&amp;dates=20270306T220000Z%2F20270307T080000Z&amp;ctz=America%2FMexico_City&amp;location=Catedral%20de%20Morelia%2C%20Morelia%2C%20Michoac%C3%A1n">Agregar a mi calendario</a>
           <p class="fecha__opciones">
             <a class="fecha__opcion" data-calendario-google target="_blank" rel="noopener"
                href="https://calendar.google.com/calendar/render?action=TEMPLATE&amp;text=Boda%20de%20Ver%C3%B3nica%20y%20Abraham&amp;dates=20270306T220000Z%2F20270307T080000Z&amp;ctz=America%2FMexico_City&amp;location=Catedral%20de%20Morelia%2C%20Morelia%2C%20Michoac%C3%A1n">Google Calendar</a>
             <span class="fecha__separador" aria-hidden="true">·</span>
-            <a class="fecha__opcion" data-calendario-ics href="#fecha">Apple / Outlook</a>
+            <a class="fecha__opcion" data-calendario-ics href="assets/boda-veronica-y-abraham.ics">Apple / Outlook</a>
           </p>
           <p class="fecha__aviso t-nota" data-calendario-aviso role="status" aria-live="polite"></p>
         </div>
@@ -688,9 +792,8 @@
       <p class="solo-lectores" data-galeria-estado aria-live="polite" aria-atomic="true"></p>
     </div>
 
-    <noscript>
-      <p class="t-nota centrado">Muy pronto compartiremos aquí nuestras fotografías.</p>
-    </noscript>
+    <!-- Sin carrusel (modo básico o sin JavaScript) se ve este aviso: css/basico.css -->
+    <p class="t-nota centrado solo-basico galeria__aviso">Muy pronto compartiremos aquí nuestras fotografías.</p>
   </section>
 
   <section id="regalos" class="seccion seccion--noche regalos" data-ambiente="noche" aria-labelledby="regalos-titulo">
@@ -875,7 +978,7 @@
           <div class="rsvp__filete" aria-hidden="true"><i></i></div>
 
           <!-- Formulario -->
-          <form class="rsvp__formulario" data-rsvp-formulario novalidate aria-labelledby="rsvp-titulo">
+          <form class="rsvp__formulario" data-rsvp-formulario novalidate onsubmit="return false" aria-labelledby="rsvp-titulo">
 
             <div class="rsvp-campo" data-rsvp-campo="nombre">
               <div class="rsvp-campo__caja">
@@ -949,6 +1052,12 @@
               <p class="rsvp-aviso" data-rsvp-aviso role="status" aria-live="polite"></p>
             </div>
           </form>
+
+          <!-- Confirmación directa: se ve mientras el formulario no esté activo.
+               El contenido lo escribe scripts/construir.mjs con los datos de js/config.js -->
+          <div class="rsvp__directo" data-rsvp-directo>
+            <p class="t-cuerpo">Muy pronto podrás confirmar por aquí. ¡Gracias por tu cariño!</p>
+          </div>
 
           <!-- Agradecimiento (aparece al enviar) -->
           <div class="rsvp__gracias" data-rsvp-gracias role="group" aria-labelledby="rsvp-gracias-titulo" tabindex="-1" hidden>
