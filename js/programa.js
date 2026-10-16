@@ -1,16 +1,21 @@
-// Programa de la noche: línea de tiempo con hilo dorado.
+// Itinerario: línea de tiempo nocturna con hilo de luz.
 // El motor escribe --p en [data-progreso]; aquí solo se mide (alto del hilo,
 // alto de la ventana y posición de cada nodo) para que el CSS calcule dónde va
 // la punta y qué hitos ya están encendidos. No hay bucle por cuadro: las
 // animaciones son CSS y se pausan fuera de pantalla o con la pestaña oculta.
+//
+// Uso: iniciarPrograma({ raiz, punta, rafaga }) → { medir, destruir } | null
+//   raiz    sección del itinerario (por defecto #itinerario; #programa como respaldo de v1)
+//   punta   altura de la ventana (0–1) a la que viaja la punta del hilo (0.6)
+//   rafaga  pedir unas hojitas (petalos:rafaga) cuando la luna del remate aparece (true)
 
 const limitar = (v, a, b) => Math.min(b, Math.max(a, v));
 
 export function iniciarPrograma(opciones = {}) {
   const {
-    raiz = document.getElementById('programa'),
-    punta = 0.6,        // altura de la ventana (0–1) a la que viaja la punta del hilo
-    rafaga = true       // pedir unos pétalos cuando la luna del remate aparece
+    raiz = document.getElementById('itinerario') || document.getElementById('programa'),
+    punta = 0.6,
+    rafaga = true
   } = opciones;
 
   if (!raiz) return null;
@@ -74,7 +79,7 @@ export function iniciarPrograma(opciones = {}) {
   }, { rootMargin: '10% 0px 10% 0px' });
   observadorPantalla.observe(raiz);
 
-  /* ── La luna del remate pide unos pétalos (una sola vez) ── */
+  /* ── La luna del remate pide unas hojitas (una sola vez) ── */
   let observadorLuna = null;
   if (rafaga && luna && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     observadorLuna = new IntersectionObserver((entradas) => {
@@ -121,3 +126,6 @@ export function iniciarPrograma(opciones = {}) {
   raiz._programa = api;
   return api;
 }
+
+// Nombre nuevo de la sección; el arranque (js/main.js) sigue usando iniciarPrograma.
+export { iniciarPrograma as iniciarItinerario };

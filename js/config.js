@@ -10,20 +10,29 @@ export const CONFIG = {
 
   novios: { ella: 'Verónica', el: 'Abraham', monograma: 'A&V' },
 
+  padres: {
+    novio: ['Salvador Alvarado Villafuerte', 'Leticia López Ávalos'],
+    novia: ['Verónica García Guerrero', 'Félix Calderón Solorio']
+  },
+
+  // Texto para compartir el enlace (vista previa en WhatsApp)
+  compartir: 'Cuando nos conocimos, entendimos que nos uniría algo más fuerte que el tiempo y la distancia. '
+    + 'Hoy damos gracias a Dios por habernos hecho coincidir en el camino y empezar una vida juntos.',
+
   evento: {
     titulo: 'Boda de Verónica y Abraham',
     inicio: '2027-03-06T16:00:00-06:00',
-    fin: '2027-03-07T02:00:00-06:00',
+    fin: '2027-03-07T01:30:00-06:00',
     zona: 'America/Mexico_City',
     lugar: 'Catedral de Morelia, Av. Francisco I. Madero Poniente S/N, Centro Histórico, 58000 Morelia, Michoacán, México',
-    detalle: 'Ceremonia religiosa: 4:00 p.m. en la Catedral de Morelia. '
-      + 'Recepción: Hotel Boutique Casa Grande, Portal Matamoros 98, Centro Histórico. '
+    detalle: 'Ceremonia: 16:00 hrs en la Catedral de Morelia. '
+      + 'Recepción: 17:00 hrs en el Hotel Casa Grande, Portal Matamoros 98, Centro Histórico. '
       + 'Código de vestimenta: etiqueta rigurosa.'
   },
 
   mapas: {
-    ceremonia: 'https://www.google.com/maps/search/?api=1&query=Catedral%20de%20Morelia%2C%20Morelia%2C%20Michoac%C3%A1n',
-    recepcion: 'https://www.google.com/maps/search/?api=1&query=Hotel%20Casa%20Grande%2C%20Portal%20Matamoros%2098%2C%20Morelia'
+    ceremonia: 'https://maps.app.goo.gl/AtauCxccpox1PgQT7',   // enlaces que mandaron los novios
+    recepcion: 'https://maps.app.goo.gl/oG4wzQVZz8JScBMo7'
   },
 
   // Confirmación de asistencia: se arma un mensaje de WhatsApp (o correo)
@@ -36,9 +45,9 @@ export const CONFIG = {
   },
 
   regalos: [
-    { id: 'palacio', tienda: 'El Palacio de Hierro', etiqueta: 'Número de evento', valor: '', enlace: '' },
-    { id: 'liverpool', tienda: 'Liverpool', etiqueta: 'Número de evento', valor: '', enlace: '' },
-    { id: 'transferencia', tienda: 'Transferencia', etiqueta: 'CLABE', valor: '', titular: '', banco: '' }
+    { id: 'palacio', tienda: 'El Palacio de Hierro', etiqueta: 'Número de evento', valor: '406823', enlace: '' },
+    { id: 'liverpool', tienda: 'Liverpool', etiqueta: 'Número de evento', valor: '51981696', enlace: '' },
+    { id: 'transferencia', tienda: 'Transferencia', etiqueta: 'CLABE', valor: '012180028772723592', titular: '', banco: '' }   // titular y banco: pendientes
   ],
 
   planner: { nombre: 'Fany Valencia', telefono: '', correo: '', instagram: '' },
@@ -47,7 +56,7 @@ export const CONFIG = {
   // Mientras `src` esté vacío, la galería muestra un marco ilustrado.
   fotos: [
     { src: '', alt: '', pie: 'Donde todo empezó' },
-    { src: '', alt: '', pie: 'Un salto a la aventura' },
+    { src: '', alt: '', pie: 'En caída libre' },
     { src: '', alt: '', pie: 'Chantilly, 16 de junio de 2025' },
     { src: '', alt: '', pie: 'Siempre juntos' },
     { src: '', alt: '', pie: 'Próxima parada: Morelia' }

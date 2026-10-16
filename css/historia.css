@@ -1,0 +1,346 @@
+/* ═══════════════════════════════════════════════════════════════
+   Nuestra historia (v2) — css/historia.css
+   Fragmento: src/historia.html · Demo: demo/historia.html
+   Composición, de arriba abajo: un cielo donde descienden los dos
+   paracaídas → encabezado → relato y tres polaroids → la acuarela
+   de Chantilly enmarcada (la pedida de mano cierra la sección).
+   Solo marfil, olivo y tinta; la única ilustración con color es la
+   acuarela. Adorno único: ramitas de olivo en línea.
+   Solo se animan transform y opacity. Los tokens viven en base.css.
+   ═══════════════════════════════════════════════════════════════ */
+
+.historia {
+  /* El cielo de arriba ya da aire: la sección empieza más cerca de la portada */
+  padding-top: 48px;
+  padding-top: clamp(36px, 6vh, 80px);
+  color: var(--tinta-suave);
+  /* Los decorados se salen por los lados sin provocar scroll lateral
+     (la página ya lo recorta en main; la demo no carga secciones.css) */
+  overflow-x: clip;
+}
+@supports not (overflow: clip) {
+  .historia { overflow: hidden; }
+}
+.historia__simbolos { position: absolute; width: 0; height: 0; overflow: hidden; }
+
+/* ═══════════ 1 · Cielo y paracaídas ═══════════
+   Franja vacía donde caen los paracaídas antes del título: es el
+   «salto» con el que empieza todo. */
+.historia__cielo {
+  position: relative;
+  height: 210px;
+  height: clamp(190px, 26vh, 250px);
+  margin: 0 auto;
+  max-width: var(--ancho);
+}
+.historia__vuelo {
+  top: 0;
+  width: 118px;
+  width: clamp(104px, 29vw, 150px);
+  opacity: .96;
+}
+.historia__vuelo--a { right: 7%; }
+.historia__vuelo--b {
+  top: 24%;
+  left: 5%;
+  width: 88px;
+  width: clamp(78px, 22vw, 112px);
+  opacity: .9;
+}
+.historia__vuelo img {
+  width: 100%;
+  height: auto;
+  transform-origin: 50% 8%;   /* cuelga de la vela */
+  animation: historia-vaiven 6.4s ease-in-out infinite alternate;
+}
+.historia__vuelo--b img { animation-duration: 7.6s; animation-delay: -2.2s; }
+@keyframes historia-vaiven {
+  from { transform: rotate(-2.4deg); }
+  to { transform: rotate(2.4deg); }
+}
+
+/* ═══════════ 2 · Encabezado ═══════════ */
+.historia__encabezado { max-width: 680px; margin: 0 auto; }
+.historia__titulo {
+  font-family: var(--f-mano);
+  font-weight: 400;
+  font-size: 40px;
+  font-size: clamp(38px, 8.6vw, 66px);
+  line-height: 1.2;
+  letter-spacing: .01em;
+  color: var(--olivo-hondo);
+  max-width: 11em;
+  margin: .3em auto 0;
+  text-wrap: balance;
+}
+.historia__guirnalda {
+  display: block;
+  width: 200px;
+  width: clamp(180px, 52vw, 270px);
+  height: auto;
+  margin: 10px auto 0;
+  color: var(--olivo);
+}
+
+/* ═══════════ 3 · Relato y polaroids ═══════════ */
+.historia__cuerpo {
+  margin-top: 30px;
+  margin-top: clamp(28px, 5vh, 52px);
+}
+.historia__relato {
+  max-width: 33em;
+  margin: 0 auto;
+}
+.historia__relato p { text-align: left; }
+/* Capitular en Cormorant: la «N» de «Nuestra» abre el relato */
+.historia__relato p::first-letter {
+  float: left;
+  font-family: var(--f-serif);
+  font-weight: 500;
+  font-size: 3.05em;
+  line-height: .8;
+  padding: .1em .12em 0 0;
+  color: var(--olivo);
+}
+
+.historia__fotos {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 12px;
+  gap: clamp(10px, 3vw, 22px);
+  list-style: none;
+  margin: 40px auto 0;
+  margin: clamp(36px, 6vh, 60px) auto 0;
+  padding: 10px 0 14px;
+  max-width: 560px;
+}
+.polaroid {
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: 160px;
+}
+/* El giro va en la cara, no en el <li>: el revelado de base.css
+   escribe transform en el elemento con data-revelar */
+.polaroid__cara {
+  position: relative;
+  margin: 0;
+  padding: 7px 7px 0;
+  padding: clamp(7px, 1.7vw, 11px) clamp(7px, 1.7vw, 11px) 0;
+  background:
+    radial-gradient(130% 80% at 0% 0%, rgba(255, 255, 255, .9) 0%, rgba(255, 255, 255, 0) 60%),
+    linear-gradient(168deg, #FDFBF6 0%, #F5F0E4 100%);
+  border-radius: 2px;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, .95) inset,
+    0 0 0 1px rgba(78, 83, 48, .09),
+    0 20px 32px -20px rgba(43, 43, 40, .5),
+    0 6px 12px -8px rgba(43, 43, 40, .22);
+  transform: rotate(var(--giro, 0deg)) translateY(var(--dy, 0px));
+  transition: transform .7s var(--suave);
+}
+.polaroid__ventana {
+  position: relative;
+  display: block;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: linear-gradient(160deg, #EFEBE1 0%, #E3DFD1 100%);
+  border-radius: 1px;
+  box-shadow: inset 0 0 0 1px rgba(43, 43, 40, .07), inset 0 2px 6px -3px rgba(43, 43, 40, .28);
+}
+.polaroid__foto {
+  position: absolute;
+  top: 0; right: 0; bottom: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 1.1s var(--suave);
+}
+/* base.css pone img { display: block }, que le ganaría al atributo hidden */
+.polaroid__foto[hidden] { display: none; }
+.polaroid.con-foto .polaroid__foto { opacity: 1; }
+.polaroid.con-foto .polaroid__pronto { display: none; }
+.polaroid__pronto {
+  position: absolute;
+  top: 0; right: 0; bottom: 0; left: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 6px;
+  font-family: var(--f-serif);
+  font-style: italic;
+  font-weight: 500;
+  font-size: 13px;
+  font-size: clamp(12px, 3.2vw, 15px);
+  letter-spacing: .05em;
+  line-height: 1.2;
+  text-align: center;
+  color: var(--olivo-hondo);
+}
+.polaroid__pronto svg {
+  width: 52%;
+  height: auto;
+  color: var(--olivo);
+  opacity: .8;
+}
+.polaroid__pie {
+  display: block;
+  min-height: 2.5em;
+  padding: 7px 2px 9px;
+  font-family: var(--f-mano);
+  font-weight: 400;
+  font-size: 18px;
+  font-size: clamp(18px, 4.8vw, 22px);
+  line-height: 1.1;
+  text-align: center;
+  color: var(--tinta);
+  text-wrap: balance;
+}
+/* Sin foto todavía no hay pie que leer: se reserva el sitio, nada más */
+.polaroid:not(.con-foto) .polaroid__pie { visibility: hidden; }
+@media (hover: hover) {
+  .polaroid__cara:hover { transform: rotate(0deg) translateY(calc(var(--dy, 0px) - 6px)); }
+}
+
+/* ═══════════ 4 · La acuarela de Chantilly, enmarcada ═══════════ */
+.historia__cuadro {
+  position: relative;
+  max-width: 960px;
+  margin: 48px auto 0;
+  margin: clamp(44px, 8vh, 84px) auto 0;
+}
+/* Ramita de olivo apoyada sobre la esquina superior derecha del marco
+   (sin parallax: va pegada al marco, como una rama puesta encima) */
+.historia__hojas {
+  top: -16px;
+  right: -10px;
+  width: 140px;
+  width: clamp(128px, 34vw, 210px);
+  z-index: 2;
+  color: var(--olivo);
+  opacity: .9;
+}
+.historia__hojas svg { width: 100%; height: auto; transform: rotate(158deg); }
+
+/* «paspartu» y no «marco»: css/basico.css aún trae reglas v1 para .historia__marco */
+.historia__paspartu {
+  z-index: 1;
+  padding: 12px;
+  padding: clamp(12px, 2.6vw, 26px);
+  border-radius: 2px;
+}
+.historia__lienzo {
+  position: relative;
+  overflow: hidden;
+  /* En celular se recorta a 3:2 centrado en la pareja; desde 700 px, la acuarela entera */
+  aspect-ratio: 3 / 2;
+}
+.historia__lienzo img {
+  position: absolute;
+  top: 0; right: 0; bottom: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 46%;
+  /* El papel de la acuarela se funde con el paspartú */
+  mix-blend-mode: multiply;
+}
+/* Bordes difuminados: el lavado no termina en una línea recta */
+.historia__lienzo::after {
+  content: '';
+  position: absolute;
+  top: 0; right: 0; bottom: 0; left: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(251, 249, 244, 1) 0%, rgba(251, 249, 244, 0) 7%, rgba(251, 249, 244, 0) 93%, rgba(251, 249, 244, 1) 100%),
+    linear-gradient(180deg, rgba(251, 249, 244, .95) 0%, rgba(251, 249, 244, 0) 9%, rgba(251, 249, 244, 0) 90%, rgba(251, 249, 244, .95) 100%);
+}
+@media (min-width: 700px) {
+  .historia__lienzo { aspect-ratio: 1400 / 658; }
+  .historia__lienzo img { object-position: 50% 50%; }
+}
+
+.historia__pie {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 16px;
+  margin-top: clamp(14px, 2.6vh, 24px);
+  font-family: var(--f-mano);
+  font-weight: 400;
+  font-size: 22px;
+  font-size: clamp(22px, 6vw, 32px);
+  line-height: 1.2;
+  text-align: center;
+  color: var(--olivo-hondo);
+}
+/* En pantallas angostas el pie va solo (las hojitas lo partían) y puede ocupar dos renglones */
+@media (max-width: 539px) {
+  .historia__pie-hoja { display: none; }
+}
+.historia__pie-hoja {
+  flex: none;
+  width: 40px;
+  width: clamp(36px, 8vw, 54px);
+  height: auto;
+  color: var(--olivo);
+  transform: translateY(-4px);
+}
+.historia__pie-hoja--der { transform: translateY(-4px) scaleX(-1); }
+
+/* ═══════════ Escritorio ═══════════ */
+@media (min-width: 900px) {
+  .historia__cielo { height: 120px; height: clamp(100px, 14vh, 150px); }
+  .historia__vuelo--a { top: -40px; right: 2%; width: 170px; }
+  .historia__vuelo--b { top: 70px; left: 3%; width: 134px; }
+
+  .historia__cuerpo {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr);
+    gap: 56px;
+    align-items: center;
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .historia__relato { max-width: none; }
+  .historia__fotos {
+    margin-top: 0;
+    max-width: none;
+    gap: 18px;
+    padding: 16px 0;
+  }
+  .polaroid { max-width: 170px; }
+  .historia__hojas { top: -22px; right: -26px; }
+}
+@media (min-width: 1200px) {
+  .historia__vuelo--a { right: 4%; width: 196px; }
+  .historia__vuelo--b { left: 5%; width: 150px; }
+}
+
+/* ═══════════ Respaldos ═══════════ */
+/* Sin aspect-ratio (Safari anterior a 15, Chrome anterior a 88): la
+   proporción se reserva con padding; las imágenes ya son absolutas. */
+@supports not (aspect-ratio: 1) {
+  .polaroid__ventana::before { content: ''; display: block; padding-top: 125%; }
+  .historia__lienzo::before { content: ''; display: block; padding-top: 66.67%; }
+  @media (min-width: 700px) {
+    .historia__lienzo::before { padding-top: 47%; }
+  }
+}
+/* Sin «gap» en flexbox (ver base.css): se separa con márgenes */
+@supports not (inset: 0) {
+  .historia__fotos { gap: 0; }
+  .polaroid { margin: 0 6px; }
+  .historia__pie { gap: 0; }
+  .historia__pie-hoja { margin: 0 12px; }
+}
+@media (forced-colors: active) {
+  .historia__lienzo img { mix-blend-mode: normal; }
+  .historia__lienzo::after { display: none; }
+  .polaroid__cara { border: 1px solid CanvasText; }
+}

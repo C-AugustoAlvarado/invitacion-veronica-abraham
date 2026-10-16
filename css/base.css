@@ -12,6 +12,16 @@
   font-display: swap;
   src: url('../assets/fuentes/dancing-script.woff2') format('woff2');
 }
+/* Manuscrita elegida por los novios (SIL Open Font License, Kimberly Geswein).
+   Trazo fino y minúsculas altas (ojo de 0.44 em frente a 0.33 de Dancing Script):
+   no necesita size-adjust, pero pide tinta oscura y tamaños ≥ 1.4rem. */
+@font-face {
+  font-family: 'La Belle Aurore';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('../assets/fuentes/la-belle-aurore.woff2') format('woff2');
+}
 @font-face {
   font-family: 'Cormorant Garamond';
   font-style: normal;
@@ -28,48 +38,55 @@
 }
 
 :root {
-  /* La invitación es solo clara: el navegador no debe oscurecerla por su cuenta.
-     La primera línea es para los que no entienden «only» (Chrome 86 a 97). */
-  color-scheme: light;
-  color-scheme: only light;
+  /* ── Paleta v2 (retroalimentación de los novios, 12 oct 2026):
+     solo ivory y verde olivo, negro o gris para textos, dorado apenas
+     insinuado en filetes. Los nombres heredados de v1 (crema, café,
+     dorado, pétalo…) apuntan a los valores nuevos para que todo el CSS
+     existente cambie de golpe. ── */
+  --marfil: #F6F2EA;
+  --marfil-luz: #FBF9F4;
+  --blanco-calido: #FFFDF8;
+  --marfil-hondo: #ECE6D9;
+  --olivo: #6B7042;
+  --olivo-hondo: #4E5330;
+  --olivo-claro: #A3A67E;
+  --olivo-palido: #D9DBC7;
+  --tinta: #2B2B28;
+  --tinta-suave: #3A3A35;
+  --gris: #6E6B63;
+  --gris-claro: #B9B5AA;
+  --dorado-tenue: #CDBF9E;
 
-  /* ── Paleta del Save the Date ── */
-  --crema: #F8F4EB;
-  --cafe: #5C5138;
-  --cafe-texto: #4E4632;
-  --dorado: #C99A45;
-  --vino: #9C3D2E;
-  --petalo: #E2C288;
-
-  /* ── Extensiones (derivadas de la acuarela del castillo) ── */
-  --crema-luz: #FDFBF5;
-  --crema-calida: #F3EBDB;
-  --arena: #E8DCC4;
-  --lino: #D6C7AA;
-  --durazno: #E9C39A;
-  --terracota: #C98D62;
-  --oliva: #8C8A5E;
-  --oliva-claro: #BBB38E;
-  --dorado-brillo: #F0DCA8;
-  --dorado-hondo: #A87C2F;
-  /* Dorado para texto pequeño: contraste suficiente sobre crema y papel */
-  --dorado-tinta: #7D5A1E;
-  --vino-hondo: #6E2A20;
-  --noche: #2B2820;
-  --noche-alta: #3A3527;
-  --noche-honda: #1E1C16;
-  --tinta: #4A4632;
+  /* Nombres heredados (v1) → paleta v2 */
+  --crema: var(--marfil);
+  --crema-luz: var(--marfil-luz);
+  --crema-calida: #F1ECE0;
+  --arena: #E6E1D4;
+  --lino: #D5D0C2;
+  --cafe: var(--tinta);
+  --cafe-texto: var(--tinta-suave);
+  --dorado: var(--olivo);
+  --dorado-hondo: var(--olivo-hondo);
+  --dorado-brillo: var(--olivo-claro);
+  --dorado-tinta: var(--olivo-hondo);
+  --petalo: var(--olivo-claro);
+  --vino: var(--olivo-hondo);
+  --vino-hondo: #3B3F24;
+  --durazno: #E9DED0;
+  --terracota: #C9B9A2;
+  --oliva: var(--olivo);
+  --oliva-claro: var(--olivo-claro);
+  --noche: #26261F;
+  --noche-alta: #32332A;
+  --noche-honda: #1B1B16;
 
   /* ── Tipografía ── */
   --f-script: 'Dancing Script', 'Snell Roundhand', cursive;
+  --f-mano: 'La Belle Aurore', 'Bradley Hand', 'Segoe Print', var(--f-script);   /* manuscrita casual elegida por los novios */
   --f-serif: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
 
   /* ── Ritmo y movimiento ── */
   --ancho: 1120px;
-  /* Con el teléfono acostado el margen respeta la muesca; se toma el lado
-     mayor para que el contenido centrado no se desplace. En vertical y en
-     Android env() vale 0 y queda clamp(22px, 5vw, 64px), como siempre.
-     (Todo navegador que entiende clamp() entiende también max() y env().) */
   --margen: max(clamp(22px, 5vw, 64px), env(safe-area-inset-left, 0px), env(safe-area-inset-right, 0px));
   --suave: cubic-bezier(.22, .61, .36, 1);
   --elastica: cubic-bezier(.34, 1.4, .64, 1);
@@ -79,6 +96,8 @@
   --amb-dorado: 0;
   --amb-ocaso: 0;
   --amb-noche: 0;
+  color-scheme: light;
+  color-scheme: only light;
 }
 
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -86,6 +105,7 @@
 html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
+  font-synthesis: none;   /* La Belle Aurore solo existe en 400: nada de negrita falsa */
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -158,21 +178,21 @@ html[data-ambiente="noche"] #ambiente { background-color: var(--noche); }
 .amb--dia {
   background:
     radial-gradient(120% 80% at 50% 0%, var(--crema-luz) 0%, rgba(253, 251, 245, 0) 60%),
-    radial-gradient(90% 60% at 100% 100%, rgba(233, 195, 154, .18) 0%, rgba(233, 195, 154, 0) 70%),
+    radial-gradient(90% 60% at 100% 100%, rgba(217, 219, 199, .3) 0%, rgba(217, 219, 199, 0) 70%),
     var(--crema);
 }
 .amb--dorado {
   opacity: var(--amb-dorado);
   background:
     radial-gradient(110% 70% at 15% 10%, rgba(253, 251, 245, .7) 0%, rgba(253, 251, 245, 0) 60%),
-    radial-gradient(100% 70% at 90% 95%, rgba(201, 154, 69, .22) 0%, rgba(201, 154, 69, 0) 70%),
-    linear-gradient(180deg, #F3EBDB 0%, #EBDDC2 55%, #E4D2B0 100%);
+    radial-gradient(100% 70% at 90% 95%, rgba(107, 112, 66, .14) 0%, rgba(107, 112, 66, 0) 70%),
+    linear-gradient(180deg, #F3EFE5 0%, #EBE6D8 55%, #E3DECD 100%);
 }
 .amb--ocaso {
   opacity: var(--amb-ocaso);
   background:
-    radial-gradient(90% 55% at 50% 100%, rgba(240, 190, 120, .95) 0%, rgba(226, 150, 96, .55) 38%, rgba(156, 61, 46, 0) 75%),
-    linear-gradient(180deg, #4A3A2E 0%, #7A4A3A 34%, #B9744F 66%, #E2A66B 100%);
+    radial-gradient(90% 55% at 50% 100%, rgba(236, 212, 170, .95) 0%, rgba(214, 180, 140, .5) 38%, rgba(110, 92, 74, 0) 75%),
+    linear-gradient(180deg, #3C3A30 0%, #6E5C4A 34%, #B08A68 66%, #DCC3A2 100%);
 }
 .amb--noche {
   opacity: var(--amb-noche);
@@ -180,7 +200,7 @@ html[data-ambiente="noche"] #ambiente { background-color: var(--noche); }
      plano del atardecer, que usa exactamente ese color. */
   background:
     radial-gradient(70% 42% at 85% 0%, rgba(122, 96, 60, .42) 0%, rgba(122, 96, 60, 0) 72%),
-    radial-gradient(60% 36% at 8% 6%, rgba(156, 61, 46, .16) 0%, rgba(156, 61, 46, 0) 70%),
+    radial-gradient(60% 36% at 8% 6%, rgba(163, 166, 126, .12) 0%, rgba(163, 166, 126, 0) 70%),
     linear-gradient(180deg, var(--noche-alta) 0%, var(--noche) 46%, var(--noche) 100%);
 }
 /* Grano de papel: una sola textura fija sobre todo el recorrido */
@@ -264,14 +284,6 @@ html:not(.js) .solo-basico { display: block; }
 }
 .t-nombres .inicial { font-size: 1.32em; }
 
-.t-fecha {
-  font-family: var(--f-serif);
-  font-style: italic;
-  font-weight: 600;
-  font-size: clamp(28px, 5.6vw, 52px);
-  letter-spacing: .06em;
-  color: var(--dorado);
-}
 
 .t-lugar {
   font-family: var(--f-serif);
@@ -353,11 +365,6 @@ html:not(.js) .solo-basico { display: block; }
   color: var(--cafe);
   box-shadow: inset 0 0 0 1px var(--dorado);
 }
-.boton--oro {
-  background: linear-gradient(135deg, var(--dorado-brillo) 0%, var(--dorado) 45%, var(--dorado-hondo) 100%);
-  color: var(--noche);
-  box-shadow: 0 12px 34px -14px rgba(201, 154, 69, .8);
-}
 .seccion--noche .boton--linea { color: var(--crema); }
 @supports not (inset: 0) {
   .boton { gap: 0; }
@@ -376,7 +383,7 @@ html:not(.js) .solo-basico { display: block; }
 @media (hover: hover) {
   .boton:hover { transform: translateY(-2px); }
   .boton:hover::after { transform: translateX(120%); }
-  .boton--linea:hover { background: rgba(201, 154, 69, .12); }
+  .boton--linea:hover { background: rgba(107, 112, 66, .1); }
 }
 .boton:active { transform: translateY(1px) scale(.99); }
 
@@ -400,7 +407,7 @@ html:not(.js) .solo-basico { display: block; }
   border-radius: 3px;
   box-shadow:
     0 1px 0 rgba(255, 255, 255, .9) inset,
-    0 0 0 1px rgba(201, 154, 69, .22),
+    0 0 0 1px rgba(205, 191, 158, .45),
     0 30px 60px -34px rgba(43, 40, 32, .55),
     0 12px 22px -16px rgba(43, 40, 32, .28);
   padding: clamp(26px, 5vw, 52px);
@@ -409,7 +416,7 @@ html:not(.js) .solo-basico { display: block; }
   content: '';
   position: absolute;
   top: 9px; right: 9px; bottom: 9px; left: 9px;
-  border: 1px solid rgba(201, 154, 69, .38);
+  border: 1px solid rgba(205, 191, 158, .7);
   border-radius: 2px;
   pointer-events: none;
 }
@@ -449,7 +456,6 @@ html:not(.js) .solo-basico { display: block; }
 /* Texto partido en palabras por el motor ([data-letras]) */
 .palabra { display: inline-block; white-space: pre; }
 /* Par de palabras que no debe separarse entre renglones */
-.sin-corte { white-space: nowrap; }
 .js [data-letras] .palabra {
   opacity: 0;
   transform: translate3d(0, .55em, 0) rotate(3deg);
@@ -499,7 +505,5 @@ html:not(.js) .solo-basico { display: block; }
   .galeria__flecha,
   .galeria-visor__boton { border: 1px solid ButtonText; }
   .rsvp-opcion__radio:checked + .rsvp-opcion__cara { border: 3px solid Highlight; }
-  .portada__castillo img,
-  .sobre__forro-imagen,
   .amb--grano { mix-blend-mode: normal; }
 }

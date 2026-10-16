@@ -1,8 +1,10 @@
 /* ═══════════════════════════════════════════════════════════════
-   Pétalos — dos lienzos fijos a pantalla completa.
-   «fondo» queda detrás del contenido (main está en z-index 1) y
-   «frente» por encima de todo, incluido el sobre (z-index 1000).
-   Ninguno recibe toques ni clics.
+   Hojitas de olivo (js/petalos.js) — dos lienzos fijos a pantalla
+   completa. «fondo» queda detrás del contenido (main está en
+   z-index 1) y «frente» por encima de todo, incluido el sobre
+   (z-index 1000). Ninguno recibe toques ni clics.
+   Los nombres de clase conservan «petalos» (v1) para no tocar el
+   resto del sitio.
    ═══════════════════════════════════════════════════════════════ */
 
 .petalos-lienzo {
@@ -12,7 +14,7 @@
   width: 100%;
   max-width: none;
   /* Alto de la ventana «grande»: cuando la barra del navegador móvil se
-     esconde no hay que volver a medir ni queda una franja sin pétalos. */
+     esconde no hay que volver a medir ni queda una franja sin hojitas. */
   height: 100vh;
   height: 100lvh;
   pointer-events: none;

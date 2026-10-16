@@ -7,13 +7,15 @@ BEGIN:VEVENT
 UID:boda-veronica-abraham-20270306T220000Z@invitacion
 DTSTAMP:20260926T000000Z
 DTSTART:20270306T220000Z
-DTEND:20270307T080000Z
+DTEND:20270307T073000Z
 SUMMARY:Boda de Verónica y Abraham
-DESCRIPTION:Ceremonia religiosa: 4:00 p.m. en la Catedral de Morelia. Recep
- ción: Hotel Boutique Casa Grande\, Portal Matamoros 98\, Centro Históric
- o. Código de vestimenta: etiqueta rigurosa.
+DESCRIPTION:Ceremonia: 16:00 hrs en la Catedral de Morelia. Recepción: 17:
+ 00 hrs en el Hotel Casa Grande\, Portal Matamoros 98\, Centro Histórico. 
+ Código de vestimenta: etiqueta rigurosa.\n\nInvitación: https://c-august
+ oalvarado.github.io/invitacion-veronica-abraham/
 LOCATION:Catedral de Morelia\, Av. Francisco I. Madero Poniente S/N\, Centr
  o Histórico\, 58000 Morelia\, Michoacán\, México
+URL:https://c-augustoalvarado.github.io/invitacion-veronica-abraham/
 STATUS:CONFIRMED
 TRANSP:OPAQUE
 BEGIN:VALARM

@@ -1,9 +1,11 @@
 // Sobre de bienvenida: lo primero que ve el invitado.
-// Un sobre cerrado a pantalla completa con sello de lacre A&V. Al tocar el
-// sello, este se parte, la solapa se levanta, la bolsa se desliza y aparece
-// la invitación, que ya está debajo. Construye su propio DOM dentro de
-// <div id="sobre"></div>. Se comunica solo con eventos en document:
-// emite 'petalos:rafaga' y 'sobre:abierto' (DISENO.md §4).
+// Un sobre marfil a pantalla completa, cerrado con un sello de lacre blanco
+// que lleva grabado el monograma A&V. Al tocar el sello, este se parte, la
+// solapa se levanta, la bolsa se desliza y aparece la invitación, que ya está
+// debajo. Construye su propio DOM dentro de <div id="sobre"></div>.
+// Se comunica solo con eventos en document: emite 'petalos:rafaga' y
+// 'sobre:abierto' (DISENO.md §4). El monograma es el símbolo #monograma-av
+// de src/pagina.html (en la demo se copia tal cual).
 
 import { CONFIG } from './config.js';
 
@@ -13,6 +15,9 @@ const n = (v) => Number(v).toFixed(1);
 // Contorno irregular del lacre (viewBox 0 0 200 200), con sus goterones.
 const CONTORNO = 'M191.5 100C191.7 104.7 190.3 109.6 189.1 114.1C187.9 118.7 186.4 123.3 184.2 127.4C182.1 131.5 178.4 134.8 176.1 138.8C173.8 142.7 172.6 147.2 170.4 151.1C168.1 155.1 166 159.6 162.6 162.6C159.3 165.7 154.5 167.4 150.4 169.4C146.3 171.4 142 172.6 137.9 174.4C133.9 176.3 130.3 179.1 126.1 180.4C122 181.8 117.4 182 113.1 182.7C108.7 183.3 104.4 184.3 100 184.3C95.6 184.4 91.1 183.8 86.9 183C82.6 182.1 79.1 179.3 74.3 179.1C69.6 178.8 63.8 181.5 58.4 181.7C53 181.9 46 182.6 41.8 180.2C37.5 177.7 35.6 171.4 33.1 166.9C30.6 162.4 28.8 157.6 27 153C25.2 148.5 23.6 144 22.4 139.5C21.2 135 20.7 130.5 19.7 126.1C18.8 121.7 16.7 117.6 16.6 113.2C16.5 108.9 18.4 104.3 19.2 100C19.9 95.7 21.5 92 21.3 87.5C21.2 83.1 18.5 78.1 18.5 73.5C18.6 69 19.9 64.2 21.7 60.1C23.6 56 27 52.6 29.9 49C32.7 45.5 35.4 41.8 38.8 38.8C42.1 35.8 46.4 33.9 50 31.1C53.6 28.4 56.6 24.9 60.3 22.1C64 19.4 67.9 15.9 72.3 14.6C76.6 13.3 81.8 14.8 86.5 14.5C91.1 14.2 95.4 13.3 100 12.7C104.6 12.1 109.6 10.3 114.1 10.9C118.6 11.5 122.9 14.5 127.2 16.4C131.4 18.2 135.8 19.7 139.6 22.2C143.4 24.7 147.1 27.8 149.9 31.4C152.7 34.9 153.6 40.2 156.6 43.4C159.5 46.7 164.4 47.8 167.8 50.8C171.1 53.7 174.4 57.1 176.7 60.9C178.9 64.8 179.1 69.5 181.1 73.7C183 77.8 186.5 81.6 188.2 86C190 90.4 191.4 95.3 191.5 100Z';
 
+// Sombras del papel: gris neutro, nunca café
+const SOMBRA = '#3A3A35';
+
 const escapar = (texto) => String(texto)
   .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
@@ -21,32 +26,31 @@ function definiciones() {
   return `
 <svg class="sobre__defs" aria-hidden="true" focusable="false" xmlns="${SVG}">
   <defs>
+    <!-- Cuerpo del lacre: marfil con luz arriba a la izquierda -->
     <radialGradient id="sb-lacre" cx="36%" cy="30%" r="78%">
-      <stop offset="0" stop-color="#B9523F"/>
-      <stop offset=".42" stop-color="#9C3D2E"/>
-      <stop offset=".8" stop-color="#7C2F23"/>
-      <stop offset="1" stop-color="#6E2A20"/>
+      <stop offset="0" stop-color="#FFFEFB"/>
+      <stop offset=".45" stop-color="#F8F5EE"/>
+      <stop offset=".82" stop-color="#ECE8DD"/>
+      <stop offset="1" stop-color="#E0DBCE"/>
     </radialGradient>
+    <!-- Canto: brilla hacia la luz y se apaga en la sombra -->
     <linearGradient id="sb-canto" x1="18%" y1="10%" x2="82%" y2="92%">
-      <stop offset="0" stop-color="#F0B7A2" stop-opacity=".75"/>
-      <stop offset=".35" stop-color="#F0B7A2" stop-opacity="0"/>
-      <stop offset=".7" stop-color="#3A120C" stop-opacity="0"/>
-      <stop offset="1" stop-color="#3A120C" stop-opacity=".6"/>
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity=".95"/>
+      <stop offset=".35" stop-color="#FFFFFF" stop-opacity="0"/>
+      <stop offset=".65" stop-color="${SOMBRA}" stop-opacity="0"/>
+      <stop offset="1" stop-color="${SOMBRA}" stop-opacity=".42"/>
     </linearGradient>
+    <!-- Cuenco que dejó la prensa: apenas más hondo que el cuerpo -->
     <radialGradient id="sb-cuenco" cx="62%" cy="68%" r="80%">
-      <stop offset="0" stop-color="#A44332"/>
-      <stop offset=".55" stop-color="#8E3729"/>
-      <stop offset="1" stop-color="#6B271D"/>
+      <stop offset="0" stop-color="#F6F3EB"/>
+      <stop offset=".6" stop-color="#F0ECE2"/>
+      <stop offset="1" stop-color="#E5E0D3"/>
     </radialGradient>
     <linearGradient id="sb-hundido" x1="20%" y1="12%" x2="80%" y2="90%">
-      <stop offset="0" stop-color="#36100A" stop-opacity=".85"/>
-      <stop offset=".45" stop-color="#36100A" stop-opacity="0"/>
-      <stop offset=".6" stop-color="#F3BCA8" stop-opacity="0"/>
-      <stop offset="1" stop-color="#F3BCA8" stop-opacity=".7"/>
-    </linearGradient>
-    <linearGradient id="sb-grabado" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#5F2118"/>
-      <stop offset="1" stop-color="#7A2E22"/>
+      <stop offset="0" stop-color="${SOMBRA}" stop-opacity=".5"/>
+      <stop offset=".45" stop-color="${SOMBRA}" stop-opacity="0"/>
+      <stop offset=".6" stop-color="#FFFFFF" stop-opacity="0"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity=".95"/>
     </linearGradient>
     <filter id="sb-brillo" x="-30%" y="-30%" width="160%" height="160%">
       <feGaussianBlur stdDeviation="5"/>
@@ -58,33 +62,35 @@ function definiciones() {
 </svg>`;
 }
 
-/* ── El sello: lacre con borde irregular, cuenco prensado y monograma ── */
-function dibujoSello(monograma) {
-  const texto = escapar(monograma);
+/* ── El sello: lacre blanco con borde irregular, cuenco prensado y el
+      monograma grabado en bajorrelieve (sombra arriba a la izquierda, luz
+      abajo a la derecha). Los colores de cada capa van en css/sobre.css ── */
+function dibujoSello() {
+  // El símbolo mide 440 × 300: se centra dentro del cuenco (r = 66)
+  const mono = (clase, dx, dy) =>
+    `<use class="sobre__mono ${clase}" href="#monograma-av" x="${n(45 + dx)}" y="${n(63.5 + dy)}" width="110" height="75"/>`;
   return `
 <svg viewBox="0 0 200 200" aria-hidden="true" focusable="false" xmlns="${SVG}">
   <path d="${CONTORNO}" fill="url(#sb-lacre)"/>
-  <path d="${CONTORNO}" fill="none" stroke="url(#sb-canto)" stroke-width="3.2"
+  <path d="${CONTORNO}" fill="none" stroke="url(#sb-canto)" stroke-width="3"
         transform="translate(100 100) scale(.972) translate(-100 -100)"/>
   <!-- Rodete que dejó la prensa -->
-  <circle cx="100" cy="100" r="72" fill="none" stroke="#F0B7A2" stroke-opacity=".16" stroke-width="7"/>
+  <circle cx="100" cy="100" r="72" fill="none" stroke="#FFFFFF" stroke-opacity=".55" stroke-width="7"/>
+  <circle cx="100" cy="100" r="75.5" fill="none" stroke="${SOMBRA}" stroke-opacity=".07" stroke-width="1.2"/>
   <!-- Cuenco prensado -->
   <circle cx="100" cy="100" r="66" fill="url(#sb-cuenco)"/>
-  <circle cx="100" cy="100" r="66" fill="none" stroke="url(#sb-hundido)" stroke-width="2.6"/>
+  <circle cx="100" cy="100" r="66" fill="none" stroke="url(#sb-hundido)" stroke-width="2.4"/>
   <!-- Filete grabado -->
-  <circle cx="100.7" cy="100.9" r="57" fill="none" stroke="#F3BCA8" stroke-opacity=".4" stroke-width="1.1"/>
-  <circle cx="100" cy="100" r="57" fill="none" stroke="#4A170F" stroke-opacity=".75" stroke-width="1.1"/>
-  <!-- Monograma en bajorrelieve: luz abajo a la derecha, sombra arriba a la izquierda -->
-  <g font-family="'Dancing Script', 'Snell Roundhand', cursive" font-weight="700" font-size="56"
-     text-anchor="middle" letter-spacing="1">
-    <text x="101.3" y="119.700" fill="#F6C4B0" fill-opacity=".55">${texto}</text>
-    <text x="98.9" y="116.700" fill="#2E0D08" fill-opacity=".8">${texto}</text>
-    <text x="100" y="118" fill="url(#sb-grabado)">${texto}</text>
-  </g>
-  <!-- Brillos del lacre -->
-  <ellipse cx="66" cy="44" rx="34" ry="11" transform="rotate(-34 66 44)" fill="#FFE9DF" fill-opacity=".34" filter="url(#sb-brillo)"/>
-  <path d="M40 66C47 49 60 36 77 28" fill="none" stroke="#FFF1EA" stroke-opacity=".55" stroke-width="2.6" stroke-linecap="round" filter="url(#sb-brillo-fino)"/>
-  <ellipse cx="143" cy="159" rx="20" ry="6" transform="rotate(-36 143 159)" fill="#F0B7A2" fill-opacity=".2" filter="url(#sb-brillo)"/>
+  <circle cx="100.7" cy="100.8" r="57" fill="none" stroke="#FFFFFF" stroke-opacity=".9" stroke-width="1"/>
+  <circle cx="100" cy="100" r="57" fill="none" stroke="${SOMBRA}" stroke-opacity=".26" stroke-width="1"/>
+  <!-- Monograma en bajorrelieve -->
+  ${mono('sobre__mono--sombra', -1.1, -1.1)}
+  ${mono('sobre__mono--luz', 1.1, 1.1)}
+  ${mono('sobre__mono--grabado', 0, 0)}
+  <!-- Brillos nacarados del lacre -->
+  <ellipse cx="66" cy="44" rx="34" ry="11" transform="rotate(-34 66 44)" fill="#FFFFFF" fill-opacity=".55" filter="url(#sb-brillo)"/>
+  <path d="M40 66C47 49 60 36 77 28" fill="none" stroke="#FFFFFF" stroke-opacity=".9" stroke-width="2.6" stroke-linecap="round" filter="url(#sb-brillo-fino)"/>
+  <ellipse cx="143" cy="159" rx="20" ry="6" transform="rotate(-36 143 159)" fill="#FFFFFF" fill-opacity=".4" filter="url(#sb-brillo)"/>
 </svg>`;
 }
 
@@ -118,34 +124,34 @@ function dibujoBolsa(g) {
 <svg viewBox="0 0 ${n(ancho)} ${n(alto)}" preserveAspectRatio="none" aria-hidden="true" focusable="false" xmlns="${SVG}">
   <defs>
     <linearGradient id="sb-lado-izq" gradientUnits="userSpaceOnUse" x1="0" y1="${n(alto * 0.5)}" x2="${n(medio)}" y2="${n(alto * 0.62)}">
-      <stop offset="0" stop-color="#FAF6EC"/><stop offset="1" stop-color="#EFE6D2"/>
+      <stop offset="0" stop-color="#FDFCF8"/><stop offset="1" stop-color="#F0EEE6"/>
     </linearGradient>
     <linearGradient id="sb-lado-der" gradientUnits="userSpaceOnUse" x1="${n(ancho)}" y1="${n(alto * 0.5)}" x2="${n(medio)}" y2="${n(alto * 0.62)}">
-      <stop offset="0" stop-color="#F8F3E7"/><stop offset="1" stop-color="#ECE2CC"/>
+      <stop offset="0" stop-color="#FBFAF6"/><stop offset="1" stop-color="#EDEBE2"/>
     </linearGradient>
     <linearGradient id="sb-inferior" gradientUnits="userSpaceOnUse" x1="0" y1="${n(yValle)}" x2="0" y2="${n(alto)}">
-      <stop offset="0" stop-color="#FDFBF5"/><stop offset=".55" stop-color="#F8F3E8"/><stop offset="1" stop-color="#F1E9D8"/>
+      <stop offset="0" stop-color="#FFFEFB"/><stop offset=".55" stop-color="#FAF8F3"/><stop offset="1" stop-color="#F3F1EA"/>
     </linearGradient>
     <filter id="sb-difuso" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="9"/></filter>
     <filter id="sb-difuso-fino" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="3"/></filter>
     <clipPath id="sb-recorte-bolsa"><path d="${bolsa}"/></clipPath>
   </defs>
   <!-- Sombra de la bolsa sobre el forro -->
-  <path d="${bolsa}" transform="translate(0 -7)" fill="#4A3A1E" fill-opacity=".34" filter="url(#sb-difuso)"/>
-  <path d="${bolsa}" transform="translate(0 -2)" fill="#4A3A1E" fill-opacity=".3" filter="url(#sb-difuso-fino)"/>
+  <path d="${bolsa}" transform="translate(0 -7)" fill="${SOMBRA}" fill-opacity=".26" filter="url(#sb-difuso)"/>
+  <path d="${bolsa}" transform="translate(0 -2)" fill="${SOMBRA}" fill-opacity=".22" filter="url(#sb-difuso-fino)"/>
   <!-- Solapas laterales -->
   <path d="M0 0L${n(medio)} ${n(yValle)}V${n(alto)}H0Z" fill="url(#sb-lado-izq)"/>
   <path d="M${n(ancho)} 0L${n(medio)} ${n(yValle)}V${n(alto)}H${n(ancho)}Z" fill="url(#sb-lado-der)"/>
   <!-- Solapa inferior, encima de las laterales -->
   <g clip-path="url(#sb-recorte-bolsa)">
-    <path d="${inferior}" transform="translate(0 -6)" fill="#4A3A1E" fill-opacity=".26" filter="url(#sb-difuso)"/>
-    <path d="${inferior}" transform="translate(0 -1.5)" fill="#4A3A1E" fill-opacity=".22" filter="url(#sb-difuso-fino)"/>
+    <path d="${inferior}" transform="translate(0 -6)" fill="${SOMBRA}" fill-opacity=".2" filter="url(#sb-difuso)"/>
+    <path d="${inferior}" transform="translate(0 -1.5)" fill="${SOMBRA}" fill-opacity=".16" filter="url(#sb-difuso-fino)"/>
   </g>
   <path d="${inferior}" fill="url(#sb-inferior)"/>
   <!-- Canto de luz en los dobleces -->
   <path d="M${n(-2)} ${n(alto + 2)}L${n(medio - 10)} ${n(yValle + 9)}Q${n(medio)} ${n(yValle - 1)} ${n(medio + 10)} ${n(yValle + 9)}L${n(ancho + 2)} ${n(alto + 2)}"
-        fill="none" stroke="#FFFFFF" stroke-opacity=".85" stroke-width="1.2"/>
-  <path d="M0 0L${n(medio)} ${n(yValle)}L${n(ancho)} 0" fill="none" stroke="#FFFFFF" stroke-opacity=".7" stroke-width="1.2"/>
+        fill="none" stroke="#FFFFFF" stroke-opacity=".9" stroke-width="1.2"/>
+  <path d="M0 0L${n(medio)} ${n(yValle)}L${n(ancho)} 0" fill="none" stroke="#FFFFFF" stroke-opacity=".75" stroke-width="1.2"/>
 </svg>`;
 }
 
@@ -156,14 +162,14 @@ function dibujoSombraSolapa(g) {
     <filter id="sb-difuso-solapa" x="-10%" y="-10%" width="120%" height="130%"><feGaussianBlur stdDeviation="11"/></filter>
     <filter id="sb-difuso-solapa-fino" x="-10%" y="-10%" width="120%" height="130%"><feGaussianBlur stdDeviation="2.5"/></filter>
   </defs>
-  <path d="${trazoSolapa(g, 0)}" transform="translate(0 9)" fill="#4A3A1E" fill-opacity=".36" filter="url(#sb-difuso-solapa)"/>
-  <path d="${trazoSolapa(g, 0)}" transform="translate(0 2)" fill="#4A3A1E" fill-opacity=".3" filter="url(#sb-difuso-solapa-fino)"/>
+  <path d="${trazoSolapa(g, 0)}" transform="translate(0 9)" fill="${SOMBRA}" fill-opacity=".28" filter="url(#sb-difuso-solapa)"/>
+  <path d="${trazoSolapa(g, 0)}" transform="translate(0 2)" fill="${SOMBRA}" fill-opacity=".22" filter="url(#sb-difuso-solapa-fino)"/>
 </svg>`;
 }
 
 function dibujoSolapa(g) {
   const { ancho, medio, yPunta } = g;
-  // Filete dorado paralelo al canto, como en la papelería fina
+  // Filete paralelo al canto, como en la papelería fina (dorado apenas insinuado)
   const largo = Math.hypot(medio, yPunta);
   const sep = 13;
   const fx = sep * (largo / yPunta);           // corrimiento horizontal en el borde de arriba
@@ -172,18 +178,18 @@ function dibujoSolapa(g) {
 <svg viewBox="0 0 ${n(ancho)} ${n(g.alto)}" preserveAspectRatio="none" aria-hidden="true" focusable="false" xmlns="${SVG}">
   <defs>
     <linearGradient id="sb-solapa" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="${n(yPunta)}">
-      <stop offset="0" stop-color="#F4EDDD"/><stop offset=".16" stop-color="#FBF8F0"/>
-      <stop offset=".7" stop-color="#FCFAF4"/><stop offset="1" stop-color="#F5EFE1"/>
+      <stop offset="0" stop-color="#F5F3ED"/><stop offset=".16" stop-color="#FCFBF7"/>
+      <stop offset=".7" stop-color="#FEFDFA"/><stop offset="1" stop-color="#F6F4EE"/>
     </linearGradient>
     <linearGradient id="sb-solapa-luz" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="${n(ancho)}" y2="0">
-      <stop offset="0" stop-color="#FFFFFF" stop-opacity=".5"/><stop offset=".5" stop-color="#FFFFFF" stop-opacity="0"/>
-      <stop offset="1" stop-color="#5C5138" stop-opacity=".07"/>
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity=".55"/><stop offset=".5" stop-color="#FFFFFF" stop-opacity="0"/>
+      <stop offset="1" stop-color="${SOMBRA}" stop-opacity=".05"/>
     </linearGradient>
   </defs>
   <path d="${trazoSolapa(g)}" fill="url(#sb-solapa)"/>
   <path d="${trazoSolapa(g)}" fill="url(#sb-solapa-luz)"/>
-  <path d="M0 0L${n(medio)} ${n(yPunta)}L${n(ancho)} 0" fill="none" stroke="#FFFFFF" stroke-opacity=".9" stroke-width="1.4"/>
-  <path d="M${n(fx)} 0L${n(medio)} ${n(fy)}L${n(ancho - fx)} 0" fill="none" stroke="#C99A45" stroke-opacity=".6" stroke-width="1"/>
+  <path d="M0 0L${n(medio)} ${n(yPunta)}L${n(ancho)} 0" fill="none" stroke="#FFFFFF" stroke-opacity=".95" stroke-width="1.4"/>
+  <path d="M${n(fx)} 0L${n(medio)} ${n(fy)}L${n(ancho - fx)} 0" fill="none" stroke="#CDBF9E" stroke-opacity=".8" stroke-width="1"/>
 </svg>`;
 }
 
@@ -211,7 +217,24 @@ export function iniciarSobre(opciones = {}) {
   }
 
   const reducido = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const { ella, el, monograma } = CONFIG.novios;
+  const { ella, el } = CONFIG.novios;
+  // Textos del sobre (los pidieron así los novios; se pueden cambiar por opciones)
+  const dedicatoria = opciones.dedicatoria || 'Esta invitación es exclusiva para ti';
+  const firma = opciones.firma || CONFIG.novios.firma || 'Vero & Abraham';
+  const indicacion = opciones.indicacion || 'toca aquí para abrir';
+  // La firma lleva el «&» en letra manuscrita
+  const firmaHtml = escapar(firma).replace(/\s*&amp;\s*/, ' <i>&amp;</i> ');
+  // La dedicatoria se parte en dos renglones por la mitad (en el espacio más
+  // cercano al centro); en pantallas bajas el CSS la vuelve a juntar.
+  const dedicatoriaHtml = (() => {
+    const texto = escapar(dedicatoria);
+    const medio = texto.length / 2;
+    let corte = -1;
+    for (let i = 0; i < texto.length; i++) {
+      if (texto[i] === ' ' && (corte < 0 || Math.abs(i - medio) < Math.abs(corte - medio))) corte = i;
+    }
+    return corte > 0 ? `<span>${texto.slice(0, corte)}</span> <span>${texto.slice(corte + 1)}</span>` : texto;
+  })();
 
   raiz.classList.add('sobre');
   raiz.setAttribute('role', 'dialog');
@@ -221,22 +244,21 @@ export function iniciarSobre(opciones = {}) {
 ${definiciones()}
 <div class="sobre__escena">
   <div class="sobre__interior" aria-hidden="true">
-    <div class="sobre__forro"><div class="sobre__forro-imagen"></div></div>
+    <div class="sobre__forro"><div class="sobre__forro-patron"></div></div>
   </div>
   <div class="sobre__bolsa">
     <div class="sobre__dibujo" data-dibujo="bolsa"></div>
     <div class="sobre__pie">
-      <p class="sobre__toca">Toca el sello para abrir</p>
-      <p class="sobre__lugar">Morelia, Michoacán</p>
+      <p class="sobre__amor">con amor, ${firmaHtml}</p>
+      <p class="sobre__toca">${escapar(indicacion)}</p>
     </div>
   </div>
   <div class="sobre__sombra" data-dibujo="sombra" aria-hidden="true"></div>
   <div class="sobre__solapa">
     <div class="sobre__dibujo" data-dibujo="solapa"></div>
     <div class="sobre__solapa-luz" aria-hidden="true"></div>
-    <div class="sobre__nombres">
-      <p>${escapar(ella)}<i>&amp;</i>${escapar(el)}</p>
-      <span class="sobre__filete" aria-hidden="true"><b></b></span>
+    <div class="sobre__dedicatoria">
+      <p class="sobre__exclusiva">${dedicatoriaHtml}</p>
     </div>
   </div>
   <div class="sobre__sello-lugar">
@@ -246,8 +268,8 @@ ${definiciones()}
     <span class="sobre__destello" aria-hidden="true"></span>
     <button type="button" class="sobre__sello" aria-label="Abrir la invitación">
       <span class="sobre__prensa">
-        <span class="sobre__mitad sobre__mitad--izq">${dibujoSello(monograma)}</span>
-        <span class="sobre__mitad sobre__mitad--der">${dibujoSello(monograma)}</span>
+        <span class="sobre__mitad sobre__mitad--izq">${dibujoSello()}</span>
+        <span class="sobre__mitad sobre__mitad--der">${dibujoSello()}</span>
       </span>
     </button>
   </div>
@@ -259,13 +281,13 @@ ${definiciones()}
   const partes = {
     interior: $('.sobre__interior'),
     forro: $('.sobre__forro'),
-    imagen: $('.sobre__forro-imagen'),
+    patron: $('.sobre__forro-patron'),
     bolsa: $('.sobre__bolsa'),
     pie: $('.sobre__pie'),
     sombra: $('.sobre__sombra'),
     solapa: $('.sobre__solapa'),
     luz: $('.sobre__solapa-luz'),
-    nombres: $('.sobre__nombres'),
+    dedicatoria: $('.sobre__dedicatoria'),
     lugar: $('.sobre__sello-lugar'),
     prensa: $('.sobre__prensa'),
     izq: $('.sobre__mitad--izq'),
@@ -294,17 +316,25 @@ ${definiciones()}
 
   /* ── Mientras está cerrado: página bloqueada y fuera del teclado ── */
   const apartados = [];
+  // «inert» llegó en Safari 15.5 / Chrome 102; antes de eso, aria-hidden y una trampa de Tab
+  const tieneInert = 'inert' in HTMLElement.prototype;
   function apartarPagina() {
     for (const hermano of document.body.children) {
       if (hermano === raiz || hermano.contains(raiz)) continue;
       if (/^(SCRIPT|STYLE|LINK|TEMPLATE|NOSCRIPT)$/.test(hermano.tagName)) continue;
-      if (hermano.inert) continue;
-      hermano.inert = true;
+      // El símbolo del monograma (svg de 0 × 0 en body) se necesita para dibujar el sello
+      if (hermano.tagName === 'svg' && hermano.querySelector('#monograma-av')) continue;
+      if (hermano.inert || hermano.getAttribute('aria-hidden') === 'true') continue;
+      if (tieneInert) hermano.inert = true;
+      hermano.setAttribute('aria-hidden', 'true');
       apartados.push(hermano);
     }
   }
   function devolverPagina() {
-    apartados.splice(0).forEach((hermano) => { hermano.inert = false; });
+    apartados.splice(0).forEach((hermano) => {
+      if (tieneInert) hermano.inert = false;
+      hermano.removeAttribute('aria-hidden');
+    });
   }
 
   let estado = 'cerrado';   // cerrado → abriendo → abierto
@@ -315,6 +345,8 @@ ${definiciones()}
 
   function alTeclear(evento) {
     if (estado !== 'cerrado' || evento.defaultPrevented) return;
+    // Sin «inert» el teclado podría irse a la página tapada: el foco se queda en el sello
+    if (!tieneInert && evento.key === 'Tab') { evento.preventDefault(); sello.focus({ preventScroll: true }); return; }
     if (evento.key !== 'Enter' && evento.key !== ' ' && evento.key !== 'Spacebar') return;
     if (evento.target === sello) return;   // el botón ya lo resuelve solo
     evento.preventDefault();
@@ -406,6 +438,7 @@ ${definiciones()}
     animar(partes.sombraSello, [{ opacity: 1 }, { opacity: 0 }], { duration: 520, delay: 320, easing: SUAVE });
     animar(partes.pie, [{ opacity: 1 }, { opacity: 0 }], { duration: 620, delay: 120, easing: SUAVE });
 
+    // Ráfaga desde el sello (el módulo de partículas ahora lanza hojitas)
     setTimeout(() => {
       document.dispatchEvent(new CustomEvent('petalos:rafaga', {
         detail: { x: centro.x, y: centro.y, cantidad: 26, fuerza: 1 }
@@ -418,7 +451,7 @@ ${definiciones()}
       { transform: 'rotateX(106deg)' }
     ], { duration: 1500, delay: 760, easing: VAIVEN });
     animar(partes.luz, [{ opacity: 0 }, { opacity: 0.2 }], { duration: 1100, delay: 760, easing: 'ease-in' });
-    animar(partes.nombres, [{ opacity: 1 }, { opacity: 0 }], { duration: 700, delay: 900, easing: SUAVE });
+    animar(partes.dedicatoria, [{ opacity: 1 }, { opacity: 0 }], { duration: 700, delay: 900, easing: SUAVE });
     animar(partes.sombra, [
       { transform: 'translate3d(0, 0, 0) scale(1)', opacity: 1 },
       { transform: 'translate3d(0, 26px, 0) scale(1.03)', opacity: 0 }
@@ -438,8 +471,8 @@ ${definiciones()}
       { transform: 'translate3d(0, 0, 0) scale(1)' },
       { transform: 'translate3d(0, -28px, 0) scale(1.04)' }
     ], { duration: 1150, delay: 1950, easing: VAIVEN, composite: 'replace' });
-    // La acuarela del forro se despide un poco antes, para no encimarse con la portada
-    animar(partes.imagen, [{ opacity: 1 }, { opacity: 0 }], { duration: 700, delay: 2150, easing: 'ease-in-out' });
+    // Las hojitas del forro se despiden un poco antes, para no encimarse con la portada
+    animar(partes.patron, [{ opacity: 1 }, { opacity: 0 }], { duration: 700, delay: 2150, easing: 'ease-in-out' });
     const fundido = animar(raiz, [{ opacity: 1 }, { opacity: 0 }], { duration: 820, delay: 2260, easing: 'ease-in-out' });
 
     seguro = setTimeout(terminar, 3600);   // por si la pestaña se durmió a media animación
@@ -463,8 +496,15 @@ ${definiciones()}
   window.addEventListener('resize', alRedimensionar, { passive: true });
   alCambiarVisibilidad();
 
-  // El monograma usa la fuente manuscrita de la página: se pide por adelantado
-  document.fonts?.load?.('700 62px "Dancing Script"', monograma).catch(() => {});
+  // La dedicatoria y el «&» del monograma usan la letra manuscrita de la
+  // página (--f-mano): se pide por adelantado para que no aparezcan en serif
+  try {
+    const mano = getComputedStyle(document.documentElement).getPropertyValue('--f-mano').split(',')[0].trim();
+    if (mano && document.fonts?.load) {
+      document.fonts.load(`500 32px ${mano}`, dedicatoria).catch(() => {});
+      document.fonts.load(`600 74px ${mano}`, '&').catch(() => {});
+    }
+  } catch (e) { /* sin Font Loading API: la fuente llega sola */ }
 
   if (opciones.enfocar !== false) {
     try { sello.focus({ preventScroll: true }); } catch (e) { sello.focus(); }

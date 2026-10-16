@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════════
-   Secciones de la invitación (portada, historia, ceremonia,
+   Secciones de la invitación (atardecer, cierre y reglas compartidas;
    recepción, atardecer y cierre). Las demás secciones tienen su
    propio archivo. Ninguna sección pinta fondo: todas flotan sobre
    el ambiente continuo de base.css.
@@ -12,7 +12,7 @@ html { scroll-behavior: smooth; }
 main { overflow-x: clip; }
 /* Respaldo para Safari anterior a 16 (iOS 15), que no conoce overflow: clip */
 @supports not (overflow: clip) {
-  .portada, .fecha, .historia, .ceremonia, .recepcion { overflow: hidden; }
+  .portada, .historia, .boda { overflow: hidden; }
 }
 
 /* Mientras el sobre se monta, la pantalla ya es papel crema */
@@ -20,372 +20,14 @@ main { overflow-x: clip; }
   position: fixed;
   top: 0; right: 0; bottom: 0; left: 0;
   z-index: 1000;
-  background: var(--crema-calida);
+  background: var(--marfil-luz);
 }
 
 .icono { flex: none; }
 
-.ornamento--izq { justify-content: flex-start; margin-left: 0; }
-.ornamento--izq::before { display: none; }
-/* Sin «gap» en flexbox (ver base.css): el rombo no se separa del borde */
-@supports not (inset: 0) {
-  .ornamento--izq i { margin-left: 0; }
-}
 
-.dato-hora { line-height: 1.1; color: var(--cafe); }
-.recepcion__texto .dato-hora { margin-bottom: .5em; }
 
-.direccion {
-  font-style: normal;
-  font-size: clamp(16px, 2vw, 19px);
-  letter-spacing: .06em;
-  line-height: 1.65;
-  margin: 1.2em 0 1.6em;
-  padding-left: 18px;
-  border-left: 1px solid var(--dorado);
-}
-
-/* ═══════════ 1 · Portada ═══════════ */
-.portada {
-  min-height: 100vh;
-  min-height: 100svh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding-top: clamp(54px, 9vh, 100px);
-  padding-bottom: clamp(30px, 5vh, 60px);
-}
-.portada__contenido {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-.portada__sobretitulo { margin-bottom: clamp(6px, 1.4vh, 14px); }
-.portada__titulo { font-size: clamp(52px, 11.5vw, 104px); }
-.portada__nombres { margin-top: clamp(2px, 1vh, 12px); }
-.portada__nombres .amp { font-style: italic; padding: 0 .08em; }
-
-.portada__ilustracion {
-  position: relative;
-  width: 128vw;   /* en celular la acuarela sangra por los lados: se ve más grande */
-  margin: clamp(14px, 3.4vh, 42px) 0 clamp(12px, 3vh, 36px);
-}
-@media (min-width: 700px) {
-  /* En pantallas apaisadas todo se mide también contra el alto, para que
-     título, acuarela, fecha, lugar y botón quepan en la primera pantalla
-     (la acuarela mide 1400:658 → ancho = alto × 2.128) */
-  .portada {
-    padding-top: clamp(34px, 5.5vh, 100px);
-    padding-bottom: clamp(24px, 4vh, 60px);
-  }
-  .portada__titulo { font-size: clamp(52px, min(11.5vw, 11vh), 104px); }
-  .portada__nombres { font-size: clamp(30px, min(6.5vw, 6vh), 58px); }
-  .portada__ilustracion {
-    width: min(92vw, 1040px, max(440px, calc((100vh - 556px) * 2.128)));
-    width: min(92vw, 1040px, max(440px, calc((100svh - 556px) * 2.128)));
-    margin: clamp(8px, 2.4vh, 42px) 0 clamp(6px, 2vh, 36px);
-  }
-  .portada__accion { margin-top: clamp(14px, 2.8vh, 40px); }
-}
-.portada__castillo img {
-  width: 100%;
-  height: auto;
-  mix-blend-mode: multiply;
-  -webkit-mask-image:
-    linear-gradient(90deg, transparent 0, #000 7%, #000 93%, transparent 100%),
-    linear-gradient(180deg, transparent 0, #000 9%, #000 90%, transparent 100%);
-  -webkit-mask-composite: source-in;
-  mask-image:
-    linear-gradient(90deg, transparent 0, #000 7%, #000 93%, transparent 100%),
-    linear-gradient(180deg, transparent 0, #000 9%, #000 90%, transparent 100%);
-  mask-composite: intersect;
-}
-.portada__lavado {
-  width: 104%;
-  left: -2%;
-  top: 50%;
-  translate: 0 -52%;
-  opacity: .42;
-}
-/* Respaldo sin la propiedad «translate» (Chrome anterior a 104, Safari anterior
-   a 14.1): se centra con margen negativo, porque transform lo escribe el motor.
-   La imagen (1000:800) mide el ancho del contenedor, porque max-width: 100 %
-   la limita: 100 % × 0.8 × 0.52, y el margen se mide contra ese mismo ancho */
-@supports not (translate: 0) {
-  .portada__lavado { margin-top: -41.6%; }
-}
-.portada__ornamento { margin: clamp(2px, 1vh, 12px) auto clamp(8px, 1.6vh, 16px); }
-.portada__lugar { margin-top: 0; }
-.portada__accion { margin-top: clamp(22px, 4vh, 40px); }
-
-.portada__esquina {
-  width: clamp(230px, 38vw, 520px);
-  height: auto;
-  top: -2%;
-  opacity: .92;
-}
-.portada__esquina--izq { left: clamp(-90px, -5vw, -40px); }
-.portada__esquina--der {
-  right: clamp(-90px, -5vw, -40px);
-  transform-origin: center;
-}
-/* La esquina derecha es la misma ilustración reflejada: el reflejo va en el
-   contenedor de parallax, así que se hace con escala negativa en la imagen */
-.portada__esquina--der { scale: -1 1; }
-/* Respaldo sin la propiedad «scale»: el reflejo va en transform. Mientras el
-   motor mueve la capa, él mismo antepone scaleX(-1) (data-parallax-espejo) */
-@supports not (scale: 1) {
-  .portada__esquina--der { transform: scaleX(-1); }
-}
-/* En celulares angostos (360 px) el mínimo de 230 px encima las flores en el título */
-@media (max-width: 380px) {
-  .portada__esquina { width: 52vw; }
-}
-
-.portada__nube { width: clamp(300px, 52vw, 760px); height: auto; opacity: .8; }
-.portada__nube--a { left: -14%; top: 30%; }
-.portada__nube--b { right: -18%; top: 58%; opacity: .65; }
-
-.portada__bajar {
-  margin-top: clamp(20px, 3.6vh, 44px);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 16px;
-  color: var(--dorado-hondo);
-  text-decoration: none;
-  opacity: 0;
-  transition: opacity 1.4s var(--suave) 2.2s;
-}
-@supports not (inset: 0) {
-  .portada__bajar { gap: 0; }
-  .portada__bajar-texto { margin-bottom: 8px; }
-}
-.portada__bajar-texto {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: .42em;
-  text-transform: uppercase;
-  padding-left: .42em;
-}
-.portada__bajar svg { animation: bajar 2.6s var(--suave) infinite; }
-html:not(.js) .portada__bajar,
-.portada.es-abierta .portada__bajar { opacity: .85; }
-@keyframes bajar {
-  0%, 100% { transform: translateY(-4px); opacity: .5; }
-  50% { transform: translateY(5px); opacity: 1; }
-}
-/* En pantallas apaisadas la portada llena la primera pantalla con el botón;
-   el aviso no cabe y se omite (en tableta vertical y celular sí se muestra) */
-@media (min-width: 700px) and (orientation: landscape) {
-  .portada__bajar { display: none; }
-}
-
-/* ═══════════ 3 · Nuestra historia ═══════════ */
-.historia { padding-top: clamp(110px, 20vh, 220px); }
-
-.historia__rejilla {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  justify-items: center;
-  gap: clamp(22px, 4vh, 40px);
-  text-align: center;
-}
-.historia__lado { font-size: clamp(22px, 4.4vw, 34px); }
-.historia__lado--izq { color: var(--dorado-hondo); }
-
-.historia__marco {
-  width: min(74vw, 340px);
-  aspect-ratio: 3 / 4.3;
-  padding: 10px;
-  border-radius: 999px 999px 6px 6px;
-  background: linear-gradient(160deg, #FFFDF8 0%, #F4ECDB 100%);
-  box-shadow:
-    0 0 0 1px rgba(201, 154, 69, .45),
-    0 40px 70px -40px rgba(78, 70, 50, .6),
-    0 14px 26px -18px rgba(78, 70, 50, .35);
-}
-.historia__cielo {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  border-radius: 999px 999px 3px 3px;
-  box-shadow: inset 0 0 0 1px rgba(201, 154, 69, .35);
-  background:
-    radial-gradient(90% 60% at 30% 12%, #FFFFFF 0%, rgba(255, 255, 255, 0) 70%),
-    linear-gradient(180deg, #F7EBD6 0%, #F3DFC2 48%, #EBCFA6 100%);
-  isolation: isolate;
-}
-.historia__cielo img { position: absolute; max-width: none; }
-.historia__cielo-nube--1 { width: 120%; left: -42%; top: 8%; opacity: .95; }
-.historia__cielo-nube--2 { width: 110%; right: -40%; bottom: 10%; opacity: .9; }
-.historia__paracaidas--a { width: 50%; left: 8%; top: 20%; }
-.historia__paracaidas--b { width: 40%; right: 9%; top: 42%; }
-.historia__foto { top: 0; right: 0; bottom: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 2; }
-.historia__cielo.con-foto img:not(.historia__foto) { display: none; }
-
-.historia__texto { max-width: 680px; }
-.historia__frase { margin-bottom: .5em; color: var(--cafe); }
-
-.historia__lavado { width: min(120vw, 1000px); left: 50%; top: 4%; translate: -50% 0; opacity: .55; }
-/* La mitad del ancho real: el de la sección, con tope de 1000 px */
-@supports not (translate: 0) {
-  .historia__lavado { margin-left: max(-50%, -500px); }
-}
-.historia__rama { width: clamp(260px, 44vw, 600px); height: auto; right: -12%; top: -3%; }
-.historia__nube { width: clamp(320px, 50vw, 720px); height: auto; left: -18%; top: 40%; opacity: .85; }
-.historia__vuelo { width: clamp(70px, 10vw, 140px); height: auto; opacity: .9; }
-.historia__vuelo--a { right: 7%; top: 46%; }
-@media (max-width: 899px) {
-  .historia__vuelo--a { top: 36%; right: 2%; }
-}
-
-@media (min-width: 900px) {
-  .historia__rejilla {
-    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
-    align-items: center;
-    column-gap: clamp(36px, 6vw, 90px);
-  }
-  .historia__lado--izq { justify-self: end; text-align: right; }
-  .historia__lado--der { justify-self: start; text-align: left; }
-  .historia__marco { width: min(30vw, 380px); }
-  .historia__texto { grid-column: 1 / -1; margin-top: clamp(20px, 5vh, 50px); }
-  .historia__vuelo--a { right: clamp(8px, calc(50% - 490px), 12%); top: 58%; }
-}
-
-/* ═══════════ 4 · Ceremonia y 5 · Recepción ═══════════ */
-.ceremonia__rejilla,
-.recepcion__rejilla {
-  display: grid;
-  /* minmax(0, …): la ilustración sangra fuera de la columna sin ensancharla */
-  grid-template-columns: minmax(0, 1fr);
-  align-items: center;
-  gap: clamp(30px, 6vh, 64px);
-}
-.ceremonia__arte,
-.recepcion__arte {
-  position: relative;
-  width: min(124vw, 760px);
-  justify-self: center;
-}
-.ceremonia__dibujo img,
-.recepcion__dibujo img { width: 100%; height: auto; }
-
-.ceremonia__lavado,
-.recepcion__lavado { width: 118%; left: -9%; top: 50%; translate: 0 -50%; opacity: .55; }
-/* 100 % (tope de max-width) × 0.8 (imagen 1000:800) × 0.5 */
-@supports not (translate: 0) {
-  .ceremonia__lavado,
-  .recepcion__lavado { margin-top: -40%; }
-}
-
-.ceremonia__texto .t-script,
-.recepcion__texto .t-script { font-size: clamp(40px, 7.4vw, 72px); }
-.ceremonia__texto .t-dato,
-.recepcion__texto .t-dato { color: var(--cafe); margin: .3em 0 1.3em; }
-.ceremonia__texto .t-sobretitulo,
-.recepcion__texto .t-sobretitulo { margin-bottom: 10px; }
-.recepcion__texto .t-cuerpo:first-of-type { margin-top: .9em; }
-@media (min-width: 700px) and (max-width: 899.98px) {
-  .historia__texto .t-cuerpo,
-  .ceremonia__texto .t-cuerpo,
-  .recepcion__texto .t-cuerpo { max-width: 30em; }
-  .historia__texto .t-cuerpo {
-    margin-left: auto;    /* respaldo donde no existe margin-inline */
-    margin-right: auto;
-    margin-inline: auto;
-  }
-}
-
-.ceremonia__rama { width: clamp(200px, 30vw, 420px); height: auto; left: -9%; top: 2%; }
-.ceremonia__flor { width: clamp(130px, 17vw, 250px); height: auto; right: -3%; bottom: 3%; }
-.recepcion__rama { width: clamp(240px, 40vw, 560px); height: auto; right: -16%; top: -5%; }
-.recepcion__flor { width: clamp(130px, 18vw, 270px); height: auto; left: -7%; top: 47%; }
-
-@media (min-width: 900px) {
-  .ceremonia__rejilla { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); column-gap: clamp(40px, 6vw, 90px); }
-  .recepcion__rejilla { grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); column-gap: clamp(40px, 6vw, 90px); }
-  .ceremonia__arte,
-  .recepcion__arte { width: 100%; }
-  .ceremonia__arte { margin-left: clamp(-80px, -5vw, -30px); }
-  .recepcion__arte { margin-right: clamp(-80px, -5vw, -30px); }
-}
-
-/* Tarjetas de datos prácticos */
-.recepcion__datos {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: clamp(18px, 3vw, 30px);
-  margin-top: clamp(50px, 9vh, 100px);
-}
-@media (min-width: 760px) {
-  .recepcion__datos { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .recepcion__datos .papel {
-    padding-left: clamp(20px, calc(7vw - 34px), 52px);    /* respaldo donde no existe padding-inline */
-    padding-right: clamp(20px, calc(7vw - 34px), 52px);
-    padding-inline: clamp(20px, calc(7vw - 34px), 52px);
-  }
-}
-.dato { text-align: center; }
-.dato__icono {
-  width: 46px;
-  height: 46px;
-  margin: 0 auto 14px;
-  color: var(--dorado);
-}
-.dato__titulo { color: var(--dorado-tinta); }
-.dato__principal {
-  font-family: var(--f-script);
-  font-weight: 600;
-  font-style: normal;
-  font-size: clamp(28px, 4vw, 36px);
-  line-height: 1.2;
-  color: var(--cafe);
-  margin: .3em 0 .35em;
-}
-.dato__accion { margin: 13px 0 -8px; }
-.dato__accion .enlace {
-  display: inline-flex;
-  align-items: center;
-  min-height: 44px;
-  padding: 0 14px;
-}
-.dato__muestras {
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-  margin-top: 16px;
-}
-@supports not (inset: 0) {
-  .dato__muestras { gap: 0; }
-  .dato__muestras .muestra + .muestra { margin-left: 12px; }
-}
-.muestra {
-  position: relative;
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  box-shadow: inset 0 0 0 1px rgba(78, 70, 50, .22);
-  overflow: hidden;
-}
-.muestra::after {
-  content: '';
-  position: absolute;
-  left: 50%;
-  top: -10%;
-  width: 1.4px;
-  height: 120%;
-  background: var(--vino);
-  transform: rotate(45deg);
-  opacity: .85;
-}
-.muestra--olivo { background: #6F7141; }
-.muestra--claro { background: #FFFFFF; }
-.muestra--marfil { background: #EFE4CC; }
+/* Portada, historia y «La boda» viven en css/portada.css, css/historia.css y css/boda.css (v2) */
 
 /* ═══════════ 6 · Atardecer ═══════════
    Escena fija (sticky) mientras la sección pasa: el sol baja y las
@@ -444,7 +86,7 @@ html:not(.js) .portada__bajar,
   opacity: clamp(0, calc(var(--p, 0) * 4 - .62), 1);
   transform: translate3d(0, calc((1 - var(--q)) * 3vh), 0);
 }
-.atardecer__frase .t-sobretitulo { color: var(--dorado-brillo); margin-bottom: 12px; }
+.atardecer__frase .t-sobretitulo { color: var(--marfil-hondo); text-shadow: 0 1px 3px rgba(43, 40, 32, .5); margin-bottom: 12px; }
 .atardecer__frase .t-script {
   color: var(--crema);
   font-size: clamp(34px, 6.4vw, 66px);
@@ -630,32 +272,31 @@ html:not(.js) .atardecer__frase { opacity: 1; }
   border-radius: 50%;
   background:
     radial-gradient(circle at 34% 26%, #FFFFFF 0%, rgba(255, 255, 255, 0) 55%),
-    linear-gradient(160deg, #FDFBF5 0%, #F1E8D6 100%);
+    linear-gradient(160deg, #FFFDF8 0%, #F0ECE2 100%);
   box-shadow:
-    0 0 0 1px rgba(201, 154, 69, .5),
-    0 0 0 9px rgba(248, 244, 235, .06),
-    0 0 90px 10px rgba(226, 194, 136, .22),
+    0 0 0 1px rgba(205, 191, 158, .6),
+    0 0 0 9px rgba(246, 242, 234, .06),
+    0 0 90px 10px rgba(205, 191, 158, .16),
     0 34px 60px -30px rgba(0, 0, 0, .7);
 }
-.cierre__sello img {
+/* Corona de olivo (dos ramas del símbolo #rama-olivo) y el monograma encima */
+.cierre__corona {
   position: absolute;
-  top: 4%; right: 4%; bottom: 4%; left: 4%;
-  width: 92%;
-  height: 92%;
+  top: 0; right: 0; bottom: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
 }
 .cierre__monograma {
   position: absolute;
-  top: 0; right: 0; bottom: 0; left: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--f-script);
-  font-weight: 600;
-  font-size: clamp(50px, 15vw, 78px);
-  line-height: 1;
-  color: var(--dorado);
+  top: 38%; left: 50%;
+  width: 48%;
+  height: auto;
+  transform: translate(-50%, -50%);
+  color: var(--tinta);
+  --monograma-fondo: #FBF9F4;
+  --monograma-acento: var(--olivo);
 }
-.cierre__monograma span { font-size: .62em; padding: 0 .06em; color: var(--cafe); }
 .cierre__frase { color: var(--crema); }
 .cierre__nombres { margin-top: clamp(12px, 2.4vh, 24px); color: var(--petalo); }
 .cierre__lugar {
@@ -674,12 +315,10 @@ html:not(.js) .atardecer__frase { opacity: 1; }
    (Safari anterior a 15, Chrome anterior a 88.) Sin él estas cajas medirían
    0 de alto, porque su contenido es absoluto. Va al final para ganar por orden. */
 @supports not (aspect-ratio: 1) {
-  .historia__marco { height: calc(min(74vw, 340px) * 1.4333); }   /* 3 / 4.3 */
   .atardecer__sol { height: clamp(120px, 30vw, 230px); }
   .cierre__sello::before { content: ''; display: block; padding-top: 100%; }
 }
 @media (min-width: 900px) {
   @supports not (aspect-ratio: 1) {
-    .historia__marco { height: calc(min(30vw, 380px) * 1.4333); }
-  }
+    }
 }

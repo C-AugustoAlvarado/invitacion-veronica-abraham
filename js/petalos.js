@@ -1,62 +1,113 @@
-// Pétalos: la firma del sitio. Dos lienzos fijos a pantalla completa:
-//   · «fondo»  (detrás del contenido): muchos pétalos chicos y nítidos.
-//   · «frente» (encima de todo, incluido el sobre): pocos pétalos grandes,
-//     desenfocados y muy translúcidos, como profundidad de campo.
-// De noche los pétalos se funden hacia chispas doradas y estrellas.
+// Hojitas de olivo: la firma del sitio (v2; en v1 eran pétalos, por eso el
+// archivo, la función y los eventos conservan el nombre «petalos»).
+// Dos lienzos fijos a pantalla completa:
+//   · «fondo»  (detrás del contenido): muchas hojitas chicas y nítidas.
+//   · «frente» (encima de todo, incluido el sobre): pocas hojas grandes,
+//     desenfocadas y muy translúcidas, como profundidad de campo.
+// De noche las hojitas se funden hacia chispas tenues y estrellas.
 // No importa otros módulos: escucha 'petalos:rafaga' y 'ambiente:cambio'
 // en document (DISENO.md §4). No emite eventos.
 // La calidad se ajusta sola: si el teléfono no sostiene el ritmo, bajan los
-// píxeles y la cantidad de pétalos (ver «Calidad»). En uno rápido no cambia nada.
+// píxeles y la cantidad de hojitas (ver «Calidad»). En uno rápido no cambia nada.
 
 const limitar = (v, a, b) => Math.min(b, Math.max(a, v));
 const mezclar = (a, b, t) => a + (b - a) * t;
 const azar = (a, b) => a + Math.random() * (b - a);
 const DOS_PI = Math.PI * 2;
 
-// Paleta del Save the Date. «peso» = qué tan seguido aparece cada color.
-const COLORES = [
-  { nombre: 'dorado', peso: 0.50, claro: '#F3E2B8', medio: '#E2C288', hondo: '#C99A45', vena: '150, 108, 44' },
-  { nombre: 'crema', peso: 0.20, claro: '#FFFBF1', medio: '#F3EBDB', hondo: '#D9C49A', vena: '168, 124, 47' },
-  { nombre: 'durazno', peso: 0.23, claro: '#F7E0C4', medio: '#E9C39A', hondo: '#CF9668', vena: '160, 100, 60' },
-  { nombre: 'vino', peso: 0.07, claro: '#F2D9CB', medio: '#E0AE9A', hondo: '#B8705F', vena: '156, 61, 46' }
-];
-
-// Tres siluetas, todas con curvas bézier en una caja de −0.5 a 0.5.
-// La base del pétalo queda abajo (y = 0.5) y la punta arriba.
-const FORMAS = [
-  // Pétalo de rosa: ancho, con una pequeña muesca en la punta
-  (c) => {
-    c.moveTo(0, 0.5);
-    c.bezierCurveTo(-0.40, 0.32, -0.54, -0.16, -0.22, -0.43);
-    c.bezierCurveTo(-0.11, -0.52, -0.03, -0.47, 0, -0.38);
-    c.bezierCurveTo(0.03, -0.47, 0.12, -0.52, 0.23, -0.42);
-    c.bezierCurveTo(0.53, -0.14, 0.38, 0.32, 0, 0.5);
+// Paleta v2 (css/base.css): olivo claro dominante, olivo y marfil con borde
+// olivo. «peso» = qué tan seguido aparece cada tono. Cada hoja tiene dos
+// caras: el haz (arriba, más hondo) y el envés (abajo, más claro y plateado,
+// como en el olivo de verdad); al voltearse en el aire se ve la otra cara.
+//   nervio: color del nervio central (RGB); borde: contorno fino (RGB) y su alfa.
+const TONOS = [
+  {
+    nombre: 'olivo-claro', peso: 0.55,
+    haz: { base: '#8E915E', medio: '#A3A67E', punta: '#B7BA95' },
+    enves: { base: '#B2B48F', medio: '#C6C8AC', punta: '#D6D8C2' },
+    nervio: '78, 83, 48', nervioAlfa: 0.42, nervioEnves: 0.26,
+    borde: '107, 112, 66', bordeAlfa: 0.34
   },
-  // Pétalo esbelto, de punta suave
-  (c) => {
-    c.moveTo(0.02, 0.5);
-    c.bezierCurveTo(-0.30, 0.30, -0.38, -0.20, -0.10, -0.46);
-    c.bezierCurveTo(-0.04, -0.51, 0.05, -0.51, 0.10, -0.45);
-    c.bezierCurveTo(0.36, -0.16, 0.30, 0.30, 0.02, 0.5);
+  {
+    nombre: 'olivo', peso: 0.25,
+    haz: { base: '#555A33', medio: '#6B7042', punta: '#7E8352' },
+    enves: { base: '#8A8D5F', medio: '#9FA27A', punta: '#B4B694' },
+    nervio: '217, 219, 199', nervioAlfa: 0.42, nervioEnves: 0.30,
+    borde: '78, 83, 48', bordeAlfa: 0.40
   },
-  // Pétalo ladeado, como si el aire lo hubiera curvado
-  (c) => {
-    c.moveTo(-0.06, 0.5);
-    c.bezierCurveTo(-0.44, 0.22, -0.46, -0.24, -0.12, -0.45);
-    c.bezierCurveTo(0.02, -0.53, 0.20, -0.46, 0.32, -0.30);
-    c.bezierCurveTo(0.50, -0.04, 0.34, 0.36, -0.06, 0.5);
+  {
+    nombre: 'marfil', peso: 0.20,
+    haz: { base: '#ECE6D9', medio: '#F6F2EA', punta: '#FDFBF6' },
+    enves: { base: '#E4DECF', medio: '#EFEADF', punta: '#F6F2EA' },
+    nervio: '107, 112, 66', nervioAlfa: 0.55, nervioEnves: 0.38,
+    borde: '107, 112, 66', bordeAlfa: 0.78
   }
 ];
 
+// Tres siluetas lanceoladas, con curvas bézier en una caja de −0.5 a 0.5.
+// La base de la hoja (donde nace el rabillo) queda abajo (y = 0.5) y la
+// punta arriba. Cada forma trae su contorno y el trazo de su nervio central.
+const FORMAS = [
+  // Hoja de olivo clásica: larga, angosta y recta
+  {
+    contorno(c) {
+      c.moveTo(0, 0.5);
+      c.bezierCurveTo(-0.14, 0.30, -0.15, -0.08, 0, -0.5);
+      c.bezierCurveTo(0.15, -0.08, 0.14, 0.30, 0, 0.5);
+    },
+    nervio(c) {
+      c.moveTo(0, 0.47);
+      c.quadraticCurveTo(0.005, 0.02, 0, -0.40);
+    },
+    rabillo: [0, 0.5, 0, 0.58]
+  },
+  // Hoja un poco combada por el viento, con la punta ladeada
+  {
+    contorno(c) {
+      c.moveTo(-0.03, 0.5);
+      c.bezierCurveTo(-0.20, 0.26, -0.21, -0.14, 0.07, -0.5);
+      c.bezierCurveTo(0.13, -0.10, 0.09, 0.26, -0.03, 0.5);
+    },
+    nervio(c) {
+      c.moveTo(-0.025, 0.47);
+      c.quadraticCurveTo(-0.07, 0.02, 0.05, -0.40);
+    },
+    rabillo: [-0.03, 0.5, -0.045, 0.58]
+  },
+  // Hoja más corta y ancha, de brote joven
+  {
+    contorno(c) {
+      c.moveTo(0, 0.42);
+      c.bezierCurveTo(-0.19, 0.26, -0.20, -0.10, 0, -0.42);
+      c.bezierCurveTo(0.20, -0.10, 0.19, 0.26, 0, 0.42);
+    },
+    nervio(c) {
+      c.moveTo(0, 0.39);
+      c.quadraticCurveTo(0.004, 0.02, 0, -0.33);
+    },
+    rabillo: [0, 0.42, 0, 0.52]
+  }
+];
+
+// Chispas de noche sobre --noche #26261F. Dos tonos posibles (núcleo, medio y
+// halo en RGB): «dorado» apenas insinuado (--dorado-tenue) o marfil cálido
+// (--marfil / --olivo-palido). El predeterminado se eligió comparando capturas.
+const CHISPAS = {
+  dorado: { nucleo: '255, 250, 238', medio: '236, 224, 192', halo: '205, 191, 158' },
+  marfil: { nucleo: '255, 253, 248', medio: '241, 238, 228', halo: '217, 219, 199' }
+};
+
 // Niveles de desenfoque: fracción útil del sprite y radio relativo.
+// Las hojas son delgadas: con menos desenfoque que los pétalos de v1 ya se
+// leen como «fuera de foco» sin perder la silueta.
 const DESENFOQUES = [
   { util: 0.92, radio: 0 },
-  { util: 0.80, radio: 0.03 },
-  { util: 0.64, radio: 0.04 }
+  { util: 0.80, radio: 0.022 },
+  { util: 0.64, radio: 0.03 }
 ];
 
 // Niveles de calidad: 0 = completa (la de siempre), 1 = ligera, 2 = mínima.
-// Lo caro no es calcular los pétalos sino los píxeles de dos lienzos a
+// Lo caro no es calcular las hojitas sino los píxeles de dos lienzos a
 // pantalla completa: por eso lo primero que baja es la resolución.
 const CALIDADES = [
   { dpr: 2, dprFrente: 1.5, densidad: 1, frente: true },
@@ -80,10 +131,12 @@ export function iniciarPetalos(opciones = {}) {
 
   const ajustes = {
     contenedor: document.body,
-    densidad: 1,          // multiplicador de la cantidad de pétalos
-    puntero: true,        // en escritorio, el puntero los aparta
+    densidad: 1,          // multiplicador de la cantidad de hojitas
+    puntero: true,        // en escritorio, el puntero las aparta
+    chispas: 'dorado',    // tono de las chispas de noche: 'dorado' (tenue) o 'marfil'
     ...opciones
   };
+  if (!CHISPAS[ajustes.chispas]) ajustes.chispas = 'dorado';
 
   const raiz = document.documentElement;
   const consultaReducido = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -125,14 +178,15 @@ export function iniciarPetalos(opciones = {}) {
   let alto = 0;
   let dprFondo = 1;
   let dprFrente = 1;
-  let escala = 1;         // los pétalos crecen un poco en pantallas grandes
+  let escala = 1;         // las hojitas crecen un poco en pantallas grandes
 
   /* ── Sprites pre-renderizados ── */
   const admiteFiltro = typeof ctxFondo.filter === 'string';
-  let sprites = null;     // sprites[calido][color][forma][desenfoque]
+  let sprites = null;     // sprites[calido][cara][tono][forma][desenfoque]; cara 0 = haz, 1 = envés
   let spriteChispa = null;
   let spriteEstrella = null;
   let dprSprites = 0;
+  let tonoChispas = ajustes.chispas;
 
   function nuevoLienzo(lado) {
     const l = document.createElement('canvas');
@@ -140,58 +194,67 @@ export function iniciarPetalos(opciones = {}) {
     return l;
   }
 
-  function dibujarPetalo(color, forma, lado, util) {
+  // Una hojita de olivo: relleno plano con un leve degradado a lo largo,
+  // nervio central fino, contorno delgado y un rabillo corto. Nada de
+  // lavados: en v2 las ilustraciones son de línea limpia.
+  function dibujarHoja(tono, forma, lado, util, enves) {
     const l = nuevoLienzo(lado);
     const c = l.getContext('2d');
+    const f = FORMAS[forma];
+    const cara = enves ? tono.enves : tono.haz;
     c.translate(lado / 2, lado / 2);
     c.scale(lado * util, lado * util);
+    c.lineCap = 'round';
+    c.lineJoin = 'round';
+
+    // Rabillo: se dibuja antes para que la hoja lo tape donde se tocan
+    c.strokeStyle = `rgba(${tono.borde}, ${Math.min(1, tono.bordeAlfa + 0.25)})`;
+    c.lineWidth = 0.022;
+    c.beginPath();
+    c.moveTo(f.rabillo[0], f.rabillo[1] - 0.02);
+    c.lineTo(f.rabillo[2], f.rabillo[3]);
+    c.stroke();
 
     c.beginPath();
-    FORMAS[forma](c);
+    f.contorno(c);
     c.closePath();
 
-    // Lavado principal: más hondo en la base, luminoso hacia la punta
-    const lavado = c.createRadialGradient(0, 0.48, 0.02, 0, 0.34, 1.0);
-    lavado.addColorStop(0, color.hondo);
-    lavado.addColorStop(0.5, color.medio);
-    lavado.addColorStop(1, color.claro);
-    c.fillStyle = lavado;
+    // Color de la lámina: un poco más hondo en la base, más luminoso en la punta
+    const lamina = c.createLinearGradient(0, 0.5, 0, -0.5);
+    lamina.addColorStop(0, cara.base);
+    lamina.addColorStop(0.45, cara.medio);
+    lamina.addColorStop(1, cara.punta);
+    c.fillStyle = lamina;
     c.fill();
 
     c.save();
     c.clip();
-    // Luz de un lado y sombra del otro: volumen
-    const volumen = c.createLinearGradient(-0.45, -0.2, 0.45, 0.2);
-    volumen.addColorStop(0, 'rgba(255, 255, 255, .30)');
-    volumen.addColorStop(0.5, 'rgba(255, 255, 255, 0)');
-    volumen.addColorStop(1, `rgba(${color.vena}, .20)`);
-    c.fillStyle = volumen;
+    // Media luz: una mitad de la lámina apenas más clara, como si el nervio
+    // la plegara un poco (en el envés, al revés)
+    const pliegue = c.createLinearGradient(-0.2, 0, 0.2, 0);
+    const luz = enves ? 'rgba(255, 255, 255, .16)' : 'rgba(255, 255, 255, .13)';
+    const sombra = `rgba(${tono.nervio}, ${enves ? 0.05 : 0.09})`;
+    pliegue.addColorStop(0, enves ? sombra : luz);
+    pliegue.addColorStop(0.5, 'rgba(255, 255, 255, 0)');
+    pliegue.addColorStop(1, enves ? luz : sombra);
+    c.fillStyle = pliegue;
     c.fillRect(-0.6, -0.6, 1.2, 1.2);
 
-    // Vena central y dos laterales, apenas insinuadas
-    c.lineCap = 'round';
-    c.strokeStyle = `rgba(${color.vena}, .24)`;
-    c.lineWidth = 0.012;
+    // Nervio central, fino y continuo
+    c.strokeStyle = `rgba(${tono.nervio}, ${enves ? tono.nervioEnves : tono.nervioAlfa})`;
+    c.lineWidth = enves ? 0.012 : 0.014;
     c.beginPath();
-    c.moveTo(0, 0.47);
-    c.quadraticCurveTo(-0.03, 0.05, 0.01, -0.26);
-    c.stroke();
-    c.strokeStyle = `rgba(${color.vena}, .10)`;
-    c.lineWidth = 0.009;
-    c.beginPath();
-    c.moveTo(-0.01, 0.30);
-    c.quadraticCurveTo(-0.14, 0.10, -0.20, -0.14);
-    c.moveTo(0, 0.24);
-    c.quadraticCurveTo(0.13, 0.06, 0.19, -0.16);
+    f.nervio(c);
     c.stroke();
     c.restore();
 
-    // Borde de tinta diluida, como en la acuarela
+    // Contorno: el que separa la hoja del fondo (la marfil lo necesita
+    // para verse sobre el papel marfil)
     c.beginPath();
-    FORMAS[forma](c);
+    f.contorno(c);
     c.closePath();
-    c.strokeStyle = `rgba(${color.vena}, .26)`;
-    c.lineWidth = 0.016;
+    c.strokeStyle = `rgba(${tono.borde}, ${enves ? tono.bordeAlfa * 0.8 : tono.bordeAlfa})`;
+    c.lineWidth = 0.018;
     c.stroke();
     return l;
   }
@@ -206,60 +269,87 @@ export function iniciarPetalos(opciones = {}) {
       c.filter = 'none';
       return l;
     }
-    // Sin ctx.filter (Safari anterior): promedio de copias repartidas en
-    // espiral. Solo ocurre una vez, al crear los sprites.
-    const copias = 36;
-    c.globalCompositeOperation = 'lighter';
-    c.globalAlpha = 1 / copias;
-    for (let i = 0; i < copias; i++) {
-      const r = radio * 1.9 * Math.sqrt((i + 0.5) / copias);
-      const a = i * 2.39996;
-      c.drawImage(origen, Math.cos(a) * r, Math.sin(a) * r);
+    // Sin ctx.filter (Safari, incluido iOS): desenfoque de caja separable,
+    // tres pasadas (casi gaussiano), sobre píxeles premultiplicados para que
+    // el borde no cambie de color. La suma de copias translúcidas de v1
+    // dejaba rayas y manchas rosadas en formas delgadas como estas.
+    // Solo ocurre una vez, al crear los sprites.
+    const datos = origen.getContext('2d').getImageData(0, 0, lado, lado);
+    const src = datos.data;
+    const n = lado * lado;
+    let a = new Float32Array(n * 4);
+    let b = new Float32Array(n * 4);
+    for (let i = 0, j = 0; i < n; i++, j += 4) {
+      const alfa = src[j + 3] / 255;
+      a[j] = src[j] * alfa; a[j + 1] = src[j + 1] * alfa; a[j + 2] = src[j + 2] * alfa; a[j + 3] = alfa;
     }
+    const r = Math.max(1, Math.round(radio * 0.95));
+    const peso = 1 / (r * 2 + 1);
+    const ultimo = lado - 1;
+    // Una pasada de caja en una dirección: suma corrida de los cuatro canales
+    const pasada = (de, hacia, pasoPix, pasoLin) => {
+      const sp = pasoPix * 4;
+      const sl = pasoLin * 4;
+      for (let lin = 0; lin < lado; lin++) {
+        const base = lin * sl;
+        let s0 = 0, s1 = 0, s2 = 0, s3 = 0;
+        for (let k = -r; k <= r; k++) {
+          const o = base + (k < 0 ? 0 : k) * sp;
+          s0 += de[o]; s1 += de[o + 1]; s2 += de[o + 2]; s3 += de[o + 3];
+        }
+        for (let i = 0; i < lado; i++) {
+          const o = base + i * sp;
+          hacia[o] = s0 * peso; hacia[o + 1] = s1 * peso; hacia[o + 2] = s2 * peso; hacia[o + 3] = s3 * peso;
+          const sale = base + (i - r < 0 ? 0 : i - r) * sp;
+          const entra = base + (i + r + 1 > ultimo ? ultimo : i + r + 1) * sp;
+          s0 += de[entra] - de[sale]; s1 += de[entra + 1] - de[sale + 1];
+          s2 += de[entra + 2] - de[sale + 2]; s3 += de[entra + 3] - de[sale + 3];
+        }
+      }
+    };
+    for (let p = 0; p < 3; p++) {
+      pasada(a, b, 1, lado);      // horizontal
+      pasada(b, a, lado, 1);      // vertical
+    }
+    const fuera = c.createImageData(lado, lado);
+    const dst = fuera.data;
+    for (let i = 0, j = 0; i < n; i++, j += 4) {
+      const alfa = a[j + 3];
+      if (alfa < 0.002) continue;
+      dst[j] = Math.round(a[j] / alfa); dst[j + 1] = Math.round(a[j + 1] / alfa); dst[j + 2] = Math.round(a[j + 2] / alfa);
+      dst[j + 3] = Math.round(alfa * 255);
+    }
+    c.putImageData(fuera, 0, 0);
     return l;
   }
 
+  // Al atardecer las hojitas se entibian apenas con el dorado tenue de los
+  // filetes (--dorado-tenue): nada de naranja.
   function entibiar(origen) {
     const l = nuevoLienzo(origen.width);
     const c = l.getContext('2d');
     c.drawImage(origen, 0, 0);
     c.globalCompositeOperation = 'source-atop';
-    c.fillStyle = 'rgba(226, 132, 78, .34)';
+    c.fillStyle = 'rgba(205, 191, 158, .36)';
     c.fillRect(0, 0, l.width, l.height);
     return l;
   }
 
-  function crearSprites() {
-    dprSprites = dprFondo;
-    const ladoNitido = 60 * dprFondo;
-    const ladoGrande = 168 * Math.min(dprFondo, 1.5);
-    sprites = [[], []];
-    COLORES.forEach((color, ic) => {
-      sprites[0][ic] = [];
-      sprites[1][ic] = [];
-      FORMAS.forEach((_, iforma) => {
-        const normales = DESENFOQUES.map((nivel, id) => {
-          const lado = id === 2 ? ladoGrande : ladoNitido;
-          const nitido = dibujarPetalo(color, iforma, lado, nivel.util);
-          return nivel.radio ? desenfocar(nitido, lado * nivel.radio) : nitido;
-        });
-        sprites[0][ic][iforma] = normales;
-        sprites[1][ic][iforma] = normales.map(entibiar);
-      });
-    });
+  function crearSpritesLuz() {
+    const paleta = CHISPAS[tonoChispas];
 
-    // Chispa: núcleo de luz cálida con halo
+    // Chispa: núcleo de luz con halo tenue
     const ladoChispa = 72 * dprFondo;
     spriteChispa = nuevoLienzo(ladoChispa);
     {
       const c = spriteChispa.getContext('2d');
       const m = ladoChispa / 2;
       const halo = c.createRadialGradient(m, m, 0, m, m, m);
-      halo.addColorStop(0, 'rgba(255, 248, 226, 1)');
-      halo.addColorStop(0.08, 'rgba(250, 232, 184, .95)');
-      halo.addColorStop(0.22, 'rgba(240, 220, 168, .42)');
-      halo.addColorStop(0.52, 'rgba(226, 190, 120, .12)');
-      halo.addColorStop(1, 'rgba(201, 154, 69, 0)');
+      halo.addColorStop(0, `rgba(${paleta.nucleo}, 1)`);
+      halo.addColorStop(0.08, `rgba(${paleta.medio}, .95)`);
+      halo.addColorStop(0.22, `rgba(${paleta.medio}, .40)`);
+      halo.addColorStop(0.52, `rgba(${paleta.halo}, .11)`);
+      halo.addColorStop(1, `rgba(${paleta.halo}, 0)`);
       c.fillStyle = halo;
       c.fillRect(0, 0, ladoChispa, ladoChispa);
     }
@@ -271,19 +361,19 @@ export function iniciarPetalos(opciones = {}) {
       const c = spriteEstrella.getContext('2d');
       const m = ladoEstrella / 2;
       const luz = c.createRadialGradient(m, m, 0, m, m, m * 0.5);
-      luz.addColorStop(0, 'rgba(255, 250, 235, 1)');
-      luz.addColorStop(0.25, 'rgba(240, 220, 168, .6)');
-      luz.addColorStop(1, 'rgba(240, 220, 168, 0)');
+      luz.addColorStop(0, `rgba(${paleta.nucleo}, 1)`);
+      luz.addColorStop(0.25, `rgba(${paleta.medio}, .6)`);
+      luz.addColorStop(1, `rgba(${paleta.medio}, 0)`);
       c.fillStyle = luz;
       c.fillRect(0, 0, ladoEstrella, ladoEstrella);
       c.translate(m, m);
       for (let i = 0; i < 2; i++) {
         const rayo = c.createLinearGradient(-m, 0, m, 0);
-        rayo.addColorStop(0, 'rgba(240, 220, 168, 0)');
-        rayo.addColorStop(0.3, 'rgba(240, 220, 168, 0)');
-        rayo.addColorStop(0.5, 'rgba(255, 246, 220, .5)');
-        rayo.addColorStop(0.7, 'rgba(240, 220, 168, 0)');
-        rayo.addColorStop(1, 'rgba(240, 220, 168, 0)');
+        rayo.addColorStop(0, `rgba(${paleta.medio}, 0)`);
+        rayo.addColorStop(0.3, `rgba(${paleta.medio}, 0)`);
+        rayo.addColorStop(0.5, `rgba(${paleta.nucleo}, .5)`);
+        rayo.addColorStop(0.7, `rgba(${paleta.medio}, 0)`);
+        rayo.addColorStop(1, `rgba(${paleta.medio}, 0)`);
         c.fillStyle = rayo;
         c.fillRect(-m, -ladoEstrella * 0.012, ladoEstrella, ladoEstrella * 0.024);
         c.rotate(Math.PI / 2);
@@ -291,19 +381,43 @@ export function iniciarPetalos(opciones = {}) {
     }
   }
 
+  function crearSprites() {
+    dprSprites = dprFondo;
+    const ladoNitido = 60 * dprFondo;
+    const ladoGrande = 168 * Math.min(dprFondo, 1.5);
+    // [calido][cara][tono][forma][desenfoque]
+    sprites = [[[], []], [[], []]];
+    TONOS.forEach((tono, it) => {
+      for (const cara of [0, 1]) {
+        sprites[0][cara][it] = [];
+        sprites[1][cara][it] = [];
+        FORMAS.forEach((_, iforma) => {
+          const normales = DESENFOQUES.map((nivel, id) => {
+            const lado = id === 2 ? ladoGrande : ladoNitido;
+            const nitido = dibujarHoja(tono, iforma, lado, nivel.util, cara === 1);
+            return nivel.radio ? desenfocar(nitido, lado * nivel.radio) : nitido;
+          });
+          sprites[0][cara][it][iforma] = normales;
+          sprites[1][cara][it][iforma] = normales.map(entibiar);
+        });
+      }
+    });
+    crearSpritesLuz();
+  }
+
   function elegirColor() {
     let r = Math.random();
-    for (let i = 0; i < COLORES.length; i++) {
-      r -= COLORES[i].peso;
+    for (let i = 0; i < TONOS.length; i++) {
+      r -= TONOS[i].peso;
       if (r <= 0) return i;
     }
     return 0;
   }
 
   /* ── Partículas ── */
-  let fondo = [];       // pétalos detrás del contenido
-  let frente = [];      // pétalos grandes desenfocados
-  let rafagas = [];     // pétalos temporales (sobre el lienzo de frente)
+  let fondo = [];       // hojitas detrás del contenido
+  let frente = [];      // hojas grandes desenfocadas
+  let rafagas = [];     // hojitas temporales (sobre el lienzo de frente)
   let chispas = [];     // luciérnagas doradas (fondo)
   let destellos = [];   // chispas grandes desenfocadas (frente)
   let estrellas = [];   // fijas, arriba
@@ -337,8 +451,10 @@ export function iniciarPetalos(opciones = {}) {
       vida: 0,
       duracion: 0
     };
+    // «tamano» es el largo de la hoja (la caja del sprite); el ancho es
+    // apenas un cuarto, por eso miden algo más que los pétalos de v1.
     if (cerca) {
-      p.tamano = azar(54, 116) * (ancho < 700 ? 0.74 : 1) * escala;
+      p.tamano = azar(52, 108) * (ancho < 700 ? 0.74 : 1) * escala;
       p.alfa = azar(0.2, 0.32);
       p.caida = azar(38, 64);
       p.arrastre = azar(0.62, 1.0);
@@ -346,8 +462,8 @@ export function iniciarPetalos(opciones = {}) {
       p.vVolteo *= 0.55;
       p.vGiro *= 0.6;
     } else {
-      p.tamano = (11 + z * 17) * escala;
-      p.alfa = 0.55 + z * 0.4;
+      p.tamano = (14 + z * 20) * escala;
+      p.alfa = 0.6 + z * 0.38;
       p.caida = 15 + z * 27;
       p.arrastre = 0.10 + z * 0.36;
       p.amplitud = 9 + z * 20;
@@ -356,11 +472,11 @@ export function iniciarPetalos(opciones = {}) {
     return p;
   }
 
-  // Pone el pétalo en un punto de entrada (o repartido por toda la ventana)
+  // Pone la hojita en un punto de entrada (o repartido por toda la ventana)
   function colocar(p, repartir, desdeAbajo) {
     const margen = p.tamano;
     if (p.capa === 'frente') {
-      // Los pétalos cercanos prefieren las orillas: dejan libre la lectura
+      // Las hojas cercanas prefieren las orillas: dejan libre la lectura
       const lado = Math.random() < 0.5 ? -1 : 1;
       const orilla = Math.pow(Math.random(), 1.7);
       p.x = ancho / 2 + lado * (ancho / 2) * (1.04 - orilla * 0.62);
@@ -462,7 +578,7 @@ export function iniciarPetalos(opciones = {}) {
     calidad = nuevo;
     // La hoja de estilos aligera el grano del fondo con esta clase
     raiz.classList.toggle('modesto', calidad === 2);
-    medir(true);              // nueva resolución, sprites y cantidad de pétalos
+    medir(true);              // nueva resolución, sprites y cantidad de hojitas
     if (reducido) pedirEstatico();
   }
 
@@ -599,14 +715,14 @@ export function iniciarPetalos(opciones = {}) {
     const cos = Math.cos(p.giro);
     const sen = Math.sin(p.giro);
     ctx.setTransform(cos * lado, sen * lado, -sen * lado * v, cos * lado * v, p.x * dpr, p.y * dpr);
-    // El envés se ve un poco más apagado
-    const a = alfa * (v < 0 ? 0.82 : 1);
-    const juego = sprites[0][p.color][p.forma][p.desenfoque];
-    ctx.globalAlpha = a;
+    // Al voltearse se ve el envés, más claro y plateado (sprite propio)
+    const cara = v < 0 ? 1 : 0;
+    const juego = sprites[0][cara][p.color][p.forma][p.desenfoque];
+    ctx.globalAlpha = alfa;
     ctx.drawImage(juego, -0.5, -0.5, 1, 1);
     if (calido > 0.02) {
-      ctx.globalAlpha = a * calido;
-      ctx.drawImage(sprites[1][p.color][p.forma][p.desenfoque], -0.5, -0.5, 1, 1);
+      ctx.globalAlpha = alfa * calido;
+      ctx.drawImage(sprites[1][cara][p.color][p.forma][p.desenfoque], -0.5, -0.5, 1, 1);
     }
   }
 
@@ -618,7 +734,7 @@ export function iniciarPetalos(opciones = {}) {
     ctx.drawImage(sprite, -0.5, -0.5, 1, 1);
   }
 
-  // Los pétalos cercanos se atenúan al cruzar la columna de lectura
+  // Las hojas cercanas se atenúan al cruzar la columna de lectura
   function atenuarCentro(x) {
     const d = Math.abs(x - ancho / 2) / (ancho / 2);
     return mezclar(0.55, 1, limitar(d * 1.25, 0, 1));
@@ -720,7 +836,7 @@ export function iniciarPetalos(opciones = {}) {
     fondoSucio = true;
   }
 
-  // Movimiento reducido: unos pocos pétalos quietos y tenues (o chispas, de noche)
+  // Movimiento reducido: unas pocas hojitas quietas y tenues (o chispas, de noche)
   let estaticoPedido = 0;
   function pedirEstatico() {
     if (estaticoPedido) return;
@@ -760,7 +876,7 @@ export function iniciarPetalos(opciones = {}) {
     if (destruido || pausado || reducido || document.hidden) return;
     if (anterior) vigilarRitmo((ahora - anterior) / 1000);
     anterior = ahora;
-    // En calidad mínima los pétalos se pintan a lo sumo unas 30 veces por
+    // En calidad mínima las hojitas se pintan a lo sumo unas 30 veces por
     // segundo: el resto de los cuadros queda libre para el scroll.
     if (calidad === 2 && pintado && ahora - pintado < 30) {
       cuadro = requestAnimationFrame(bucle);
@@ -801,8 +917,8 @@ export function iniciarPetalos(opciones = {}) {
       p.temporal = true;
       p.desenfoque = Math.random() < 0.22 ? 1 : 0;
       p.z = Math.random();
-      p.tamano = (12 + p.z * 17) * escala;
-      p.alfa = 0.72 + p.z * 0.24;
+      p.tamano = (15 + p.z * 20) * escala;
+      p.alfa = 0.74 + p.z * 0.24;
       p.caida = 46 + p.z * 50;
       p.arrastre = 0.5 + p.z * 0.4;
       p.amplitud = 16 + p.z * 22;
@@ -905,8 +1021,21 @@ export function iniciarPetalos(opciones = {}) {
       sprites = null;
       instancia = null;
     },
-    // Hoja con todos los sprites, para revisarlos de cerca
-    muestrario() { return sprites ? { petalos: sprites, chispa: spriteChispa, estrella: spriteEstrella } : null; },
+    // Cambia el tono de las chispas de noche ('dorado' o 'marfil') en caliente
+    chispas(nombre) {
+      if (destruido) return tonoChispas;
+      if (CHISPAS[nombre] && nombre !== tonoChispas) {
+        tonoChispas = nombre;
+        if (sprites) crearSpritesLuz();
+        if (reducido) pedirEstatico();
+      }
+      return tonoChispas;
+    },
+    // Hoja con todos los sprites, para revisarlos de cerca:
+    // hojas[calido][cara][tono][forma][desenfoque] (cara 0 = haz, 1 = envés)
+    muestrario() {
+      return sprites ? { hojas: sprites, tonos: TONOS.map((t) => t.nombre), chispa: spriteChispa, estrella: spriteEstrella } : null;
+    },
     // Solo para diagnóstico (demo y pruebas): no son parte del contrato.
     // avanzar() simula y pinta sin esperar a requestAnimationFrame.
     avanzar(segundos = 1, paso = 1 / 60) {
@@ -951,6 +1080,7 @@ export function iniciarPetalos(opciones = {}) {
 function apiVacia() {
   return {
     rafaga() { return 0; }, pausar() {}, reanudar() {}, destruir() {}, avanzar() {},
-    calidad() { return 0; }, ritmo() { return 0; }, estado() { return null; }
+    calidad() { return 0; }, ritmo() { return 0; }, chispas() { return 'dorado'; },
+    muestrario() { return null; }, estado() { return null; }
   };
 }

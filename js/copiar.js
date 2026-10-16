@@ -228,7 +228,9 @@ function llenarRegalos(regalos) {
     for (const grupo of grupos) parrafo.appendChild(crear('span', 'regalo__grupo', grupo));
     dato.appendChild(parrafo);
 
-    const detalles = [['Titular', regalo.titular], ['Banco', regalo.banco]]
+    // La transferencia siempre muestra al titular: si falta, se dice («Por confirmar»)
+    const titular = String(regalo.titular ?? '').trim() || (regalo.id === 'transferencia' ? 'Por confirmar' : '');
+    const detalles = [['Titular', titular], ['Banco', regalo.banco]]
       .filter(([, texto]) => String(texto ?? '').trim());
     if (detalles.length) {
       const lista = crear('dl', 'regalo__detalles');

@@ -1,8 +1,10 @@
 /* ═══════════════════════════════════════════════════════════════
-   Sobre de bienvenida
-   Un sobre de papel de algodón a pantalla completa, con sello de
-   lacre A&V. Lo construye js/sobre.js dentro de <div id="sobre">.
-   Solo se animan transform y opacity.
+   Sobre de bienvenida (v2)
+   Un sobre de papel marfil a pantalla completa, cerrado con un
+   sello de lacre blanco que lleva grabado el monograma A&V. Lo
+   construye js/sobre.js dentro de <div id="sobre">.
+   Paleta: marfil, gris para las sombras, olivo para los textos y
+   el dorado apenas en el filete. Solo se animan transform y opacity.
    ═══════════════════════════════════════════════════════════════ */
 
 #sobre {
@@ -10,11 +12,12 @@
   top: 0; right: 0; bottom: 0; left: 0;
   z-index: 1000;
   overflow: hidden;
-  background: #EFE6D3;
-  color: var(--cafe);
+  background: #F3F1EA;
+  color: var(--tinta, #2B2B28);
   /* Medidas propias del módulo */
   --sobre-sello: clamp(88px, min(27vw, 17vh), 136px);
   --sobre-punta: 56%;
+  --sobre-sombra: 58, 58, 53;   /* gris neutro para todas las sombras */
   contain: layout paint style;
   -webkit-user-select: none;
   user-select: none;
@@ -34,9 +37,9 @@
 .sobre__escena > * { position: absolute; top: 0; right: 0; bottom: 0; left: 0; }
 .sobre__escena svg { width: 100%; height: 100%; overflow: visible; }
 
-/* ── Interior: el fondo del sobre, con la acuarela como forro ── */
+/* ── Interior: el fondo del sobre, forrado con hojitas de olivo ── */
 .sobre__interior {
-  background: linear-gradient(180deg, #EADFC8 0%, #F3EBDB 40%, #F1E8D6 100%);
+  background: linear-gradient(180deg, #ECE9E0 0%, #F4F2EB 40%, #F3F1EA 100%);
   will-change: opacity;
 }
 .sobre__forro {
@@ -46,34 +49,25 @@
   will-change: transform;
   transform-origin: 50% 0%;
 }
-/* Lavado de acuarela que sostiene la ilustración */
+/* Papel del forro: marfil con una luz que baja desde la abertura */
 .sobre__forro::before {
   content: '';
   position: absolute;
   top: 0; right: 0; bottom: 0; left: 0;
   background:
-    radial-gradient(70% 26% at 50% 28%, rgba(233, 195, 154, .38) 0%, rgba(233, 195, 154, 0) 70%),
-    radial-gradient(60% 22% at 22% 10%, rgba(187, 179, 142, .30) 0%, rgba(187, 179, 142, 0) 70%),
-    radial-gradient(60% 22% at 80% 8%, rgba(201, 141, 98, .20) 0%, rgba(201, 141, 98, 0) 70%),
-    linear-gradient(180deg, #F3EBDB 0%, #F8F4EB 60%);
+    radial-gradient(80% 30% at 50% 26%, rgba(255, 255, 255, .75) 0%, rgba(255, 255, 255, 0) 70%),
+    linear-gradient(180deg, #F1EEE6 0%, #F6F4EE 55%, #F4F2EB 100%);
 }
-.sobre__forro-imagen {
+/* Patrón de hojitas de olivo en línea (SVG propio, muy sutil) */
+.sobre__forro-patron {
   position: absolute;
-  left: 50%;
-  top: clamp(34px, 6vh, 70px);
-  width: max(100%, 660px);
-  aspect-ratio: 1400 / 658;
-  transform: translateX(-50%);
-  background: url('../assets/img/castillo.jpg') center / cover no-repeat;
-  mix-blend-mode: multiply;
-  -webkit-mask-image:
-    linear-gradient(180deg, transparent 0%, #000 24%, #000 74%, transparent 100%),
-    linear-gradient(90deg, transparent 0%, #000 10%, #000 90%, transparent 100%);
-  -webkit-mask-composite: source-in;
-  mask-image:
-    linear-gradient(180deg, transparent 0%, #000 24%, #000 74%, transparent 100%),
-    linear-gradient(90deg, transparent 0%, #000 10%, #000 90%, transparent 100%);
-  mask-composite: intersect;
+  top: 0; right: 0; bottom: 0; left: 0;
+  opacity: .9;
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240' viewBox='0 0 240 240'%3E%3Cg fill='none' stroke='%23B4B89F' stroke-width='.85' stroke-linecap='round' stroke-linejoin='round'%3E%3Cg transform='translate(22 56) rotate(-58)'%3E%3Cpath d='M0 0C14.4 -1.5 31.7 -3 48 -5.8'/%3E%3Cpath transform='translate(4.5 -0.1) rotate(-34)' d='M0 0q5 -3.1 11 0q-6.1 3.1 -11 0z'/%3E%3Cpath transform='translate(12 -0.4) rotate(37)' d='M0 0q4.5 -2.8 10.1 0q-5.6 2.8 -10.1 0z'/%3E%3Cpath transform='translate(19.5 -1) rotate(-40)' d='M0 0q4.1 -2.5 9.2 0q-5.1 2.5 -9.2 0z'/%3E%3Cpath transform='translate(27 -1.8) rotate(43)' d='M0 0q3.7 -2.2 8.3 0q-4.6 2.2 -8.3 0z'/%3E%3Cpath transform='translate(34.5 -3) rotate(-46)' d='M0 0q3.3 -1.9 7.4 0q-4.1 1.9 -7.4 0z'/%3E%3Cpath transform='translate(42 -4.4) rotate(49)' d='M0 0q2.9 -1.6 6.5 0q-3.6 1.6 -6.5 0z'/%3E%3Ccircle cx='49.5' cy='-5.8' r='.8'/%3E%3C/g%3E%3Cg transform='translate(148 18) rotate(28)'%3E%3Cpath d='M0 0C12.6 -1.5 27.7 -3 42 -5'/%3E%3Cpath transform='translate(4.7 -0.1) rotate(-34)' d='M0 0q5 -3.1 11 0q-6.1 3.1 -11 0z'/%3E%3Cpath transform='translate(12.4 -0.4) rotate(37)' d='M0 0q4.5 -2.8 10.1 0q-5.6 2.8 -10.1 0z'/%3E%3Cpath transform='translate(20.2 -1.2) rotate(-40)' d='M0 0q4.1 -2.5 9.2 0q-5.1 2.5 -9.2 0z'/%3E%3Cpath transform='translate(28 -2.2) rotate(43)' d='M0 0q3.7 -2.2 8.3 0q-4.6 2.2 -8.3 0z'/%3E%3Cpath transform='translate(35.8 -3.7) rotate(-46)' d='M0 0q3.3 -1.9 7.4 0q-4.1 1.9 -7.4 0z'/%3E%3Ccircle cx='43.5' cy='-5' r='.8'/%3E%3C/g%3E%3Cg transform='translate(176 118) rotate(-112)'%3E%3Cpath d='M0 0C15 -1.5 33 -3 50 -6'/%3E%3Cpath transform='translate(4.7 -0.1) rotate(-34)' d='M0 0q5 -3.1 11 0q-6.1 3.1 -11 0z'/%3E%3Cpath transform='translate(12.5 -0.4) rotate(37)' d='M0 0q4.5 -2.8 10.1 0q-5.6 2.8 -10.1 0z'/%3E%3Cpath transform='translate(20.3 -1) rotate(-40)' d='M0 0q4.1 -2.5 9.2 0q-5.1 2.5 -9.2 0z'/%3E%3Cpath transform='translate(28.1 -1.9) rotate(43)' d='M0 0q3.7 -2.2 8.3 0q-4.6 2.2 -8.3 0z'/%3E%3Cpath transform='translate(35.9 -3.1) rotate(-46)' d='M0 0q3.3 -1.9 7.4 0q-4.1 1.9 -7.4 0z'/%3E%3Cpath transform='translate(43.7 -4.6) rotate(49)' d='M0 0q2.9 -1.6 6.5 0q-3.6 1.6 -6.5 0z'/%3E%3Ccircle cx='51.5' cy='-6' r='.8'/%3E%3C/g%3E%3Cg transform='translate(60 150) rotate(12)'%3E%3Cpath d='M0 0C12 -1.5 26.4 -3 40 -4.8'/%3E%3Cpath transform='translate(4.4 -0.1) rotate(-34)' d='M0 0q5 -3.1 11 0q-6.1 3.1 -11 0z'/%3E%3Cpath transform='translate(11.9 -0.4) rotate(37)' d='M0 0q4.5 -2.8 10.1 0q-5.6 2.8 -10.1 0z'/%3E%3Cpath transform='translate(19.3 -1.1) rotate(-40)' d='M0 0q4.1 -2.5 9.2 0q-5.1 2.5 -9.2 0z'/%3E%3Cpath transform='translate(26.7 -2.1) rotate(43)' d='M0 0q3.7 -2.2 8.3 0q-4.6 2.2 -8.3 0z'/%3E%3Cpath transform='translate(34.1 -3.5) rotate(-46)' d='M0 0q3.3 -1.9 7.4 0q-4.1 1.9 -7.4 0z'/%3E%3Ccircle cx='41.5' cy='-4.8' r='.8'/%3E%3C/g%3E%3Cg transform='translate(118 214) rotate(-64)'%3E%3Cpath d='M0 0C13.2 -1.5 29 -3 44 -5.3'/%3E%3Cpath transform='translate(4.9 -0.1) rotate(-34)' d='M0 0q5 -3.1 11 0q-6.1 3.1 -11 0z'/%3E%3Cpath transform='translate(13 -0.5) rotate(37)' d='M0 0q4.5 -2.8 10.1 0q-5.6 2.8 -10.1 0z'/%3E%3Cpath transform='translate(21.2 -1.2) rotate(-40)' d='M0 0q4.1 -2.5 9.2 0q-5.1 2.5 -9.2 0z'/%3E%3Cpath transform='translate(29.3 -2.3) rotate(43)' d='M0 0q3.7 -2.2 8.3 0q-4.6 2.2 -8.3 0z'/%3E%3Cpath transform='translate(37.5 -3.8) rotate(-46)' d='M0 0q3.3 -1.9 7.4 0q-4.1 1.9 -7.4 0z'/%3E%3Ccircle cx='45.5' cy='-5.3' r='.8'/%3E%3C/g%3E%3Cg transform='translate(8 226) rotate(44)'%3E%3Cpath d='M0 0C10.2 -1.5 22.4 -3 34 -4.1'/%3E%3Cpath transform='translate(4.6 -0.1) rotate(-34)' d='M0 0q5 -3.1 11 0q-6.1 3.1 -11 0z'/%3E%3Cpath transform='translate(12.4 -0.5) rotate(37)' d='M0 0q4.5 -2.8 10.1 0q-5.6 2.8 -10.1 0z'/%3E%3Cpath transform='translate(20.1 -1.4) rotate(-40)' d='M0 0q4.1 -2.5 9.2 0q-5.1 2.5 -9.2 0z'/%3E%3Cpath transform='translate(27.8 -2.7) rotate(43)' d='M0 0q3.7 -2.2 8.3 0q-4.6 2.2 -8.3 0z'/%3E%3Ccircle cx='35.5' cy='-4.1' r='.8'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  background-size: 240px 240px;
+  background-position: 50% 0;
+  -webkit-mask-image: radial-gradient(130% 90% at 50% 18%, #000 42%, rgba(0, 0, 0, .3) 100%);
+  mask-image: radial-gradient(130% 90% at 50% 18%, #000 42%, rgba(0, 0, 0, .3) 100%);
   will-change: opacity;
 }
 /* Sombra del doblez superior sobre el forro */
@@ -82,7 +76,7 @@
   position: absolute;
   top: 0; right: 0; bottom: auto; left: 0;
   height: 13%;
-  background: linear-gradient(180deg, rgba(74, 58, 30, .26) 0%, rgba(74, 58, 30, .08) 38%, rgba(74, 58, 30, 0) 100%);
+  background: linear-gradient(180deg, rgba(var(--sobre-sombra), .22) 0%, rgba(var(--sobre-sombra), .07) 38%, rgba(var(--sobre-sombra), 0) 100%);
 }
 
 /* ── Bolsa y solapa ── */
@@ -98,94 +92,73 @@
   position: absolute;
   top: 0; right: 0; bottom: 0; left: 0;
   opacity: 0;
-  background: linear-gradient(180deg, rgba(74, 58, 30, .55) 0%, rgba(74, 58, 30, .9) 100%);
+  background: linear-gradient(180deg, rgba(var(--sobre-sombra), .5) 0%, rgba(var(--sobre-sombra), .85) 100%);
   clip-path: polygon(0 0, 100% 0, 50% calc(var(--sobre-punta) + 1%));
   will-change: opacity;
   pointer-events: none;
 }
 
-/* ── Textos impresos en el sobre ── */
-.sobre__nombres {
+/* ── Textos impresos en el sobre ──
+   Dedicatoria en la solapa, en letra manuscrita; firma e indicación bajo
+   el sello. Nada más: así lo pidieron los novios. */
+.sobre__dedicatoria {
   position: absolute;
   left: 0; right: 0;
-  top: clamp(34px, 8.5vh, 84px);
-  padding-top: env(safe-area-inset-top, 0px);
+  top: clamp(44px, 8.5vh, 92px);
+  padding: env(safe-area-inset-top, 0px) 24px 0;
   text-align: center;
-  font-family: var(--f-serif);
-  font-weight: 600;
-  font-size: clamp(12px, 3.3vw, 15px);
-  letter-spacing: .42em;
-  text-indent: .42em;           /* compensa el espaciado de la última letra */
-  text-transform: uppercase;
-  color: var(--dorado-hondo);
 }
-.sobre__nombres i {
-  font-family: var(--f-script);
-  font-style: normal;
-  font-weight: 600;
-  font-size: 1.7em;
-  letter-spacing: 0;
-  text-transform: none;
-  margin: 0 .45em 0 .2em;
-  color: var(--dorado);
-  vertical-align: -.08em;
+.sobre__exclusiva {
+  font-family: var(--f-mano);
+  font-weight: 500;
+  font-size: clamp(26px, 7vw, 36px);
+  line-height: 1.22;
+  letter-spacing: .005em;
+  color: var(--olivo-hondo, #4E5330);
+  text-wrap: balance;
 }
-.sobre__filete {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  margin-top: 12px;
-  color: var(--dorado);
-}
-.sobre__filete::before,
-.sobre__filete::after {
-  content: '';
-  width: clamp(26px, 8vw, 44px);
-  height: 1px;
-  background: currentColor;
-  opacity: .7;
-}
-.sobre__filete b {
-  width: 5px; height: 5px;
-  background: currentColor;
-  transform: rotate(45deg);
-}
-/* Sin «gap» en flexbox (ver base.css) */
-@supports not (inset: 0) {
-  .sobre__filete { gap: 0; }
-  .sobre__filete b { margin: 0 10px; }
-}
+.sobre__exclusiva span { display: block; }
 
 .sobre__pie {
   position: absolute;
   left: 0; right: 0;
-  top: calc(var(--sobre-punta) + var(--sobre-sello) * .5 + clamp(20px, 3.6vh, 38px));
+  top: calc(var(--sobre-punta) + var(--sobre-sello) * .5 + clamp(22px, 3.8vh, 40px));
   text-align: center;
   padding: 0 24px;
   will-change: opacity;
 }
-.sobre__toca {
+.sobre__amor {
   font-family: var(--f-serif);
   font-weight: 600;
-  font-size: clamp(11.5px, 3.1vw, 13.5px);
-  letter-spacing: .36em;
-  text-indent: .36em;
+  font-size: clamp(12.5px, 3.3vw, 15px);
+  letter-spacing: .3em;
+  text-indent: .3em;           /* compensa el espaciado de la última letra */
   text-transform: uppercase;
-  color: var(--cafe);
+  color: var(--olivo-hondo, #4E5330);
 }
-.sobre__lugar {
-  margin-top: clamp(8px, 1.6vh, 16px);
+.sobre__amor i {
+  font-family: var(--f-mano);
+  font-style: normal;
+  font-weight: 400;
+  font-size: 1.85em;
+  letter-spacing: 0;
+  text-transform: none;
+  margin: 0 .1em 0 -.05em;
+  color: var(--olivo, #6B7042);
+  vertical-align: -.14em;
+}
+.sobre__toca {
+  margin-top: clamp(14px, 2.4vh, 24px);
   font-family: var(--f-serif);
-  font-style: italic;
-  font-weight: 500;
-  font-size: clamp(17px, 4.6vw, 21px);
-  letter-spacing: .2em;
-  text-indent: .2em;
-  color: var(--dorado-hondo);
+  font-weight: 600;
+  font-size: clamp(10.5px, 2.8vw, 12px);
+  letter-spacing: .3em;
+  text-indent: .3em;
+  text-transform: uppercase;
+  color: var(--gris, #6E6B63);
 }
 
-/* ── Sello de lacre ── */
+/* ── Sello de lacre blanco ── */
 .sobre__sello-lugar {
   position: absolute;
   top: auto; right: auto; bottom: auto; left: auto;
@@ -203,10 +176,11 @@
   border-radius: 50%;
   pointer-events: none;
 }
+/* Ondas en olivo claro que invitan a tocar */
 .sobre__halo {
   top: -6%; right: -6%; bottom: -6%; left: -6%;
-  border: 1px solid rgba(201, 154, 69, .9);
-  background: radial-gradient(circle, rgba(240, 220, 168, 0) 52%, rgba(240, 220, 168, .5) 68%, rgba(201, 154, 69, 0) 100%);
+  border: 1px solid rgba(163, 166, 126, .8);
+  background: radial-gradient(circle, rgba(217, 219, 199, 0) 52%, rgba(217, 219, 199, .55) 68%, rgba(163, 166, 126, 0) 100%);
   opacity: 0;
   animation: sobre-halo 3.4s var(--suave) 1.2s infinite;
   will-change: transform, opacity;
@@ -214,14 +188,15 @@
 .sobre__halo--eco { animation-delay: 2.9s; }
 .sobre__destello {
   top: -4%; right: -4%; bottom: -4%; left: -4%;
-  background: radial-gradient(circle, rgba(240, 220, 168, .9) 0%, rgba(240, 220, 168, .45) 45%, rgba(201, 154, 69, 0) 70%);
+  background: radial-gradient(circle, rgba(255, 255, 255, .95) 0%, rgba(233, 234, 220, .6) 45%, rgba(163, 166, 126, 0) 70%);
   opacity: 0;
   will-change: transform, opacity;
 }
+/* La sombra es lo que despega al lacre blanco del papel blanco */
 .sobre__sombra-sello {
-  top: -10%; right: -10%; bottom: -10%; left: -10%;
+  top: -12%; right: -12%; bottom: -12%; left: -12%;
   transform: translate(3%, 9%);
-  background: radial-gradient(circle, rgba(58, 30, 16, .5) 0%, rgba(58, 30, 16, .34) 48%, rgba(58, 30, 16, 0) 70%);
+  background: radial-gradient(circle, rgba(var(--sobre-sombra), .42) 0%, rgba(var(--sobre-sombra), .26) 46%, rgba(var(--sobre-sombra), 0) 70%);
   will-change: opacity;
 }
 .sobre__sello {
@@ -240,7 +215,7 @@
   will-change: transform;
 }
 .sobre__sello:focus-visible {
-  outline: 1.5px solid var(--dorado-hondo);
+  outline: 1.5px solid var(--olivo-hondo, #4E5330);
   outline-offset: 7px;
   border-radius: 50%;
 }
@@ -273,12 +248,31 @@
   transform-origin: 70% 60%;
 }
 
+/* Monograma grabado en el lacre: tres capas del mismo símbolo.
+   «color» pinta las iniciales; --monograma-acento el «&» y
+   --monograma-fondo el contorno que corta las letras (ver pagina.html). */
+.sobre__mono--sombra {
+  color: rgba(var(--sobre-sombra), .62);
+  --monograma-acento: rgba(var(--sobre-sombra), .62);
+  --monograma-fondo: transparent;
+}
+.sobre__mono--luz {
+  color: rgba(255, 255, 255, .98);
+  --monograma-acento: rgba(255, 255, 255, .98);
+  --monograma-fondo: transparent;
+}
+.sobre__mono--grabado {
+  color: #CEC8B9;
+  --monograma-acento: #B8B19E;
+  --monograma-fondo: #F2EFE7;
+}
+
 /* ── Grano de papel sobre todo el conjunto ── */
 .sobre__grano {
   position: absolute;
   top: 0; right: 0; bottom: 0; left: 0;
   pointer-events: none;
-  opacity: .62;
+  opacity: .5;
   background-image: url('../assets/svg/grano.svg');
   background-size: 320px 320px;
 }
@@ -287,11 +281,11 @@
   content: '';
   position: absolute;
   top: 0; right: 0; bottom: 0; left: 0;
-  background: radial-gradient(120% 90% at 50% 45%, rgba(92, 81, 56, 0) 55%, rgba(92, 81, 56, .13) 100%);
+  background: radial-gradient(120% 90% at 50% 45%, rgba(var(--sobre-sombra), 0) 55%, rgba(var(--sobre-sombra), .1) 100%);
 }
 
 /* ── Entrada al cargar ── */
-.sobre__nombres, .sobre__pie { animation: sobre-aparece 1.4s var(--suave) .5s both; }
+.sobre__dedicatoria, .sobre__pie { animation: sobre-aparece 1.4s var(--suave) .5s both; }
 .sobre__pie { animation-delay: .9s; }
 .sobre__sello-lugar { animation: sobre-posa 1.3s var(--entrada) .15s both; }
 
@@ -309,7 +303,7 @@
 }
 @keyframes sobre-halo {
   0% { opacity: 0; transform: scale(.92); }
-  18% { opacity: .75; }
+  18% { opacity: .8; }
   100% { opacity: 0; transform: scale(1.62); }
 }
 
@@ -321,30 +315,20 @@
 .sobre--abriendo .sobre__sello { pointer-events: none; cursor: default; }
 .sobre--abriendo { pointer-events: none; }
 
-/* ── Pantallas apaisadas: la acuarela sube para asomarse por la abertura ── */
+/* ── Pantallas anchas: el patrón respira más y la dedicatoria baja un poco ── */
 @media (min-aspect-ratio: 1/1) {
-  .sobre__forro-imagen {
-    top: -7vh;
-    width: clamp(660px, 72vw, 1100px);
-  }
-}
-
-/* ── Respaldo sin aspect-ratio: el alto sigue al ancho (658 / 1400) ── */
-@supports not (aspect-ratio: 1) {
-  .sobre__forro-imagen { height: calc(max(100vw, 660px) * .47); }
-}
-@media (min-aspect-ratio: 1/1) {
-  @supports not (aspect-ratio: 1) {
-    .sobre__forro-imagen { height: calc(clamp(660px, 72vw, 1100px) * .47); }
-  }
+  .sobre__forro-patron { background-size: 280px 280px; }
+  .sobre__dedicatoria { top: clamp(44px, 11vh, 110px); }
 }
 
 /* ── Pantallas bajas (celular acostado) ── */
 @media (max-height: 480px) {
   #sobre { --sobre-punta: 52%; }
-  .sobre__nombres { top: 18px; }
-  .sobre__filete { display: none; }
-  .sobre__lugar { display: none; }
+  .sobre__dedicatoria { top: 12px; }
+  .sobre__exclusiva { font-size: 22px; line-height: 1.15; }
+  .sobre__exclusiva span { display: inline; }
+  .sobre__amor { display: none; }
+  .sobre__toca { margin-top: 0; }
 }
 
 /* ── Movimiento reducido: sin respiración ni halo en movimiento ── */
@@ -352,4 +336,9 @@
   .sobre__sello, .sobre__halo { animation: none; }
   .sobre__halo:not(.sobre__halo--eco) { opacity: .6; transform: scale(1.08); }
   .sobre__prensa { transition: none; }
+}
+
+/* ── Temas de contraste (Windows): el lacre se dibuja con borde real ── */
+@media (forced-colors: active) {
+  .sobre__sello { border: 1px solid ButtonText; }
 }

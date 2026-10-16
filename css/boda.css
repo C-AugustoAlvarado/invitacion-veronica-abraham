@@ -1,0 +1,352 @@
+/* ═══════════════════════════════════════════════════════════════
+   La boda (#boda) y Vestimenta (#vestimenta) — versión 2
+   Sustituyen a «ceremonia» y «recepción» de la v1. Referencia de
+   los novios: 8-IMG_1174.jpg (ilustración de línea + título
+   manuscrito + datos + botón «Ubicación» en olivo). Ninguna de las
+   dos secciones pinta fondo: flotan sobre el ambiente de base.css.
+   Las medidas con clamp() llevan antes un valor en px: es lo que
+   lee un navegador que no la entiende (modo básico).
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Los decorados sangran por los lados; main lleva overflow-x: clip
+   (secciones.css). Safari anterior a 16 no conoce «clip». */
+@supports not (overflow: clip) {
+  .boda, .vestimenta { overflow: hidden; }
+}
+
+/* ═══════════ Botón olivo ═══════════
+   Fondo olivo, texto marfil (contraste ≥ 4.6 en todo el degradado). */
+.boton--olivo {
+  background: #6B7042;
+  background: linear-gradient(135deg, var(--olivo) 0%, var(--olivo-hondo) 100%);
+  color: #FBF9F4;
+  color: var(--marfil-luz);
+  padding: 15px 30px;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, .14) inset,
+    0 12px 30px -14px rgba(78, 83, 48, .8);
+}
+.boton--olivo .icono { flex: none; opacity: .9; }
+.boton--olivo:focus-visible { outline-color: var(--olivo-hondo); }
+@media (hover: hover) {
+  .boton--olivo:hover { box-shadow: 0 1px 0 rgba(255, 255, 255, .14) inset, 0 16px 34px -14px rgba(78, 83, 48, .9); }
+}
+/* El texto del botón no debe ir en versalitas sueltas sobre dos renglones */
+.boton--olivo { white-space: nowrap; }
+
+/* ═══════════ La boda ═══════════ */
+.boda {
+  padding-top: 110px;
+  padding-top: clamp(110px, 18vh, 200px);
+  padding-bottom: 100px;
+  padding-bottom: clamp(100px, 16vh, 180px);
+}
+
+/* ── Cabecera: sobretítulo, frase manuscrita con aire, rombo ── */
+.boda__titulo {
+  margin-bottom: 20px;
+  margin-bottom: clamp(20px, 3.4vh, 30px);
+}
+.boda__frase {
+  font-family: 'Dancing Script', cursive;
+  font-family: var(--f-mano);
+  font-weight: 500;
+  font-size: 27px;
+  font-size: clamp(27px, 5.6vw, 44px);
+  line-height: 1.5;
+  color: #3A3A35;
+  color: var(--tinta-suave);
+  max-width: 20em;
+  margin: 0 auto;
+  text-wrap: balance;
+}
+.boda__ornamento {
+  color: var(--olivo-claro);
+  margin-top: 24px;
+  margin-top: clamp(24px, 4.4vh, 40px);
+  margin-bottom: 0;
+}
+
+/* ── Los dos lugares: apilados en celular, lado a lado en escritorio ── */
+.boda__lugares {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-row-gap: 72px;
+  row-gap: 72px;
+  row-gap: clamp(72px, 12vh, 120px);
+  margin-top: 48px;
+  margin-top: clamp(48px, 8vh, 90px);
+  text-align: center;
+}
+.lugar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 0;
+}
+
+/* La ilustración acompaña al texto, no lo domina */
+.lugar__arte {
+  width: 260px;
+  width: min(66vw, 300px);
+  margin: 0 auto 20px;
+  margin-bottom: clamp(20px, 3.4vh, 32px);
+}
+/* Misma caja para las dos ilustraciones (1400:1000 y 1400:900): así los
+   títulos de ambas columnas quedan a la misma altura en escritorio */
+.lugar__dibujo {
+  position: relative;
+  aspect-ratio: 7 / 5;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+.lugar__dibujo img {
+  width: 100%;
+  height: auto;
+  max-height: 100%;
+  object-fit: contain;
+  object-position: 50% 100%;
+}
+
+.lugar__texto {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 30em;
+}
+
+/* Título manuscrito con un rasgo de pluma debajo (se dibuja al entrar) */
+.lugar__titulo {
+  font-family: 'Dancing Script', cursive;
+  font-family: var(--f-mano);
+  font-weight: 600;
+  font-size: 40px;
+  font-size: clamp(40px, 8.4vw, 58px);
+  line-height: 1.1;
+  color: #4E5330;
+  color: var(--olivo-hondo);
+  padding: 0 .15em;
+}
+.lugar__rasgo {
+  display: block;
+  width: 130px;
+  width: clamp(130px, 26vw, 180px);
+  height: auto;
+  margin: 0 auto;
+  color: var(--olivo-claro);
+}
+
+.lugar__nombre {
+  font-family: var(--f-serif);
+  font-weight: 500;
+  font-size: 24px;
+  font-size: clamp(24px, 4.8vw, 33px);
+  line-height: 1.2;
+  letter-spacing: .03em;
+  color: #2B2B28;
+  color: var(--tinta);
+  margin-top: 12px;
+  margin-top: clamp(12px, 2.2vh, 20px);
+  text-wrap: balance;
+}
+.lugar__hora {
+  font-family: var(--f-serif);
+  font-weight: 700;
+  font-size: 23px;
+  font-size: clamp(23px, 4.4vw, 29px);
+  line-height: 1.2;
+  letter-spacing: .1em;
+  font-variant-numeric: tabular-nums;
+  color: #4E5330;
+  color: var(--olivo-hondo);
+  margin-top: .4em;
+}
+.lugar__hrs {
+  font-weight: 600;
+  font-size: .78em;
+  letter-spacing: .16em;
+}
+/* Gris más hondo que --gris: la dirección es texto normal y el ambiente
+   dorado baja el contraste del marfil (así queda en ≥ 5:1) */
+.lugar__direccion {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  font-size: clamp(16px, 2.1vw, 19px);
+  line-height: 1.6;
+  letter-spacing: .03em;
+  color: #57554D;
+  max-width: 22em;
+  margin: .9em auto 0;
+  text-wrap: balance;
+}
+.lugar__accion {
+  margin-top: 22px;
+  margin-top: clamp(22px, 3.6vh, 32px);
+}
+
+/* Escritorio: las dos columnas con un filete apenas dorado en medio */
+@media (min-width: 860px) {
+  .boda__lugares {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-column-gap: 64px;
+    column-gap: 64px;
+    column-gap: clamp(48px, 7vw, 110px);
+    align-items: stretch;
+  }
+  /* Los botones de las dos columnas quedan a la misma altura aunque una
+     dirección ocupe dos renglones */
+  .lugar { height: 100%; }
+  .lugar__texto { flex: 1; }
+  .lugar__accion { margin-top: auto; padding-top: 22px; padding-top: clamp(22px, 3.6vh, 32px); }
+  .boda__lugares::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 4%;
+    bottom: 4%;
+    width: 1px;
+    background: linear-gradient(180deg, rgba(205, 191, 158, 0) 0%, var(--dorado-tenue) 18%, var(--dorado-tenue) 82%, rgba(205, 191, 158, 0) 100%);
+    pointer-events: none;
+  }
+  .lugar__arte {
+    width: 300px;
+    width: min(30vw, 380px);
+  }
+}
+
+/* ── Hojitas de olivo ── */
+.boda__ramita {
+  width: 150px;
+  width: clamp(150px, 24vw, 300px);
+  color: #6B7042;
+  color: var(--olivo);
+  opacity: .9;
+}
+.boda__ramita svg { width: 100%; height: auto; overflow: visible; }
+.boda__hoja { fill: #A3A67E; fill: var(--olivo-claro); }
+.boda__hoja--luz { fill: #D9DBC7; fill: var(--olivo-palido); }
+.boda__aceituna { fill: #6B7042; fill: var(--olivo); stroke: none; }
+.boda__ramita--a { left: -4%; top: 5%; }
+.boda__ramita--a svg { transform: rotate(-14deg); }
+/* La de abajo vive en el margen inferior de la sección, debajo de los
+   botones, para no rozar nunca la dirección de la recepción */
+.boda__ramita--b {
+  right: -4%;
+  bottom: 0;
+  width: 150px;
+  width: clamp(150px, 20vw, 240px);
+}
+.boda__ramita--b svg { transform: scaleX(-1) rotate(10deg); }
+@media (max-width: 859px) {
+  /* En celular las ramitas se asoman por las orillas, lejos del texto */
+  .boda__ramita--a { left: -36px; top: 3%; }
+  .boda__ramita--b { right: -40px; bottom: 4px; }
+}
+
+/* ═══════════ Vestimenta (noche) ═══════════ */
+.vestimenta {
+  padding-top: 60px;
+  padding-top: clamp(60px, 10vh, 120px);
+}
+.vestimenta__titulo {
+  margin-bottom: 28px;
+  margin-bottom: clamp(28px, 5vh, 46px);
+}
+.vestimenta__datos {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-gap: 18px;
+  gap: 18px;
+  gap: clamp(18px, 3vw, 30px);
+  max-width: 920px;
+  margin: 0 auto;
+}
+@media (min-width: 720px) {
+  .vestimenta__datos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* Tarjetas de papel (vienen de la v1, que gustó) */
+.dato {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 36px;
+  padding-top: clamp(36px, 6vw, 56px);
+  padding-bottom: 36px;
+  padding-bottom: clamp(36px, 6vw, 56px);
+}
+.dato__icono {
+  width: 46px;
+  height: 46px;
+  margin: 0 auto 14px;
+  color: #6B7042;
+  color: var(--olivo);
+}
+.dato__titulo { color: #4E5330; color: var(--olivo-hondo); }
+.dato__principal {
+  font-family: 'Dancing Script', cursive;
+  font-family: var(--f-mano);
+  font-weight: 600;
+  font-style: normal;
+  font-size: 29px;
+  font-size: clamp(29px, 4.4vw, 38px);
+  line-height: 1.2;
+  color: #2B2B28;
+  color: var(--tinta);
+  margin: .3em 0 .35em;
+  text-wrap: balance;
+}
+.dato__nota { max-width: 21em; margin: 0 auto; opacity: 1; color: var(--tinta-suave); text-wrap: balance; }
+.dato__muestras {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 18px;
+}
+@supports not (inset: 0) {
+  .dato__muestras { gap: 0; }
+  .dato__muestras .muestra + .muestra { margin-left: 12px; }
+}
+.muestra {
+  position: relative;
+  display: block;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px rgba(43, 43, 40, .22);
+  overflow: hidden;
+}
+/* Raya que tacha la muestra: tinta sobre las claras, marfil sobre el olivo */
+.muestra::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: -10%;
+  width: 1.5px;
+  height: 120%;
+  background: #3A3A35;
+  background: var(--tinta-suave);
+  transform: rotate(45deg);
+}
+.muestra--olivo { background: #6B7042; background: var(--olivo); }
+.muestra--olivo::after { background: #FBF9F4; background: var(--marfil-luz); opacity: .9; }
+.muestra--claro { background: #FFFFFF; }
+.muestra--marfil { background: #ECE6D9; background: var(--marfil-hondo); }
+
+/* ═══════════ Respaldo sin aspect-ratio ═══════════
+   (Safari anterior a 15.) La caja de la ilustración toma el alto de la
+   imagen; las columnas pueden desalinearse unos px, nada más. */
+@supports not (aspect-ratio: 1) {
+  .lugar__dibujo { display: block; }
+  .lugar__dibujo img { max-height: none; }
+}
+
+/* ═══════════ Temas de contraste (Windows) ═══════════ */
+@media (forced-colors: active) {
+  .muestra { border: 1px solid CanvasText; }
+  .boda__lugares::before { background: CanvasText; }
+}

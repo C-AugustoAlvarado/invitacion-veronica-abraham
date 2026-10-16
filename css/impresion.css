@@ -1,7 +1,7 @@
 /* ═══════════════════════════════════════════════════════════════
    IMPRESIÓN — css/impresion.css (se enlaza al final, con media="print")
    Imprimir o «Guardar como PDF»: todo el contenido a la vista, tinta
-   café sobre papel blanco, sin sobre, sin capas de ambiente y sin
+   oscura sobre papel blanco, sin sobre, sin capas de ambiente y sin
    nada que espere a un revelado. En pantalla no cambia nada.
    Va en hoja propia y al final para ganarle a las demás por orden.
    ═══════════════════════════════════════════════════════════════ */
@@ -11,12 +11,13 @@
   body, body.bloqueado { overflow: visible !important; height: auto !important; }
 
   /* Lo que solo tiene sentido en pantalla */
-  #sobre, #ambiente, .petalos-lienzo, .decorado,
-  .raspar__lamina, .raspar__sombra, .raspar__gesto, .raspar__destello,
-  .fecha__descubrir, .fecha__lema, .fecha__titulo,
-  .portada__bajar, .prog-chispa, .prog-cielo,
+  #sobre, #ambiente, .petalos-lienzo, .decorado, .menu,
+  .portada__rama, .portada__lema, .portada__reloj,
+  .historia__cielo, .historia__hojas, .historia__vuelo,
+  .boda__ramita, .recom__rama, .recom__hojas, .recom__pestanas,
+  .prog-chispa, .prog-cielo,
   .atardecer__sol, .atardecer__capa, .atardecer__velo, .atardecer__suelo,
-  .galeria, .rsvp__halo, .rsvp__formulario, [data-calendario] { display: none !important; }
+  .rsvp__halo, .rsvp__formulario, [data-calendario] { display: none !important; }
 
   /* Nada espera a un revelado ni a que se raspe la fecha */
   [data-revelar], [data-letras] .palabra,
@@ -29,12 +30,17 @@
     -webkit-clip-path: none !important;
     clip-path: none !important;
   }
-  [data-parallax], [data-raspar-contenido] {
+  [data-parallax] {
     -webkit-transform: none !important;
     transform: none !important;
   }
-  .fecha .fecha__despues { display: block !important; }
-  .fecha__calendario { animation: none !important; opacity: 1 !important; }
+  .portada__calendario { animation: none !important; opacity: 1 !important; }
+  .recom__apartado { display: block !important; }
+  /* Con pestañas activas, los nombres de los apartados estaban solo para lectores */
+  .recom--pestanas .recom__nombre-apartado { position: static !important; width: auto !important; height: auto !important; clip: auto !important; clip-path: none !important; }
+  /* El hilo del itinerario depende del scroll: en papel va completo */
+  .prog-linea.prog-lista { --hilo: 1; }
+  .prog-hito { --luz: 1; }
   .rsvp .rsvp__directo { display: block !important; }
 
   /* Secciones compactas */
@@ -52,27 +58,20 @@
   /* Los fondos no se imprimen: la tinta clara de la noche pasa a café */
   .seccion--noche, .seccion--noche *,
   .atardecer, .atardecer * {
-    color: #4E4632 !important;
+    color: #2B2B28 !important;
     text-shadow: none !important;
   }
   .seccion--noche { background: none !important; }
-  .boton { box-shadow: none !important; border: 1px solid #5C5138; }
-
-  .portada__castillo img {
-    -webkit-mask-image: none !important;
-    mask-image: none !important;
-    mix-blend-mode: normal !important;
-  }
+  .boton { box-shadow: none !important; border: 1px solid #4E5330; }
 
   /* Una sola columna, centrada */
-  .historia__rejilla, .ceremonia__rejilla, .recepcion__rejilla, .recepcion__datos, .regalos__lista {
+  .historia__fotos, .boda__lugares, .vestimenta__datos, .regalos__lista, .recom__rejilla {
     grid-template-columns: minmax(0, 1fr) !important;
     max-width: 460px !important;
     margin-left: auto !important;
     margin-right: auto !important;
   }
-  .historia__lado--izq, .historia__lado--der { justify-self: center !important; text-align: center !important; }
-  .ceremonia__arte, .recepcion__arte { width: 100% !important; margin: 0 !important; }
+  .lugar__arte { width: 240px !important; margin: 0 auto !important; }
   .regalos__celda--centro { margin-top: 0 !important; margin-bottom: 0 !important; }
 
   .papel, .dato, .prog-hito, .regalo, .planner, .cierre__medallon, .cierre__despedida {

@@ -27,15 +27,18 @@ function aplicarDatos() {
     if (texto) el.textContent = texto;
   });
 
-  // Foto de «Nuestra historia» (opcional): sustituye la escena ilustrada
-  const foto = document.querySelector('[data-foto="historia"]');
-  if (foto && CONFIG.historia?.foto) {
-    foto.src = CONFIG.historia.foto;
-    foto.alt = CONFIG.historia.alt || 'Verónica y Abraham';
-    foto.hidden = false;
-    foto.closest('.historia__cielo')?.classList.add('con-foto');
-    foto.closest('figure')?.removeAttribute('aria-hidden');
-  }
+  // Fotos de «Nuestra historia»: cada polaroid lleva data-foto-indice con el índice
+  // en CONFIG.fotos; sin foto (o si no carga) se queda el «Muy pronto».
+  document.querySelectorAll('img[data-foto-indice]').forEach((img) => {
+    const foto = CONFIG.fotos?.[Number(img.dataset.fotoIndice)];
+    if (!foto || typeof foto.src !== 'string' || !foto.src.trim()) return;
+    const polaroid = img.closest('.polaroid');
+    img.addEventListener('error', () => { img.hidden = true; polaroid?.classList.remove('con-foto'); }, { once: true });
+    img.alt = foto.alt || foto.pie || 'Verónica y Abraham';
+    img.src = foto.src;
+    img.hidden = false;
+    polaroid?.classList.add('con-foto');
+  });
 
   // Contacto de la wedding planner
   const medios = document.querySelector('[data-planner]');
@@ -72,11 +75,10 @@ function enlacesInternos() {
   });
 }
 
-/* Recuerdos de la pestaña (sessionStorage): al recargar, o al volver de Maps a una
-   pestaña que el teléfono descartó, no se repite el sobre ni el raspadito.
+/* Recuerdo de la pestaña (sessionStorage): al recargar, o al volver de Maps a una
+   pestaña que el teléfono descartó, no se repite el sobre.
    En modo privado el almacén puede fallar: entonces simplemente no se recuerda. */
 const CLAVE_ABIERTA = 'boda:abierta';
-const CLAVE_FECHA = 'boda:fecha-revelada';
 const recordar = (clave) => {
   try { window.sessionStorage.setItem(clave, '1'); } catch (error) { /* modo privado */ }
 };
@@ -84,23 +86,10 @@ const recordado = (clave) => {
   try { return window.sessionStorage.getItem(clave) === '1'; } catch (error) { return false; }
 };
 
-/* Si la tarjeta para raspar no pudo montarse (o la fecha ya se raspó en esta pestaña),
-   la fecha ya se lee: se da por revelada para que aparezcan la cuenta regresiva y el
-   calendario. */
-function revelarSinRaspar() {
-  const tarjeta = document.querySelector('[data-raspar]');
-  const ambito = tarjeta?.closest('[data-raspar-ambito], section');
-  if (!ambito || ambito.dataset.rasparEstado === 'revelado') return;
-  ambito.dataset.rasparEstado = 'revelado';
-  tarjeta.classList.add('raspar--revelada');
-  const boton = ambito.querySelector('[data-raspar-boton]');
-  if (boton) boton.hidden = true;
-  document.dispatchEvent(new CustomEvent('raspar:revelado'));
-}
 
 /* Modo básico: lo decide el script en línea de <head> (navegador que no puede con la
    experiencia completa, o ?basico), o se llega a él porque el seguro ya mostró la página
-   o el motor falló. Sin sobre, sin motor, sin pétalos ni raspadito: el invitado quizá ya
+   o el motor falló. Sin sobre, sin motor ni hojitas: el invitado quizá ya
    está leyendo y no se vuelve a ocultar nada. Solo se activa lo que sirve para algo. */
 async function iniciarBasico() {
   clearTimeout(window.__seguro);
@@ -141,7 +130,7 @@ async function iniciar() {
     || window.__omitir === true || recordado(CLAVE_ABIERTA);
 
   // Al abrir el sobre la página se coloca ya con el alto final: en la sección
-  // del ancla (#rsvp, #fecha…) si la URL trae una, y si no en la portada.
+  // del ancla (#rsvp, #itinerario…) si la URL trae una, y si no en la portada.
   // Sin sobre no se toca nada: el navegador ya restauró la posición.
   const colocar = () => {
     if (omitir) return;
@@ -149,12 +138,11 @@ async function iniciar() {
     try {
       if (location.hash.length > 1) destino = document.getElementById(decodeURIComponent(location.hash.slice(1)));
     } catch (error) { /* ancla mal escrita: portada */ }
-    const y = destino ? Math.max(0, Math.round(destino.getBoundingClientRect().top + window.pageYOffset)) : 0;
-    if (Math.abs(window.pageYOffset - y) < 2) return;
     const raiz = document.documentElement;
     const previo = raiz.style.scrollBehavior;
     raiz.style.scrollBehavior = 'auto';   // html tiene scroll-behavior: smooth
-    window.scrollTo(0, y);
+    if (destino) destino.scrollIntoView({ block: 'start' });   // respeta el scroll-margin-top del menú fijo
+    else if (window.pageYOffset > 1) window.scrollTo(0, 0);
     raiz.style.scrollBehavior = previo;
   };
 
@@ -240,37 +228,38 @@ async function iniciar() {
     abrirSinSobre();
   }
 
-  // La fecha ya raspada en esta pestaña no se vuelve a tapar
-  const fechaVista = recordado(CLAVE_FECHA);
-  document.addEventListener('raspar:revelado', () => recordar(CLAVE_FECHA));
-  if (fechaVista) revelarSinRaspar();
-
   await Promise.all([
-    fechaVista ? null : cargar('./raspar.js', 'iniciarRaspar').then((r) => { if (r === null) revelarSinRaspar(); }),
+    cargar('./menu.js', 'iniciarMenu'),
+    cargar('./recomendaciones.js', 'iniciarRecomendaciones'),
     cargar('./cuenta.js', 'iniciarCuenta'),
     cargar('./calendario.js', 'iniciarCalendario'),
     cargar('./programa.js', 'iniciarPrograma'),
-    cargar('./galeria.js', 'iniciarGaleria'),
     cargar('./copiar.js', 'iniciarCopiar'),
     cargar('./rsvp.js', 'iniciarRsvp')
   ]);
 
-  // Sin sobre y con ancla (p. ej. ?abierta#rsvp): el salto del navegador ocurrió
-  // antes de que la página tuviera su alto final. Solo se corrige en una carga
-  // nueva y si el invitado sigue a menos de una pantalla del destino.
+  // Sin sobre y con ancla (p. ej. ?abierta#rsvp): el salto del navegador ocurre
+  // antes de que la página tenga su alto final (los módulos agregan botones y
+  // tarjetas). Solo en una carga nueva: se vuelve a acomodar el destino bajo el
+  // menú fijo, ahora y otra vez cuando el documento termine de cargar.
   if (omitir && location.hash.length > 1) {
     const entrada = performance.getEntriesByType?.('navigation')[0];
     if (!entrada || entrada.type === 'navigate') {
       let destino = null;
       try { destino = document.getElementById(decodeURIComponent(location.hash.slice(1))); } catch (error) { /* ancla mal escrita */ }
-      const distancia = destino ? destino.getBoundingClientRect().top : 0;
-      if (destino && Math.abs(distancia) > 2 && Math.abs(distancia) < window.innerHeight) {
+      const acomodar = () => {
+        if (!destino) return;
+        const margen = parseFloat(getComputedStyle(destino).scrollMarginTop) || 0;
+        if (Math.abs(destino.getBoundingClientRect().top - margen) < 2) return;
         const raiz = document.documentElement;
         const previo = raiz.style.scrollBehavior;
         raiz.style.scrollBehavior = 'auto';
-        window.scrollTo(0, Math.round(distancia + window.pageYOffset));
+        destino.scrollIntoView({ block: 'start' });   // respeta el scroll-margin-top del menú fijo
         raiz.style.scrollBehavior = previo;
-      }
+      };
+      acomodar();
+      if (document.readyState !== 'complete') window.addEventListener('load', () => setTimeout(acomodar, 0), { once: true });
+      else setTimeout(acomodar, 0);
     }
   }
 

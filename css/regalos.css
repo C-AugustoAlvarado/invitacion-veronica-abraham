@@ -289,7 +289,7 @@
 
 @media (hover: hover) {
   .copiar:hover,
-  .regalo__enlace:hover { transform: translateY(-2px); background-color: rgba(201, 154, 69, .12); }
+  .regalo__enlace:hover { transform: translateY(-2px); background-color: rgba(107, 112, 66, .1); }
 }
 .copiar:active,
 .regalo__enlace:active { transform: translateY(1px) scale(.99); }
@@ -331,7 +331,7 @@
 }
 .copiar__hecho { opacity: 0; transform: translate3d(0, 6px, 0); }
 
-.copiar.es-copiado { background-color: rgba(201, 154, 69, .14); }
+.copiar.es-copiado { background-color: rgba(107, 112, 66, .12); }
 .copiar.es-copiado .copiar__hojas { opacity: 0; transform: scale(.7); }
 .copiar.es-copiado .copiar__palomita { opacity: 1; }
 .copiar.es-copiado .copiar__palomita path {

@@ -1,0 +1,503 @@
+/* ═══════════════════════════════════════════════════════════════
+   Recomendaciones (#recomendaciones) — v2
+   Sección nocturna con tres apartados (hospedaje, make up, dónde ir)
+   en pestañas. Tarjetas de papel marfil sobre la noche, iconos de
+   línea, botones de contorno en olivo. Solo se animan transform y
+   opacity. Sin JavaScript las pestañas no existen (llevan «hidden»)
+   y los tres apartados se leen apilados.
+   ═══════════════════════════════════════════════════════════════ */
+
+.recomendaciones {
+  overflow: hidden;
+  overflow: clip;
+  /* Altura real de la barra de pestañas (la escribe js/recomendaciones.js) */
+  --recom-pestanas-alto: 0px;
+}
+
+/* ── Encabezado ── */
+.recom__encabezado {
+  max-width: 720px;
+  margin: 0 auto;
+}
+.recom__encabezado .t-titulo { margin-top: 14px; }
+.recom__frase {
+  font-family: var(--f-mano);
+  font-weight: 500;
+  font-size: clamp(26px, 4.8vw, 36px);
+  line-height: 1.3;
+  color: var(--marfil);
+  opacity: .92;
+}
+
+/* ── Hojitas de olivo (decorado) ── */
+.recom__hojas { top: 0; right: 0; bottom: 0; left: 0; }
+.recom__rama {
+  position: absolute;
+  width: clamp(130px, 26vw, 240px);
+  height: auto;
+  fill: none;
+  stroke: var(--olivo-claro);
+  stroke-width: 1.3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: .34;
+}
+.recom__rama--a { top: 6px; left: -9%; }
+.recom__rama--b { bottom: 10px; right: -9%; }
+.recom__hojita { fill: rgba(107, 112, 66, .35); }   /* olivo */
+@media (min-width: 900px) {
+  .recom__rama--a { left: 2%; }
+  .recom__rama--b { right: 2%; }
+}
+
+/* ── Pestañas ── */
+.recom__pestanas {
+  display: flex;
+  justify-content: center;
+  gap: clamp(4px, 2vw, 24px);
+  max-width: 640px;
+  margin: clamp(38px, 6vh, 60px) auto 0;
+  border-bottom: 1px solid rgba(205, 191, 158, .28);   /* --dorado-tenue */
+}
+/* Sin JavaScript la barra sigue oculta (el módulo le quita «hidden» al arrancar) */
+.recom__pestanas[hidden] { display: none; }
+.recom__pestana {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 64px;
+  padding: 10px 6px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  font-family: var(--f-serif);
+  font-weight: 600;
+  font-size: clamp(13px, 1.9vw, 15px);
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: rgba(246, 242, 234, .62);   /* marfil atenuado: 4.5:1 sobre la noche */
+  transition: color .4s var(--suave), transform .4s var(--suave);
+}
+.recom__pestana-icono {
+  width: 24px;
+  height: 24px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: transform .5s var(--entrada);
+}
+/* Subrayado que crece desde el centro */
+.recom__pestana::after {
+  content: '';
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  bottom: -1px;
+  height: 2px;
+  background: var(--olivo-claro);
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform .55s var(--entrada);
+}
+.recom__pestana[aria-selected="true"] { color: var(--marfil); }
+.recom__pestana[aria-selected="true"]::after { transform: scaleX(1); }
+.recom__pestana[aria-selected="true"] .recom__pestana-icono { transform: translateY(-2px); }
+@media (hover: hover) {
+  .recom__pestana:hover { color: var(--marfil); }
+  .recom__pestana:hover .recom__pestana-icono { transform: translateY(-2px); }
+}
+.recom__pestana:focus-visible { outline-offset: -4px; }
+@supports not (inset: 0) {
+  .recom__pestanas { gap: 0; }
+  .recom__pestana { margin: 0 6px; }
+  .recom__pestana-icono { margin-bottom: 8px; }
+}
+@media (min-width: 600px) {
+  .recom__pestana {
+    flex-direction: row;
+    justify-content: center;
+    gap: 12px;
+    min-height: 60px;
+    padding: 14px 18px 18px;
+  }
+  .recom__pestana-icono { width: 22px; height: 22px; }
+  @supports not (inset: 0) {
+    .recom__pestana-icono { margin: 0 12px 0 0; }
+  }
+}
+
+/* ── Apartados ── */
+.recom__apartado {
+  margin-top: clamp(44px, 7vh, 72px);
+}
+/* Al llegar por ancla (#hospedaje…) el menú fijo y las pestañas quedan a la vista:
+   menú + barra de pestañas + el margen del apartado (unos 42 px) + aire.
+   (css/menu.css ya no fija scroll-margin-top en los tres apartados.) */
+.js .recomendaciones .recom__apartado {
+  scroll-margin-top: calc(var(--menu-alto, 64px) + env(safe-area-inset-top, 0px) + var(--recom-pestanas-alto) + 58px);
+}
+.recom__apartado:focus { outline: none; }
+/* Con pestañas, los apartados van pegados a la barra y su nombre ya está en la pestaña */
+.recom--pestanas .recom__apartado { margin-top: clamp(30px, 5vh, 48px); }
+.recom--pestanas .recom__nombre-apartado {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
+}
+/* Sin pestañas (modo básico, o antes de que arranque el módulo), cada
+   apartado se separa del anterior con un filete tenue */
+.recom__apartado + .recom__apartado {
+  padding-top: clamp(44px, 7vh, 72px);
+  border-top: 1px solid rgba(205, 191, 158, .22);
+}
+.recom--pestanas .recom__apartado + .recom__apartado { padding-top: 0; border-top: 0; }
+
+/* Entrada del apartado al cambiar de pestaña (solo transform y opacity) */
+.recom__apartado.es-entrando { animation: recom-entrar .7s var(--entrada) both; }
+@keyframes recom-entrar {
+  from { opacity: 0; transform: translate3d(0, 16px, 0); }
+  to { opacity: 1; transform: none; }
+}
+
+.recom__cabecera { max-width: 640px; margin: 0 auto; }
+.recom__nombre-apartado {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--f-serif);
+  font-weight: 600;
+  font-size: clamp(15px, 2vw, 17px);
+  letter-spacing: .34em;
+  text-transform: uppercase;
+  color: var(--olivo-claro);
+  margin-bottom: 14px;
+}
+.recom__icono-apartado,
+.recom__subtitulo-icono {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex: none;
+}
+@supports not (inset: 0) {
+  .recom__nombre-apartado { gap: 0; }
+  .recom__icono-apartado { margin-right: 12px; }
+}
+.recom__intro {
+  color: rgba(246, 242, 234, .9);
+  max-width: 30em;
+  margin: 0 auto;
+  text-wrap: pretty;
+}
+
+/* Subtítulos dentro de «Dónde ir» (Restaurantes, Lugares) */
+.recom__subtitulo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  font-family: var(--f-serif);
+  font-weight: 600;
+  font-size: clamp(14px, 1.9vw, 16px);
+  letter-spacing: .32em;
+  text-transform: uppercase;
+  color: var(--olivo-claro);
+  margin: clamp(36px, 6vh, 56px) 0 clamp(22px, 4vh, 30px);
+}
+@supports not (inset: 0) {
+  .recom__subtitulo { gap: 0; }
+  .recom__subtitulo-icono { margin-right: 12px; }
+}
+
+/* ── Rejillas de tarjetas ── */
+.recom__rejilla {
+  list-style: none;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(18px, 3vw, 28px);
+  max-width: 520px;
+  margin: clamp(26px, 4.5vh, 40px) auto 0;
+}
+.recom__celda { display: flex; min-width: 0; }
+@supports not (inset: 0) {
+  .recom__rejilla { display: block; }
+  .recom__celda + .recom__celda { margin-top: 20px; }
+}
+@media (min-width: 680px) {
+  .recom__rejilla { max-width: 860px; }
+  .recom__rejilla--hoteles,
+  .recom__rejilla--restaurantes { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (min-width: 900px) {
+  .recom__rejilla--maquillaje { grid-template-columns: repeat(3, minmax(0, 1fr)); max-width: 1000px; }
+}
+@media (min-width: 1040px) {
+  .recom__rejilla--hoteles { grid-template-columns: repeat(3, minmax(0, 1fr)); max-width: 1120px; }
+  .recom__rejilla--restaurantes { max-width: 960px; }
+}
+
+/* ── Tarjeta ── */
+.recom-tarjeta {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: clamp(22px, 3.6vw, 30px) clamp(20px, 3.4vw, 28px) clamp(20px, 3.2vw, 26px);
+  color: var(--tinta-suave);
+  transition: transform .6s var(--entrada);
+}
+@media (hover: hover) {
+  .recom-tarjeta:hover { transform: translateY(-3px); }
+}
+/* Mientras el motor la revela manda su transición; ya visible, la del cursor */
+.js .recom-tarjeta[data-revelar].es-visible { transition: transform .6s var(--entrada); }
+
+.recom-tarjeta__cabeza {
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr);
+  grid-template-rows: auto auto;
+  column-gap: 14px;
+  align-items: start;
+}
+.recom-tarjeta__icono {
+  grid-row: 1 / span 2;
+  width: 28px;
+  height: 28px;
+  margin-top: 1px;
+  fill: none;
+  stroke: var(--olivo);
+  stroke-width: 1.3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.recom-tarjeta__nombre {
+  font-family: var(--f-serif);
+  font-weight: 600;
+  font-size: clamp(21px, 2.6vw, 24px);
+  line-height: 1.2;
+  letter-spacing: .05em;
+  color: var(--tinta);
+  text-wrap: balance;
+}
+.recom-tarjeta__zona {
+  margin-top: 5px;
+  font-weight: 600;
+  font-size: clamp(12px, 1.6vw, 13px);
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--olivo-hondo);
+  text-wrap: balance;
+}
+@supports not (inset: 0) {
+  .recom-tarjeta__cabeza { display: flex; align-items: flex-start; }
+  .recom-tarjeta__icono { margin-right: 14px; }
+}
+
+.recom-tarjeta__texto {
+  margin-top: 14px;
+  font-size: clamp(16px, 1.9vw, 17px);
+  line-height: 1.6;
+  color: var(--tinta-suave);
+  text-wrap: pretty;
+}
+.recom-tarjeta__direccion { font-style: normal; letter-spacing: .02em; }
+.recom-tarjeta__texto--pendiente {
+  font-style: italic;
+  color: var(--gris);
+}
+
+.recom-tarjeta__pie {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 18px;
+  margin-top: auto;
+  padding-top: 18px;
+}
+@supports not (inset: 0) {
+  .recom-tarjeta__pie { gap: 0; }
+  .recom-tarjeta__pie > * { margin: 6px 12px 0 0; }
+}
+.recom-tarjeta__tel {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 4px 0;
+  font-weight: 600;
+  font-size: clamp(16px, 2vw, 18px);
+  letter-spacing: .08em;
+  font-variant-numeric: tabular-nums;
+  color: var(--tinta);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color .3s var(--suave);
+}
+.recom-tarjeta__tel svg {
+  width: 17px;
+  height: 17px;
+  fill: none;
+  stroke: var(--olivo);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+@media (hover: hover) {
+  .recom-tarjeta__tel:hover { color: var(--olivo-hondo); }
+}
+@supports not (inset: 0) {
+  .recom-tarjeta__tel { gap: 0; }
+  .recom-tarjeta__tel svg { margin-right: 8px; }
+}
+
+/* Botón de contorno en olivo, dentro del papel. Cuatro clases: gana a
+   .seccion--noche .boton--linea de base.css y a su copia en basico.css */
+.recomendaciones .papel .boton.boton--linea {
+  color: var(--olivo-hondo);
+  box-shadow: inset 0 0 0 1px var(--olivo);
+  min-height: 46px;
+  padding: 12px 20px;
+  font-size: 13px;
+  letter-spacing: .2em;
+  gap: 9px;
+}
+@media (hover: hover) {
+  .recomendaciones .papel .boton.boton--linea:hover { background: rgba(107, 112, 66, .1); }
+}
+.recom-tarjeta__boton-icono {
+  width: 15px;
+  height: 15px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+@supports not (inset: 0) {
+  .recomendaciones .papel .boton.boton--linea { gap: 0; }
+  .recom-tarjeta__boton-icono { margin-right: 9px; }
+}
+
+/* Casa Grande: ahí es la recepción */
+.recom-tarjeta--destacada {
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, .9) inset,
+    0 0 0 1px rgba(107, 112, 66, .45),
+    0 30px 60px -34px rgba(43, 40, 32, .55),
+    0 12px 22px -16px rgba(43, 40, 32, .28);
+}
+.recom-tarjeta--destacada::after { border-color: rgba(107, 112, 66, .4); }
+.recom-tarjeta__etiqueta {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 5px 14px;
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--marfil-luz);
+  background: var(--olivo-hondo);
+  border-radius: 999px;
+  box-shadow: 0 0 0 4px var(--noche);
+}
+
+/* Lugares del centro histórico: etiquetas en la noche */
+.recom__lugares { max-width: 760px; margin: 0 auto; }
+.recom__lugares-intro {
+  font-style: italic;
+  font-size: clamp(17px, 2vw, 19px);
+  color: rgba(246, 242, 234, .85);
+  margin-bottom: clamp(18px, 3vh, 24px);
+}
+.recom__lista-lugares {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px 10px;
+}
+.recom__lista-lugares li {
+  padding: 9px 16px;
+  font-weight: 600;
+  font-size: clamp(14px, 1.8vw, 16px);
+  letter-spacing: .07em;
+  color: var(--marfil);
+  border: 1px solid rgba(163, 166, 126, .55);   /* olivo claro */
+  border-radius: 999px;
+  text-align: center;
+  text-wrap: balance;
+}
+@supports not (inset: 0) {
+  .recom__lista-lugares { gap: 0; }
+  .recom__lista-lugares li { margin: 5px; }
+}
+
+/* Pátzcuaro: tarjeta ancha */
+.recom-tarjeta--patzcuaro {
+  max-width: 760px;
+  margin: clamp(36px, 6vh, 56px) auto 0;
+}
+@media (min-width: 760px) {
+  .recom-tarjeta--patzcuaro {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-rows: auto auto;
+    column-gap: 32px;
+    align-items: end;
+  }
+  .recom-tarjeta--patzcuaro .recom-tarjeta__cabeza { grid-column: 1; }
+  .recom-tarjeta--patzcuaro .recom-tarjeta__texto { grid-column: 1 / -1; }
+  .recom-tarjeta--patzcuaro .recom-tarjeta__pie { grid-column: 2; grid-row: 1; padding-top: 0; }
+}
+
+/* ── Movimiento reducido ── */
+@media (prefers-reduced-motion: reduce) {
+  .recom__apartado.es-entrando { animation: none; }
+  .recom-tarjeta:hover { transform: none; }
+}
+
+/* ── Temas de contraste (Windows) ── */
+@media (forced-colors: active) {
+  .recom__pestana { border: 1px solid ButtonText; }
+  .recom__pestana[aria-selected="true"] { border-width: 2px; }
+  .recom__pestana::after { background: Highlight; }
+  .recom__lista-lugares li { border-color: CanvasText; }
+  .recom-tarjeta__etiqueta { border: 1px solid CanvasText; }
+}
+
+/* Pantallas muy angostas: las tres pestañas caben sin encimarse */
+@media (max-width: 359px) {
+  .recom__pestanas { gap: 2px; }
+  .recom__pestana { padding-left: 2px; padding-right: 2px; font-size: 12px; letter-spacing: .12em; }
+}
+
+/* Tarjetas de hotel con dos botones: el teléfono arriba y los botones repartidos en una fila */
+.recom-tarjeta--sitio .recom-tarjeta__pie .recom-tarjeta__tel { flex: 1 1 100%; }
+/* Especificidad por encima de «.recomendaciones .papel .boton.boton--linea» */
+.recomendaciones .papel.recom-tarjeta--sitio .recom-tarjeta__pie .boton.recom-tarjeta__boton {
+  flex: 1 1 0;
+  min-width: 0;
+  gap: 8px;
+  padding-left: 8px;
+  padding-right: 8px;
+  justify-content: center;
+  white-space: nowrap;
+  font-size: 13px;
+  letter-spacing: .1em;
+}
+.recom-tarjeta--sitio .recom-tarjeta__pie .recom-tarjeta__boton-icono { flex: none; }
+/* En pantallas angostas los dos botones van uno bajo otro, a lo ancho */
+@media (max-width: 379px) {
+  .recomendaciones .papel.recom-tarjeta--sitio .recom-tarjeta__pie .boton.recom-tarjeta__boton { flex-basis: 100%; }
+}

@@ -8,7 +8,9 @@
    «funcional» (calendario, copiar y formulario activos).
    REGLA DE ESTE ARCHIVO: solo CSS viejo. Nada de inset, gap, clamp(),
    min(), max(), aspect-ratio, svh/lvh ni var(): medidas en px y
-   colores escritos con su número.
+   colores escritos con su número (paleta v2: marfil #F6F2EA, tinta
+   #2B2B28, olivo #6B7042 / #4E5330 / #A3A67E / #D9DBC7, dorado tenue
+   #CDBF9E, noche #26261F). El menú trae su propio bloque en menu.css.
    ═══════════════════════════════════════════════════════════════ */
 
 /* Contenido que solo existe en modo básico o sin JavaScript */
@@ -21,8 +23,8 @@ html.basico { scroll-behavior: auto; }
   height: auto;
   overflow-y: visible;
   overflow-x: hidden;
-  background: #F8F4EB;
-  color: #4E4632;
+  background: #F6F2EA;
+  color: #2B2B28;
   font-size: 18px;
 }
 .basico #sobre,
@@ -55,26 +57,26 @@ html.basico { scroll-behavior: auto; }
   text-align: center;
 }
 .basico .portada__contenido { display: block; }
-.basico .historia { padding-top: 90px; }
+.basico .historia { padding-top: 72px; }
 .basico .cierre { padding-bottom: 70px; }
 
-/* Secciones nocturnas: fondo propio, tinta crema */
-.basico .seccion--noche { background: #2B2820; color: #F8F4EB; }
+/* Secciones nocturnas: fondo propio, tinta marfil */
+.basico .seccion--noche { background: #26261F; color: #F6F2EA; }
 .basico .seccion--noche .t-sobretitulo,
-.basico .seccion--noche .t-titulo,
-.basico .seccion--noche .t-fecha { color: #E2C288; }
-.basico .seccion--noche .t-script { color: #F8F4EB; }
-.basico .seccion--noche .t-nombres { color: #E2C288; }
-.basico .seccion--noche .boton--linea { color: #F8F4EB; }
-/* Las tarjetas de papel siempre son claras con tinta café */
+.basico .seccion--noche .t-titulo { color: #D9DBC7; }
+.basico .seccion--noche .t-script { color: #F6F2EA; }
+.basico .seccion--noche .t-nombres { color: #D9DBC7; }
+.basico .seccion--noche .boton--linea { color: #F6F2EA; }
+/* Las tarjetas de papel siempre son claras con tinta oscura */
 .basico .papel,
-.basico .seccion--noche .papel { background: #FBF7EC; color: #4E4632; padding: 26px; }
+.basico .seccion--noche .papel { background: #FBF9F4; color: #2B2B28; padding: 26px; }
 .basico .papel .t-sobretitulo,
-.basico .seccion--noche .papel .t-sobretitulo { color: #7D5A1E; }
+.basico .seccion--noche .papel .t-sobretitulo { color: #4E5330; }
 .basico .papel .t-script,
 .basico .papel .t-titulo,
 .basico .seccion--noche .papel .t-script,
-.basico .seccion--noche .papel .t-titulo { color: #5C5138; }
+.basico .seccion--noche .papel .t-titulo { color: #2B2B28; }
+.basico .seccion--noche .papel .boton--linea { color: #4E5330; }
 .basico .papel::after { top: 9px; right: 9px; bottom: 9px; left: 9px; }
 
 /* ── Tipografía en px ── */
@@ -82,13 +84,11 @@ html.basico { scroll-behavior: auto; }
 .basico .t-script--chica { font-size: 30px; }
 .basico .t-titulo { font-size: 28px; }
 .basico .t-sobretitulo { font-size: 13px; }
-.basico .t-nombres { font-size: 30px; color: #A87C2F; }
-.basico .t-fecha { font-size: 28px; color: #A87C2F; }
+.basico .t-nombres { font-size: 30px; color: #4E5330; }
 .basico .t-lugar { font-size: 14px; }
 .basico .t-cuerpo { font-size: 18px; }
 .basico .t-nota { font-size: 15px; opacity: 1; }
 .basico .t-dato { font-size: 14px; }
-.basico .direccion { font-size: 16px; }
 .basico .boton { font-size: 14px; padding: 17px 24px; }
 .basico .boton::after { display: none; }
 .basico .ornamento { margin: 22px auto; }
@@ -97,90 +97,55 @@ html.basico { scroll-behavior: auto; }
 .basico .ornamento i { margin: 0 14px; }
 
 /* ── Adornos: tamaño fijo o fuera ── */
-.basico .portada__lavado,
-.basico .portada__nube,
-.basico .historia__lavado,
-.basico .historia__nube,
+.basico .portada__rama,
+.basico .historia__cielo,
+.basico .historia__hojas,
 .basico .historia__vuelo,
-.basico .ceremonia__lavado,
-.basico .recepcion__lavado,
-.basico .fecha__lavado,
+.basico .boda__ramita,
+.basico .recom__rama,
+.basico .recom__hojas,
 .basico .prog-cielo,
 .basico .prog-remate__halo,
-.basico .galeria__chispas,
 .basico .regalos__chispas,
 .basico .rsvp__chispas,
 .basico .rsvp__halo { display: none; }
 .basico [data-parallax] { -webkit-transform: none; transform: none; }
-.basico .portada__esquina { width: 210px; top: -12px; }
-.basico .portada__esquina--izq { left: -60px; }
-.basico .portada__esquina--der { right: -60px; -webkit-transform: scaleX(-1); transform: scaleX(-1); }
-.basico .historia__rama { display: none; }
-.basico .ceremonia__rama { width: 180px; left: -50px; top: 0; }
-.basico .ceremonia__flor { width: 110px; right: -20px; bottom: 10px; }
-.basico .recepcion__rama { width: 220px; right: -70px; top: -10px; }
-.basico .recepcion__flor { display: none; }
-.basico .fecha__rama { width: 110px; }
-.basico .fecha__rama--izq { left: -40px; }
-.basico .fecha__rama--der { right: -44px; }
 
 /* ── 1 · Portada ── */
-.basico .portada__sobretitulo { margin-bottom: 8px; }
-.basico .portada__titulo { font-size: 52px; }
-.basico .portada__nombres { margin-top: 6px; font-size: 30px; }
-.basico .portada__ilustracion { width: auto; margin: 22px -22px 18px; }
-.basico .portada__accion { margin-top: 26px; }
-html.basico .portada__bajar { display: block; margin-top: 26px; opacity: 1; color: #7D5A1E; -webkit-transition: none; transition: none; }
-.basico .portada__bajar svg { margin: 8px auto 0; -webkit-animation: none; animation: none; }
-.basico .portada__bajar-texto { display: block; }
+.basico .portada__monograma { width: 220px; margin: 0 auto; }
+.basico .portada__fecha { font-size: 30px; }
+.basico .portada__padres { display: block; }
+.basico .portada__divisor { display: none; }
+.basico .portada__familia ~ .portada__familia { margin-top: 22px; }
+.basico .portada__reloj,
+.basico .portada__lema { display: none; }
+.basico .portada__calendario { margin-top: 30px; -webkit-animation: none; animation: none; opacity: 1; }
+.basico .portada__opciones { font-size: 16px; }
+.basico .portada__separador { color: #A3A67E; }
 
-/* ── 2 · La fecha: a la vista, sin raspar ── */
-/* No hay nada que raspar: el título que lo pide se omite */
-.basico .fecha__titulo { display: none; }
-.basico .fecha__tarjeta-marco { margin: 26px auto 0; }
-.basico .fecha__tarjeta { padding: 40px 18px 38px; }
-.basico .fecha__numeros { font-size: 36px; }
-.basico .fecha__dia { font-size: 19px; }
-.basico .fecha__lugar { font-size: 13px; }
-.basico .fecha__bajo,
-.basico .fecha__lema,
-.basico .cuenta,
-.basico .raspar__lamina,
-.basico .raspar__sombra,
-.basico .raspar__gesto { display: none; }
-.basico .fecha [data-raspar-contenido] { -webkit-transform: none; transform: none; }
-.basico .fecha__despues { display: block; margin-top: 10px; }
-.basico .fecha__calendario { margin-top: 30px; -webkit-animation: none; animation: none; opacity: 1; }
-.basico .fecha__opciones { font-size: 16px; }
-.basico .fecha__separador { color: #7D5A1E; }
+/* ── 2 · Historia ── */
+.basico .historia__cuadro { margin: 26px auto 0; }
+.basico .historia__fotos { display: block; text-align: center; }
+.basico .polaroid { display: inline-block; vertical-align: top; margin: 10px; }
+.basico .polaroid__cara { -webkit-transform: none; transform: none; }
 
-/* ── 3 · Historia ── */
-.basico .historia__rejilla { display: block; text-align: center; }
-.basico .historia__lado { font-size: 24px; }
-.basico .historia__marco { width: 260px; height: 372px; margin: 22px auto; }
-.basico .historia__foto { top: 0; left: 0; }
-.basico .historia__texto { margin: 26px auto 0; }
-
-/* ── 4 y 5 · Ceremonia y recepción ── */
-.basico .ceremonia__rejilla,
-.basico .recepcion__rejilla { display: block; }
-.basico .ceremonia__arte,
-.basico .recepcion__arte { width: auto; margin: 0 -22px 30px; }
-.basico .ceremonia__texto .t-script,
-.basico .recepcion__texto .t-script { font-size: 40px; }
-.basico .recepcion__datos { display: block; margin-top: 50px; }
-.basico .recepcion__datos > * { margin-top: 18px; }
+/* ── 3 · La boda y vestimenta ── */
+.basico .boda__lugares { display: block; }
+.basico .lugar + .lugar { margin-top: 56px; }
+.basico .lugar__arte { width: 240px; margin-left: auto; margin-right: auto; }
+.basico .vestimenta__datos { display: block; }
+.basico .vestimenta__datos > * + * { margin-top: 18px; }
 .basico .dato__principal { font-size: 28px; }
 .basico .dato__muestras { display: block; text-align: center; }
 .basico .muestra { display: inline-block; margin: 0 6px; }
 
-/* ── 6 · Atardecer: una estampa quieta ── */
+/* ── 4 · Atardecer: una estampa quieta ── */
 .basico .atardecer {
   height: auto;
-  color: #F8F4EB;
-  background: #7A4A3A;
-  background: -webkit-linear-gradient(top, #4A3A2E 0%, #7A4A3A 34%, #B9744F 66%, #E2A66B 100%);
-  background: linear-gradient(180deg, #4A3A2E 0%, #7A4A3A 34%, #B9744F 66%, #E2A66B 100%);
+  color: #F6F2EA;
+  background: #6E5C4A;
+  background: -webkit-linear-gradient(top, #3C3A30 0%, #6E5C4A 34%, #B08A68 66%, #DCC3A2 100%);
+  background: linear-gradient(180deg, #3C3A30 0%, #6E5C4A 34%, #B08A68 66%, #DCC3A2 100%);
 }
 .basico .atardecer__escena { position: relative; top: auto; height: 660px; overflow: hidden; }
 .basico .atardecer__sol,
@@ -201,50 +166,45 @@ html.basico .portada__bajar { display: block; margin-top: 26px; opacity: 1; colo
   opacity: .8;
 }
 .basico .atardecer__frase { top: 56px; left: 0; right: 0; padding: 0 22px; opacity: 1; }
-.basico .atardecer__frase .t-sobretitulo { color: #F0DCA8; }
+.basico .atardecer__frase .t-sobretitulo { color: #ECE6D9; }
 .basico .atardecer__frase .t-script {
-  color: #F8F4EB;
+  color: #F6F2EA;
   font-size: 34px;
-  text-shadow: 0 1px 3px rgba(43, 40, 32, .6), 0 2px 30px rgba(43, 40, 32, .5);
+  text-shadow: 0 1px 3px rgba(38, 38, 31, .6), 0 2px 30px rgba(38, 38, 31, .5);
 }
 .basico .atardecer__velo { opacity: 1; }
 .basico .atardecer__suelo { display: none; }
 
-/* ── 7 · Programa ── */
+/* ── 5 · Itinerario ── */
 .basico .prog-cabecera { margin-bottom: 64px; }
-.basico .prog-titulo { margin-top: 12px; }
-.basico .prog-entrada { font-size: 18px; color: #E9E3D3; }
+.basico .prog-titulo { margin-top: 12px; font-family: 'La Belle Aurore', 'Dancing Script', cursive; font-weight: 400; font-size: 44px; }
+.basico .prog-entrada { font-size: 18px; color: #ECE6D9; }
 .basico .prog-linea { padding: 26px 0 64px; }
 .basico .prog-chispa { display: none; }
-.basico .prog-hilo__oro { -webkit-transform: none; transform: none; }
+.basico .prog-hilo__guia { display: none; }
+.basico .prog-hilo__oro { background: #CDBF9E; -webkit-transform: none; transform: none; }
 .basico .prog-hito { display: block; padding-left: 48px; }
 .basico .prog-hito + .prog-hito { margin-top: 56px; }
 .basico .prog-texto { display: block; }
-.basico .prog-hora { font-size: 48px; color: #E2C288; }
-.basico .prog-hora__periodo { color: #E2C288; }
-.basico .prog-nombre { font-size: 14px; color: #F8F4EB; }
-.basico .prog-nombre__y { color: #E2C288; }
-.basico .prog-detalle { font-size: 18px; color: #E9E3D3; }
-.basico .prog-icono { width: 64px; height: 64px; margin-top: 14px; color: #E2C288; }
+.basico .prog-hora { font-size: 48px; color: #F6F2EA; }
+.basico .prog-hora__periodo { color: #A3A67E; }
+.basico .prog-nombre { font-size: 14px; color: #F6F2EA; }
+.basico .prog-nombre__y { color: #A3A67E; }
+.basico .prog-detalle { font-size: 18px; color: #ECE6D9; }
+.basico .prog-icono { width: 64px; height: 64px; margin-top: 14px; color: #A3A67E; }
 .basico .prog-icono::before { display: none; }
 .basico .prog-nodo { top: 24px; left: 12px; }
 .basico .prog-nodo::before,
 .basico .prog-nodo::after { opacity: 1; }
-.basico .prog-nodo::before { -webkit-transform: rotate(45deg); transform: rotate(45deg); }
+.basico .prog-nodo::before { background: #CDBF9E; box-shadow: none; -webkit-transform: rotate(45deg); transform: rotate(45deg); }
 .basico .prog-nodo::after { display: none; }
-.basico .prog-fin i { opacity: 1; }
+.basico .prog-fin i { opacity: 1; background: #CDBF9E; }
+.basico .prog-ramita { width: 58px; height: 24px; }
 .basico .prog-remate { margin-top: 30px; }
-.basico .prog-remate__cielo { width: 260px; }
-.basico .prog-remate__frase { font-size: 26px; color: #F8F4EB; }
+.basico .prog-remate__cielo { width: 260px; color: #CDBF9E; }
+.basico .prog-remate__frase { font-size: 26px; color: #F6F2EA; }
 
-/* ── 8 · Galería: el carrusel necesita JavaScript ── */
-.basico .galeria { padding-left: 22px; padding-right: 22px; }
-.basico .galeria__encabezado { padding: 0; }
-.basico .galeria__carrusel { display: none; }
-.basico .galeria .solo-basico { margin-top: 18px; color: #E2C288; }
-html:not(.js) .galeria__aviso { padding: 0 22px; }
-
-/* ── 9 · Regalos ── */
+/* ── 7 · Regalos ── */
 .basico .regalos__titulo { font-size: 36px; margin-top: 14px; }
 .basico .regalos__texto { color: #F1EDE2; }
 .basico .regalos__lista { display: block; max-width: 440px; margin: 52px auto 0; }
@@ -258,10 +218,10 @@ html:not(.js) .galeria__aviso { padding: 0 22px; }
 .basico .regalo__valor--largo { font-size: 21px; }
 .basico .regalo__grupo { margin: 0 .2em; }
 .basico .regalo__acciones > * { margin: 5px 6px; }
-.basico .regalos__nota { margin-top: 40px; font-size: 18px; color: #E2C288; }
+.basico .regalos__nota { margin-top: 40px; font-size: 18px; color: #D9DBC7; }
 .basico .copiar__icono svg { top: 0; left: 0; }
 
-/* ── 10 · Confirmación ── */
+/* ── 8 · Confirmación ── */
 .basico .rsvp__titulo { margin-top: 12px; }
 .basico .rsvp__limite { margin-top: 14px; color: #F1EDE2; }
 .basico .rsvp__marco { width: auto; max-width: 500px; margin: 34px auto 0; }
@@ -276,9 +236,9 @@ html:not(.js) .galeria__aviso { padding: 0 22px; }
   border-radius: 126px 126px 1px 1px;
 }
 .basico .rsvp__rama { margin: 0 8px; }
-.basico .rsvp__monograma { font-size: 40px; color: #A87C2F; }
-.basico .rsvp__monograma em { color: #A87C2F; }
-.basico .rsvp__fecha { opacity: 1; color: #5C5138; }
+.basico .rsvp__monograma { font-size: 40px; color: #4E5330; }
+.basico .rsvp__monograma em { color: #4E5330; }
+.basico .rsvp__fecha { opacity: 1; color: #3A3A35; }
 .basico .rsvp__filete i { margin: 0 10px; }
 .basico .rsvp__formulario { display: block; margin-top: 22px; }
 .basico .rsvp__formulario[hidden] { display: none; }
@@ -286,7 +246,7 @@ html:not(.js) .galeria__aviso { padding: 0 22px; }
 .basico .rsvp-opciones__par { display: block; margin-top: 14px; }
 .basico .rsvp-opcion + .rsvp-opcion { margin-top: 12px; }
 .basico .rsvp-opcion__radio { top: 0; left: 0; }
-/* El relleno café de la opción elegida: sin él, el texto blanco no se lee */
+/* El relleno oscuro de la opción elegida: sin él, el texto claro no se lee */
 .basico .rsvp-opcion__cara::before { top: 0; right: 0; bottom: 0; left: 0; }
 .basico .rsvp-opcion__marca { margin-right: 10px; }
 .basico .rsvp-personas > * + * { margin-top: 14px; }
@@ -298,31 +258,48 @@ html:not(.js) .galeria__aviso { padding: 0 22px; }
 .basico .rsvp__directo { margin-top: 24px; }
 .basico .rsvp__directo .boton { display: block; margin-top: 16px; }
 
-/* ── 11 · Cierre ── */
+/* ── 9 · Recomendaciones: los tres apartados apilados ── */
+.basico .recom__pestanas { display: none; }
+.basico .recom__apartado { margin-top: 44px; }
+.basico .recom__apartado + .recom__apartado { padding-top: 44px; border-top: 1px solid #5A5A4A; }
+.basico .recom__rejilla { display: block; max-width: 520px; margin: 26px auto 0; }
+.basico .recom__celda { display: block; }
+.basico .recom__celda + .recom__celda { margin-top: 20px; }
+.basico .recom-tarjeta { display: block; padding: 22px 20px; }
+.basico .recom-tarjeta__icono,
+.basico .recom__icono-apartado,
+.basico .recom__subtitulo-icono,
+.basico .recom-tarjeta__boton-icono { width: 22px; height: 22px; vertical-align: middle; margin-right: 10px; }
+.basico .recom-tarjeta__pie { margin-top: 16px; }
+.basico .recom-tarjeta__pie .boton { display: inline-block; margin: 6px 12px 0 0; }
+.basico .recom__lista-lugares { display: block; text-align: center; }
+.basico .recom__lista-lugares li { display: inline-block; margin: 5px; padding: 9px 16px; border: 1px solid #A3A67E; border-radius: 999px; }
+
+/* ── 10 · Cierre ── */
 .basico .cierre__nota { margin-top: 12px; }
 .basico .planner { margin: 30px auto 0; }
-.basico .planner__nombre { font-size: 28px; color: #5C5138; }
+.basico .planner__nombre { font-size: 28px; color: #2B2B28; }
 .basico .planner__medios { display: block; }
 .basico .planner__medios .boton { margin: 6px; }
 .basico .cierre__despedida { margin-top: 90px; }
 .basico .cierre__medallon { width: 240px; margin: 0 auto 26px; }
-.basico .cierre__sello { height: 240px; background: #FBF7EC; }
-.basico .cierre__sello img { top: 4%; left: 4%; }
-.basico .cierre__monograma { top: 0; right: 0; bottom: 0; left: 0; font-size: 50px; line-height: 240px; display: block; text-align: center; color: #A87C2F; }
-.basico .cierre__frase { color: #F8F4EB; }
-.basico .cierre__nombres { margin-top: 14px; color: #E2C288; }
-.basico .cierre__lugar { margin-top: 18px; font-size: 12px; color: #F8F4EB; opacity: 1; }
+.basico .cierre__sello { height: 240px; background: #FBF9F4; }
+.basico .cierre__corona { top: 0; left: 0; width: 240px; height: 240px; }
+.basico .cierre__monograma { top: 54px; left: 67px; width: 106px; height: 72px; -webkit-transform: none; transform: none; color: #2B2B28; }
+.basico .cierre__frase { color: #F6F2EA; }
+.basico .cierre__nombres { margin-top: 14px; color: #D9DBC7; }
+.basico .cierre__lugar { margin-top: 18px; font-size: 12px; color: #F6F2EA; opacity: 1; }
 
 /* ── Pantallas anchas ── */
+@media (min-width: 400px) {
+  .basico .portada__fecha { font-size: 40px; }
+}
 @media (min-width: 700px) {
   .basico .seccion { padding: 96px 40px; }
   .basico .t-script { font-size: 60px; }
-  .basico .portada__titulo { font-size: 80px; }
-  .basico .t-nombres, .basico .portada__nombres { font-size: 44px; }
+  .basico .portada__fecha { font-size: 56px; }
+  .basico .t-nombres { font-size: 44px; }
   .basico .t-cuerpo { font-size: 20px; }
-  .basico .portada__ilustracion,
-  .basico .ceremonia__arte,
-  .basico .recepcion__arte { margin-left: 0; margin-right: 0; }
   .basico .atardecer__escena { height: 720px; }
   .basico .atardecer__frase .t-script { font-size: 50px; }
 }

@@ -1,6 +1,6 @@
-// Cuenta regresiva hasta CONFIG.evento.inicio. Aparece tras revelar la
-// fecha ('raspar:revelado'). Se actualiza una vez por segundo, alineada al
-// reloj, y se pausa con la pestaña oculta o fuera de pantalla.
+// Cuenta regresiva hasta CONFIG.evento.inicio. Se actualiza una vez por
+// segundo, alineada al reloj, y se pausa con la pestaña oculta o fuera de
+// pantalla.
 
 import { CONFIG } from './config.js';
 
@@ -30,7 +30,7 @@ function montar(raiz, opciones) {
   const ahora = typeof opciones.ahora === 'function' ? opciones.ahora : () => Date.now();
   if (Number.isNaN(inicio)) return { destruir() {} };
 
-  const ambito = raiz.closest('[data-raspar-ambito], section') || document;
+  const ambito = raiz.closest('section') || document;
 
   /* ── DOM ── */
   raiz.classList.add('cuenta');
@@ -208,14 +208,10 @@ function montar(raiz, opciones) {
 
   const alCambiarVisibilidad = () => reanudar();
   document.addEventListener('visibilitychange', alCambiarVisibilidad);
-  document.addEventListener('raspar:revelado', aparecer);
 
   pintar(false);
 
-  // Si no hay tarjeta para raspar, o ya se reveló, aparece de una vez
-  const tarjeta = ambito.querySelector('[data-raspar]');
-  const yaRevelada = ambito.dataset?.rasparEstado === 'revelado';
-  if (!tarjeta || yaRevelada || opciones.visible) aparecer();
+  aparecer();
 
   return {
     aparecer,
@@ -224,7 +220,6 @@ function montar(raiz, opciones) {
       clearTimeout(relojAnuncio);
       observador.disconnect();
       document.removeEventListener('visibilitychange', alCambiarVisibilidad);
-      document.removeEventListener('raspar:revelado', aparecer);
     }
   };
 }
