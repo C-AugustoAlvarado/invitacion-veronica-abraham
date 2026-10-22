@@ -366,6 +366,10 @@ html:not(.js) .solo-basico { display: block; }
   box-shadow: inset 0 0 0 1px var(--dorado);
 }
 .seccion--noche .boton--linea { color: var(--crema); }
+/* Dentro de una tarjeta de papel (clara) el botón de contorno vuelve a olivo, también de noche
+   (p. ej. «Llamar» en la tarjeta de la wedding planner) */
+.papel .boton--linea,
+.seccion--noche .papel .boton--linea { color: var(--olivo-hondo); box-shadow: inset 0 0 0 1px var(--olivo); }
 @supports not (inset: 0) {
   .boton { gap: 0; }
   .boton > svg { margin-right: 12px; }
