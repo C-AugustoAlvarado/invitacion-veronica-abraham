@@ -254,8 +254,9 @@ export function iniciarAvion(opciones = {}) {
     observador = new IntersectionObserver((entradas) => {
       if (entradas.some((e) => e.isIntersecting)) reproducir();
     }, { rootMargin: '0px 0px -45% 0px', threshold: 0 });
-    const cielo = banda ? banda.parentElement : null;
-    if (cielo) observador.observe(cielo);
+    // Se vigila la franja misma (va debajo del calendario): el vuelo arranca cuando esa
+    // franja llega a la mitad superior de la pantalla, ya pasados los botones del calendario
+    if (banda) observador.observe(banda);
     saltos.forEach((s) => observador.observe(s.vuelo));
   }
   // Detrás del sobre el contador puede estar «en pantalla» sin que nadie lo vea

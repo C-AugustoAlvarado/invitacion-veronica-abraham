@@ -17,7 +17,7 @@
 .avion {
   position: absolute;
   left: 50%;
-  bottom: 100%;
+  top: 100%;              /* debajo del calendario (los novios lo pidieron el 22-oct); antes iba arriba del lema */
   width: 100vw;
   height: 64px;
   margin-left: -50vw;
