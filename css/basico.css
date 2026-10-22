@@ -291,7 +291,7 @@ html.basico { scroll-behavior: auto; }
 .basico .cierre__despedida { margin-top: 90px; }
 .basico .cierre__medallon { width: 240px; margin: 0 auto 26px; }
 .basico .cierre__sello { height: 240px; background: #FBF9F4; }
-.basico .cierre__nutrias { top: 20px; left: 10%; width: 80%; height: auto; -webkit-transform: none; transform: none; }
+.basico .cierre__nutrias { top: 45px; left: 11%; width: 78%; height: auto; -webkit-transform: none; transform: none; }
 .basico .cierre__frase { color: #F6F2EA; }
 .basico .cierre__nombres { margin-top: 14px; color: #D9DBC7; }
 .basico .cierre__lugar { margin-top: 18px; font-size: 12px; color: #F6F2EA; opacity: 1; }

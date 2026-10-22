@@ -313,13 +313,14 @@ html:not(.js) .atardecer__frase { opacity: 1; }
     0 0 90px 10px rgba(205, 191, 158, .16),
     0 34px 60px -30px rgba(0, 0, 0, .7);
 }
-/* Las nutrias (propuesta del 21-oct-2026) centradas en el medallón */
+/* Las nutrias de los novios (acuarela, 1220×973) centradas en el medallón: al 78 % del
+   ancho la diagonal cabe dentro del círculo */
 .cierre__nutrias {
   position: absolute;
   top: 50%; left: 50%;
-  width: 82%;
+  width: 78%;
   height: auto;
-  transform: translate(-50%, -52%);
+  transform: translate(-50%, -50%);
   display: block;
 }
 .cierre__frase { color: var(--crema); }
