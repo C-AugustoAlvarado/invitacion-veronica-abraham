@@ -221,7 +221,7 @@ export function iniciarSobre(opciones = {}) {
   // Textos del sobre (los pidieron así los novios; se pueden cambiar por opciones)
   const dedicatoria = opciones.dedicatoria || 'Esta invitación es exclusiva para ti';
   const firma = opciones.firma || CONFIG.novios.firma || 'Vero & Abraham';
-  const indicacion = opciones.indicacion || 'toca aquí para abrir';
+  const indicacion = typeof opciones.indicacion === 'string' ? opciones.indicacion : '';   // los novios pidieron quitar «toca aquí para abrir»
   // La firma lleva el «&» en letra manuscrita
   const firmaHtml = escapar(firma).replace(/\s*&amp;\s*/, ' <i>&amp;</i> ');
   // La dedicatoria se parte en dos renglones por la mitad (en el espacio más
@@ -250,7 +250,7 @@ ${definiciones()}
     <div class="sobre__dibujo" data-dibujo="bolsa"></div>
     <div class="sobre__pie">
       <p class="sobre__amor">con amor, ${firmaHtml}</p>
-      <p class="sobre__toca">${escapar(indicacion)}</p>
+      ${indicacion ? `<p class="sobre__toca">${escapar(indicacion)}</p>` : ''}
     </div>
   </div>
   <div class="sobre__sombra" data-dibujo="sombra" aria-hidden="true"></div>

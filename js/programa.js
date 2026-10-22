@@ -8,6 +8,9 @@
 //   raiz    sección del itinerario (por defecto #itinerario; #programa como respaldo de v1)
 //   punta   altura de la ventana (0–1) a la que viaja la punta del hilo (0.6)
 //   rafaga  pedir unas hojitas (petalos:rafaga) cuando la luna del remate aparece (true)
+//
+// El remate (la luna con los dos anillos colgando) no necesita JavaScript: el balanceo
+// es una animación CSS que solo corre mientras la sección lleva .prog-activa.
 
 const limitar = (v, a, b) => Math.min(b, Math.max(a, v));
 

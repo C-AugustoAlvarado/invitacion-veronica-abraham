@@ -1,0 +1,134 @@
+/* ═══════════════════════════════════════════════════════════════
+   Fotos con trazo — css/trazo.css
+   Módulo: js/trazo.js · Demo: demo/trazo.html
+   Encima de cada foto el módulo coloca un <canvas class="trazo__dibujo">
+   (la versión a lápiz) y un <button class="trazo__boton"> que cubre la
+   foto entera. El anfitrión (el padre de la foto) recibe:
+     .trazo-anfitrion               siempre
+     .trazo-anfitrion--posicionar   si estaba en position: static
+     .trazo--preparando             mientras se dibuja (la foto espera oculta)
+     .trazo--listo                  ya hay dibujo
+     .trazo--foto                   el invitado pidió ver la foto real
+   Solo se animan opacity y transform. Tokens en base.css.
+   Sin JavaScript nada de esto existe: se ve la foto.
+   ═══════════════════════════════════════════════════════════════ */
+
+.trazo-anfitrion--posicionar { position: relative; }
+
+/* La foto espera escondida unos instantes mientras nace su dibujo; si el
+   dibujo no llega (CORS, error, más de 2.5 s) el módulo quita la clase. */
+.trazo--preparando > img,
+.trazo--preparando > picture > img { visibility: hidden; }
+
+/* ── El dibujo ── */
+.trazo__dibujo {
+  position: absolute;
+  display: block;
+  object-fit: cover;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateZ(0);
+  transition: opacity .7s var(--suave), transform .7s var(--suave);
+  will-change: opacity;
+}
+.trazo--listo .trazo__dibujo { opacity: 1; }
+/* El cruce: el dibujo se desvanece y crece apenas (1.2 %) mientras aparece la foto */
+.trazo--listo.trazo--foto .trazo__dibujo {
+  opacity: 0;
+  transform: translateZ(0) scale(1.012);
+  will-change: auto;
+}
+
+/* ── El botón: cubre la foto; es la zona táctil completa ── */
+.trazo__boton {
+  position: absolute;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  border-radius: inherit;
+  cursor: pointer;
+  overflow: hidden;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.trazo__boton[hidden] { display: none; }
+.trazo__boton:focus-visible {
+  outline: 2px solid var(--olivo);
+  outline-offset: -4px;
+  border-radius: 2px;
+}
+/* Al tocar, el dibujo se hunde apenas: respuesta inmediata sin esperar el cruce */
+.trazo-anfitrion:has(.trazo__boton:active) .trazo__dibujo { transform: translateZ(0) scale(.992); }
+
+/* ── La pista: «Toca para ver la foto» ──
+   Pie pequeño al borde inferior de la imagen, sobre una franja de marfil
+   que se desvanece hacia arriba. Al mostrar la foto se retira (sigue en el
+   árbol de accesibilidad: es el nombre del botón) y vuelve al pasar el
+   cursor o al enfocar con el teclado. */
+.trazo__pista {
+  display: block;
+  width: 100%;
+  padding: 22px 8px 7px;
+  font-family: var(--f-serif);
+  font-style: italic;
+  font-weight: 600;
+  font-size: 12.5px;
+  font-size: clamp(12px, 3vw, 14px);
+  line-height: 1.2;
+  letter-spacing: .06em;
+  text-align: center;
+  color: var(--tinta);
+  background: linear-gradient(180deg, rgba(246, 242, 234, 0) 0%, rgba(246, 242, 234, .82) 45%, rgba(246, 242, 234, .96) 100%);
+  transform: translateZ(0);
+  transition: opacity .5s var(--suave), transform .5s var(--suave);
+}
+.trazo--foto .trazo__pista {
+  opacity: 0;
+  transform: translateZ(0) translateY(6px);
+}
+@media (hover: hover) {
+  .trazo--foto .trazo__boton:hover .trazo__pista { opacity: 1; transform: translateZ(0); }
+}
+.trazo--foto .trazo__boton:focus-visible .trazo__pista { opacity: 1; transform: translateZ(0); }
+
+/* En las polaroids (110–170 px de ancho) la pista va en una sola línea y pequeña */
+.polaroid .trazo__pista {
+  padding: 16px 4px 5px;
+  font-size: 11px;
+  font-size: clamp(11px, 2.8vw, 12.5px);
+  letter-spacing: .03em;
+  white-space: nowrap;
+}
+@media (min-width: 900px) { .polaroid .trazo__pista { font-size: 12.5px; } }
+
+/* Fotos grandes (fuera de las polaroids): la pista puede respirar */
+img[data-trazo-foto] ~ .trazo__boton .trazo__pista {
+  padding: 30px 12px 11px;
+  font-size: 14px;
+  font-size: clamp(13px, 1.6vw, 15px);
+  letter-spacing: .08em;
+}
+
+/* ── Movimiento reducido: cambio sin fundido ── */
+@media (prefers-reduced-motion: reduce) {
+  .trazo__dibujo,
+  .trazo__pista { transition: none; transform: none !important; }
+}
+
+/* ── Impresión y alto contraste: la foto real, con borde visible ── */
+@media print {
+  .trazo__dibujo, .trazo__boton { display: none !important; }
+  .trazo--preparando > img { visibility: visible; }
+}
+@media (forced-colors: active) {
+  .trazo__boton:focus-visible { outline: 2px solid Highlight; }
+  .trazo__pista { background: Canvas; color: CanvasText; }
+}

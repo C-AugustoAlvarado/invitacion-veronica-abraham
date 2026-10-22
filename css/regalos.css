@@ -4,7 +4,16 @@
    Solo se animan transform y opacity (y el trazo de la palomita).
    ═══════════════════════════════════════════════════════════════ */
 
-.regalos { overflow: hidden; overflow: clip; }
+.regalos {
+  overflow: hidden;
+  overflow: clip;
+  /* Arriba, la mitad de lo que daba .seccion (16vh): con el padding-bottom
+     de .vestimenta (boda.css) la distancia entre la tarjeta del valet y
+     «Mesa de regalos» baja de 270 a 135 px en celular y de 256 a 128 en
+     escritorio (Abraham, 21-oct-2026). */
+  padding-top: 45px;
+  padding-top: clamp(45px, 8vh, 90px);
+}
 
 /* ── Encabezado ── */
 .regalos__encabezado {

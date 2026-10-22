@@ -1,13 +1,15 @@
 /* ═══════════════════════════════════════════════════════════════
-   Recomendaciones (#recomendaciones) — v2
-   Sección nocturna con tres apartados (hospedaje, make up, dónde ir)
-   en pestañas. Tarjetas de papel marfil sobre la noche, iconos de
-   línea, botones de contorno en olivo. Solo se animan transform y
-   opacity. Sin JavaScript las pestañas no existen (llevan «hidden»)
-   y los tres apartados se leen apilados.
+   Recomendaciones (#recomendaciones) y ¿Qué visitar? (#que-visitar) — v2
+   Dos secciones nocturnas con apartados en pestañas (Hospedaje · Make up
+   y Dónde comer · Dónde ir · Pátzcuaro) que comparten estas clases
+   (.recom__*) y el módulo js/recomendaciones.js. Tarjetas de papel
+   marfil sobre la noche, iconos de línea, botones de contorno en olivo.
+   Solo se animan transform y opacity. Sin JavaScript las pestañas no
+   existen (llevan «hidden») y los apartados se leen apilados.
    ═══════════════════════════════════════════════════════════════ */
 
-.recomendaciones {
+.recomendaciones,
+.que-visitar {
   overflow: hidden;
   overflow: clip;
   /* Altura real de la barra de pestañas (la escribe js/recomendaciones.js) */
@@ -22,14 +24,14 @@
 .recom__encabezado .t-titulo { margin-top: 14px; }
 .recom__frase {
   font-family: var(--f-mano);
-  font-weight: 500;
+  font-weight: 400;
   font-size: clamp(26px, 4.8vw, 36px);
   line-height: 1.3;
   color: var(--marfil);
   opacity: .92;
 }
 
-/* ── Hojitas de olivo (decorado) ── */
+/* ── Hojitas de olivo en las esquinas (decorado de Recomendaciones) ── */
 .recom__hojas { top: 0; right: 0; bottom: 0; left: 0; }
 .recom__rama {
   position: absolute;
@@ -50,12 +52,34 @@
   .recom__rama--b { right: 2%; }
 }
 
+/* ── Ramita tendida (adorno de ¿Qué visitar?): el motor dibuja el trazo ── */
+.visitar__ramita {
+  display: block;
+  width: clamp(170px, 46vw, 250px);
+  height: auto;
+  margin: clamp(16px, 2.6vh, 26px) auto clamp(14px, 2.4vh, 22px);
+  overflow: visible;
+  fill: none;
+  stroke: var(--olivo-claro);
+  stroke-width: 1.3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.visitar__ramita-tallo { stroke-width: 1.5; }
+.visitar__ramita-relleno {
+  fill: rgba(107, 112, 66, .55);
+  stroke: none;
+  transition: opacity 1.1s var(--suave) 1.5s;   /* aparece cuando el trazo ya se dibujó */
+}
+.js .visitar__ramita-relleno { opacity: 0; }
+.js .visitar__ramita.es-visible .visitar__ramita-relleno { opacity: 1; }
+
 /* ── Pestañas ── */
 .recom__pestanas {
   display: flex;
   justify-content: center;
   gap: clamp(4px, 2vw, 24px);
-  max-width: 640px;
+  max-width: 720px;
   margin: clamp(38px, 6vh, 60px) auto 0;
   border-bottom: 1px solid rgba(205, 191, 158, .28);   /* --dorado-tenue */
 }
@@ -82,6 +106,7 @@
   transition: color .4s var(--suave), transform .4s var(--suave);
 }
 .recom__pestana-icono {
+  flex: none;   /* con «Dónde comer» en una fila, el icono no debe encogerse */
   width: 24px;
   height: 24px;
   fill: none;
@@ -123,7 +148,8 @@
     justify-content: center;
     gap: 12px;
     min-height: 60px;
-    padding: 14px 18px 18px;
+    padding: 14px 14px 18px;
+    letter-spacing: .18em;
   }
   .recom__pestana-icono { width: 22px; height: 22px; }
   @supports not (inset: 0) {
@@ -135,10 +161,11 @@
 .recom__apartado {
   margin-top: clamp(44px, 7vh, 72px);
 }
-/* Al llegar por ancla (#hospedaje…) el menú fijo y las pestañas quedan a la vista:
-   menú + barra de pestañas + el margen del apartado (unos 42 px) + aire.
-   (css/menu.css ya no fija scroll-margin-top en los tres apartados.) */
-.js .recomendaciones .recom__apartado {
+/* Al llegar por ancla (#hospedaje, #patzcuaro…) el menú fijo y las pestañas quedan
+   a la vista: menú + barra de pestañas + el margen del apartado (unos 42 px) + aire.
+   (css/menu.css fija el de las secciones; el de los apartados va aquí.) */
+.js .recomendaciones .recom__apartado,
+.js .que-visitar .recom__apartado {
   scroll-margin-top: calc(var(--menu-alto, 64px) + env(safe-area-inset-top, 0px) + var(--recom-pestanas-alto) + 58px);
 }
 .recom__apartado:focus { outline: none; }
@@ -176,8 +203,7 @@
   color: var(--olivo-claro);
   margin-bottom: 14px;
 }
-.recom__icono-apartado,
-.recom__subtitulo-icono {
+.recom__icono-apartado {
   width: 22px;
   height: 22px;
   fill: none;
@@ -198,25 +224,6 @@
   text-wrap: pretty;
 }
 
-/* Subtítulos dentro de «Dónde ir» (Restaurantes, Lugares) */
-.recom__subtitulo {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  font-family: var(--f-serif);
-  font-weight: 600;
-  font-size: clamp(14px, 1.9vw, 16px);
-  letter-spacing: .32em;
-  text-transform: uppercase;
-  color: var(--olivo-claro);
-  margin: clamp(36px, 6vh, 56px) 0 clamp(22px, 4vh, 30px);
-}
-@supports not (inset: 0) {
-  .recom__subtitulo { gap: 0; }
-  .recom__subtitulo-icono { margin-right: 12px; }
-}
-
 /* ── Rejillas de tarjetas ── */
 .recom__rejilla {
   list-style: none;
@@ -231,13 +238,13 @@
   .recom__rejilla { display: block; }
   .recom__celda + .recom__celda { margin-top: 20px; }
 }
+/* Make up: tarjetas compactas, más juntas */
+.recom__rejilla--maquillaje { gap: clamp(12px, 2vw, 18px); max-width: 440px; }
 @media (min-width: 680px) {
   .recom__rejilla { max-width: 860px; }
   .recom__rejilla--hoteles,
   .recom__rejilla--restaurantes { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-}
-@media (min-width: 900px) {
-  .recom__rejilla--maquillaje { grid-template-columns: repeat(3, minmax(0, 1fr)); max-width: 1000px; }
+  .recom__rejilla--maquillaje { grid-template-columns: repeat(3, minmax(0, 1fr)); max-width: 900px; }
 }
 @media (min-width: 1040px) {
   .recom__rejilla--hoteles { grid-template-columns: repeat(3, minmax(0, 1fr)); max-width: 1120px; }
@@ -307,7 +314,6 @@
   color: var(--tinta-suave);
   text-wrap: pretty;
 }
-.recom-tarjeta__direccion { font-style: normal; letter-spacing: .02em; }
 .recom-tarjeta__texto--pendiente {
   font-style: italic;
   color: var(--gris);
@@ -358,9 +364,28 @@
   .recom-tarjeta__tel svg { margin-right: 8px; }
 }
 
+/* Make up: solo nombre y teléfono, en la misma cabeza (sin dirección ni botón) */
+.recom-tarjeta--compacta {
+  padding: clamp(16px, 2.6vw, 20px) clamp(18px, 3vw, 24px) clamp(12px, 2vw, 16px);
+}
+.recom-tarjeta--compacta .recom-tarjeta__cabeza { align-items: center; }
+.recom-tarjeta--compacta .recom-tarjeta__icono { margin-top: 0; align-self: center; }
+.recom-tarjeta--compacta .recom-tarjeta__tel {
+  grid-column: 2;
+  margin-top: 2px;
+  min-height: 44px;
+  padding: 2px 0;
+}
+@supports not (inset: 0) {
+  .recom-tarjeta--compacta .recom-tarjeta__cabeza { display: block; }
+  .recom-tarjeta--compacta .recom-tarjeta__icono { float: left; }
+  .recom-tarjeta--compacta .recom-tarjeta__tel { display: block; margin-left: 42px; }
+}
+
 /* Botón de contorno en olivo, dentro del papel. Cuatro clases: gana a
    .seccion--noche .boton--linea de base.css y a su copia en basico.css */
-.recomendaciones .papel .boton.boton--linea {
+.recomendaciones .papel .boton.boton--linea,
+.que-visitar .papel .boton.boton--linea {
   color: var(--olivo-hondo);
   box-shadow: inset 0 0 0 1px var(--olivo);
   min-height: 46px;
@@ -370,7 +395,8 @@
   gap: 9px;
 }
 @media (hover: hover) {
-  .recomendaciones .papel .boton.boton--linea:hover { background: rgba(107, 112, 66, .1); }
+  .recomendaciones .papel .boton.boton--linea:hover,
+  .que-visitar .papel .boton.boton--linea:hover { background: rgba(107, 112, 66, .1); }
 }
 .recom-tarjeta__boton-icono {
   width: 15px;
@@ -382,7 +408,8 @@
   stroke-linejoin: round;
 }
 @supports not (inset: 0) {
-  .recomendaciones .papel .boton.boton--linea { gap: 0; }
+  .recomendaciones .papel .boton.boton--linea,
+  .que-visitar .papel .boton.boton--linea { gap: 0; }
   .recom-tarjeta__boton-icono { margin-right: 9px; }
 }
 
@@ -412,25 +439,19 @@
   box-shadow: 0 0 0 4px var(--noche);
 }
 
-/* Lugares del centro histórico: etiquetas en la noche */
-.recom__lugares { max-width: 760px; margin: 0 auto; }
-.recom__lugares-intro {
-  font-style: italic;
-  font-size: clamp(17px, 2vw, 19px);
-  color: rgba(246, 242, 234, .85);
-  margin-bottom: clamp(18px, 3vh, 24px);
-}
+/* Dónde ir: lugares del centro histórico como etiquetas sobre la noche */
+.recom__lugares { max-width: 760px; margin: clamp(26px, 4.5vh, 40px) auto 0; }
 .recom__lista-lugares {
   list-style: none;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 10px 10px;
+  gap: 12px 12px;
 }
 .recom__lista-lugares li {
-  padding: 9px 16px;
+  padding: 11px 20px;
   font-weight: 600;
-  font-size: clamp(14px, 1.8vw, 16px);
+  font-size: clamp(15px, 1.9vw, 17px);
   letter-spacing: .07em;
   color: var(--marfil);
   border: 1px solid rgba(163, 166, 126, .55);   /* olivo claro */
@@ -440,31 +461,69 @@
 }
 @supports not (inset: 0) {
   .recom__lista-lugares { gap: 0; }
-  .recom__lista-lugares li { margin: 5px; }
+  .recom__lista-lugares li { margin: 6px; }
 }
 
-/* Pátzcuaro: tarjeta ancha */
+/* Pátzcuaro: tarjeta ancha con la lista «Qué ver» */
 .recom-tarjeta--patzcuaro {
   max-width: 760px;
-  margin: clamp(36px, 6vh, 56px) auto 0;
+  margin: clamp(26px, 4.5vh, 40px) auto 0;
+}
+.recom-tarjeta__lista { margin-top: clamp(18px, 3vh, 26px); }
+.recom-tarjeta__lista-titulo {
+  font-family: var(--f-serif);
+  font-weight: 600;
+  font-size: clamp(12px, 1.6vw, 13px);
+  letter-spacing: .24em;
+  text-transform: uppercase;
+  color: var(--olivo-hondo);
+  margin-bottom: 10px;
+}
+.recom-tarjeta__lista-items {
+  list-style: none;
+  font-size: clamp(16px, 1.9vw, 17px);
+  line-height: 1.5;
+  color: var(--tinta-suave);
+}
+.recom-tarjeta__lista-items li {
+  position: relative;
+  padding: 5px 0 5px 22px;
+}
+.recom-tarjeta__lista-items li + li { border-top: 1px solid rgba(205, 191, 158, .35); }
+/* Hojita como viñeta */
+.recom-tarjeta__lista-items li::before {
+  content: '';
+  position: absolute;
+  left: 2px;
+  top: .95em;
+  width: 9px;
+  height: 9px;
+  background: var(--olivo-claro);
+  border-radius: 50% 0;
+  transform: rotate(-10deg);
 }
 @media (min-width: 760px) {
   .recom-tarjeta--patzcuaro {
+    max-width: 900px;
     display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    grid-template-rows: auto auto;
-    column-gap: 32px;
-    align-items: end;
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+    grid-template-rows: auto 1fr auto;
+    column-gap: clamp(32px, 4vw, 48px);
   }
-  .recom-tarjeta--patzcuaro .recom-tarjeta__cabeza { grid-column: 1; }
-  .recom-tarjeta--patzcuaro .recom-tarjeta__texto { grid-column: 1 / -1; }
-  .recom-tarjeta--patzcuaro .recom-tarjeta__pie { grid-column: 2; grid-row: 1; padding-top: 0; }
+  .recom-tarjeta--patzcuaro .recom-tarjeta__cabeza { grid-column: 1 / -1; grid-row: 1; }
+  .recom-tarjeta--patzcuaro .recom-tarjeta__texto { grid-column: 1; grid-row: 2; }
+  .recom-tarjeta--patzcuaro .recom-tarjeta__lista { grid-column: 2; grid-row: 2 / span 2; margin-top: 16px; }
+  .recom-tarjeta--patzcuaro .recom-tarjeta__pie { grid-column: 1; grid-row: 3; justify-content: flex-start; padding-top: 24px; }
+  @supports not (inset: 0) {
+    .recom-tarjeta--patzcuaro { display: block; }
+  }
 }
 
 /* ── Movimiento reducido ── */
 @media (prefers-reduced-motion: reduce) {
   .recom__apartado.es-entrando { animation: none; }
   .recom-tarjeta:hover { transform: none; }
+  .js .visitar__ramita-relleno { opacity: 1; transition: none; }
 }
 
 /* ── Temas de contraste (Windows) ── */
@@ -474,9 +533,15 @@
   .recom__pestana::after { background: Highlight; }
   .recom__lista-lugares li { border-color: CanvasText; }
   .recom-tarjeta__etiqueta { border: 1px solid CanvasText; }
+  .recom-tarjeta__lista-items li::before { background: CanvasText; }
 }
 
-/* Pantallas muy angostas: las tres pestañas caben sin encimarse */
+/* Pantallas angostas: las tres pestañas de ¿Qué visitar? («Dónde comer» es la
+   más larga) respiran entre sí */
+@media (max-width: 419px) {
+  .que-visitar .recom__pestana { font-size: 12.5px; letter-spacing: .15em; }
+}
+/* Pantallas muy angostas: las pestañas caben sin encimarse */
 @media (max-width: 359px) {
   .recom__pestanas { gap: 2px; }
   .recom__pestana { padding-left: 2px; padding-right: 2px; font-size: 12px; letter-spacing: .12em; }
@@ -500,4 +565,9 @@
 /* En pantallas angostas los dos botones van uno bajo otro, a lo ancho */
 @media (max-width: 379px) {
   .recomendaciones .papel.recom-tarjeta--sitio .recom-tarjeta__pie .boton.recom-tarjeta__boton { flex-basis: 100%; }
+}
+
+/* En 320 px «Dónde comer» no cabe en un renglón: se permite partir */
+@media (max-width: 359px) {
+  .que-visitar .recom__pestana { white-space: normal; line-height: 1.25; letter-spacing: .1em; }
 }

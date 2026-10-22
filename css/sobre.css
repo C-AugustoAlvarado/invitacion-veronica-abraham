@@ -147,16 +147,6 @@
   color: var(--olivo, #6B7042);
   vertical-align: -.14em;
 }
-.sobre__toca {
-  margin-top: clamp(14px, 2.4vh, 24px);
-  font-family: var(--f-serif);
-  font-weight: 600;
-  font-size: clamp(10.5px, 2.8vw, 12px);
-  letter-spacing: .3em;
-  text-indent: .3em;
-  text-transform: uppercase;
-  color: var(--gris, #6E6B63);
-}
 
 /* ── Sello de lacre blanco ── */
 .sobre__sello-lugar {
@@ -328,7 +318,6 @@
   .sobre__exclusiva { font-size: 22px; line-height: 1.15; }
   .sobre__exclusiva span { display: inline; }
   .sobre__amor { display: none; }
-  .sobre__toca { margin-top: 0; }
 }
 
 /* ── Movimiento reducido: sin respiración ni halo en movimiento ── */

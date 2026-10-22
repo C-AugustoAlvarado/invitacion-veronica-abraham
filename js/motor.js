@@ -9,7 +9,7 @@ const suavizar = (t) => t * t * (3 - 2 * t);
 const ORDEN = ['dia', 'dorado', 'ocaso', 'noche'];
 
 // Color de la barra del navegador para cada ambiente (meta theme-color)
-const FONDOS = { dia: '#F8F4EB', dorado: '#EBDDC2', ocaso: '#7A4A3A', noche: '#2B2820' };
+const FONDOS = { dia: '#F8F4EB', dorado: '#EBDDC2', ocaso: '#7A4A3A', noche: '#26261F' };
 
 export function iniciarMotor(opciones = {}) {
   const raiz = document.documentElement;

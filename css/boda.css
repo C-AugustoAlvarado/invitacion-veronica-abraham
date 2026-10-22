@@ -36,8 +36,12 @@
 
 /* ═══════════ La boda ═══════════ */
 .boda {
-  padding-top: 110px;
-  padding-top: clamp(110px, 18vh, 200px);
+  /* Arriba, lo justo para que el revelado respire: con el padding-bottom
+     de .historia (historia.css) suma ~97 px en celular y ~92 en escritorio
+     entre el pie «Chantilly…» y «La boda» (antes 287 / 272; Abraham,
+     21-oct-2026). */
+  padding-top: 48px;
+  padding-top: clamp(40px, 6vh, 72px);
   padding-bottom: 100px;
   padding-bottom: clamp(100px, 16vh, 180px);
 }
@@ -241,15 +245,27 @@
 }
 .boda__ramita--b svg { transform: scaleX(-1) rotate(10deg); }
 @media (max-width: 859px) {
-  /* En celular las ramitas se asoman por las orillas, lejos del texto */
-  .boda__ramita--a { left: -36px; top: 3%; }
+  /* En celular las ramitas se asoman por las orillas, lejos del texto. La de
+     arriba vive en el aire que queda entre el pie de Chantilly y «La boda»
+     (el padding-top es corto desde el 21-oct-2026): así no roza la frase */
+  .boda__ramita--a { left: -40px; top: -26px; width: 136px; }
   .boda__ramita--b { right: -40px; bottom: 4px; }
 }
 
-/* ═══════════ Vestimenta (noche) ═══════════ */
+/* ═══════════ Vestimenta (noche) ═══════════
+   Dos tarjetas de papel: «Código de vestimenta» (#dress-code, con el boceto
+   del look) y «Valet parking» (#valet). En celular todo va apilado; desde
+   720 px la primera tarjeta se abre en dos columnas (texto · boceto) y la
+   del valet, más corta, va debajo y más angosta. */
 .vestimenta {
   padding-top: 60px;
   padding-top: clamp(60px, 10vh, 120px);
+  /* Abajo, la mitad de lo que daba .seccion (16vh): con el padding-top de
+     .regalos (regalos.css) la distancia entre la última tarjeta y «Mesa de
+     regalos» pasa de 270 a 135 px en celular y de 256 a 128 en escritorio
+     (Abraham, 21-oct-2026). */
+  padding-bottom: 45px;
+  padding-bottom: clamp(45px, 8vh, 90px);
 }
 .vestimenta__titulo {
   margin-bottom: 28px;
@@ -264,12 +280,10 @@
   max-width: 920px;
   margin: 0 auto;
 }
-@media (min-width: 720px) {
-  .vestimenta__datos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-}
 
 /* Tarjetas de papel (vienen de la v1, que gustó) */
 .dato {
+  width: 100%;
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -279,6 +293,13 @@
   padding-bottom: 36px;
   padding-bottom: clamp(36px, 6vw, 56px);
 }
+.dato__texto {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+}
 .dato__icono {
   width: 46px;
   height: 46px;
@@ -286,21 +307,117 @@
   color: #6B7042;
   color: var(--olivo);
 }
-.dato__titulo { color: #4E5330; color: var(--olivo-hondo); }
+.dato__titulo { color: #4E5330; color: var(--olivo-hondo); text-wrap: balance; }
 .dato__principal {
   font-family: 'Dancing Script', cursive;
   font-family: var(--f-mano);
-  font-weight: 600;
+  font-weight: 400;   /* La Belle Aurore solo existe en 400 */
   font-style: normal;
-  font-size: 29px;
-  font-size: clamp(29px, 4.4vw, 38px);
+  font-size: 28px;
+  font-size: clamp(28px, 4.4vw, 40px);
   line-height: 1.2;
   color: #2B2B28;
   color: var(--tinta);
-  margin: .3em 0 .35em;
+  margin: .35em 0 .3em;
   text-wrap: balance;
 }
+/* «Formal»: una sola palabra, con más cuerpo */
+.dato__principal--grande {
+  font-size: 40px;
+  font-size: clamp(40px, 7vw, 52px);
+  line-height: 1.1;
+  margin-top: .3em;
+}
 .dato__nota { max-width: 21em; margin: 0 auto; opacity: 1; color: var(--tinta-suave); text-wrap: balance; }
+
+/* Hueco discreto del valet: «Costo y horario · Por confirmar» (lo llena CONFIG.valet.detalle) */
+.dato__pendiente {
+  margin-top: 18px;
+  padding-top: 14px;
+  color: #57554D;   /* 6.7:1 sobre el papel (la t-nota baja la opacidad: aquí no) */
+  opacity: 1;
+  text-wrap: balance;
+}
+.dato__pendiente::before {
+  content: '';
+  display: block;
+  width: 36px;
+  height: 1px;
+  margin: 0 auto 12px;
+  background: #CDBF9E;
+  background: var(--dorado-tenue);
+}
+.dato__pendiente-etiqueta {
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: .26em;
+  text-transform: uppercase;
+  color: #4E5330;
+  color: var(--olivo-hondo);
+}
+.dato__pendiente-etiqueta::after { content: '·'; margin: 0 .55em 0 .3em; letter-spacing: 0; color: #B9B5AA; color: var(--gris-claro); }
+.dato__pendiente-valor { font-style: italic; }
+
+/* ── Boceto del look (propuesta): debajo del texto, en celular; a la derecha, en escritorio ── */
+.dato__boceto {
+  position: relative;
+  width: 100%;
+  max-width: 250px;
+  margin: 26px auto 0;
+}
+/* Filete corto que separa el boceto de las muestras cuando van apilados */
+.dato__boceto::before {
+  content: '';
+  display: block;
+  width: 44px;
+  height: 1px;
+  margin: 0 auto 24px;
+  background: #CDBF9E;
+  background: var(--dorado-tenue);
+}
+/* Reserva la proporción 6:7 del dibujo: la tarjeta no salta cuando llega la imagen */
+.dato__boceto-marco {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  width: 100%;
+  aspect-ratio: 6 / 7;
+}
+.dato__boceto img {
+  width: 100%;
+  height: auto;
+  max-height: 100%;
+  object-fit: contain;
+  object-position: 50% 100%;
+}
+.dato__boceto-pie {
+  margin-top: 10px;
+  font-style: italic;
+  color: #57554D;
+  opacity: 1;
+}
+/* Si el archivo no existe (onerror en el <img>) la figura se retira entera */
+.dato__boceto.es-vacio { display: none; }
+
+@media (min-width: 720px) {
+  /* Texto y boceto forman un solo conjunto centrado en la tarjeta */
+  .dato--vestimenta {
+    display: grid;
+    grid-template-columns: minmax(0, 24em) minmax(0, 300px);
+    justify-content: center;
+    grid-column-gap: 56px;
+    column-gap: 56px;
+    column-gap: clamp(40px, 6vw, 80px);
+    align-items: center;
+    text-align: center;
+  }
+  .dato--vestimenta .dato__texto { justify-self: center; }
+  .dato--vestimenta .dato__boceto { margin: 0; max-width: none; justify-self: center; }
+  .dato--vestimenta .dato__boceto::before { display: none; }
+  /* La tarjeta del valet, con menos que decir, va más angosta y centrada */
+  .dato--valet { max-width: 600px; margin-left: auto; margin-right: auto; }
+}
 .dato__muestras {
   display: flex;
   justify-content: center;
@@ -343,6 +460,8 @@
 @supports not (aspect-ratio: 1) {
   .lugar__dibujo { display: block; }
   .lugar__dibujo img { max-height: none; }
+  .dato__boceto-marco { display: block; }
+  .dato__boceto img { max-height: none; }
 }
 
 /* ═══════════ Temas de contraste (Windows) ═══════════ */

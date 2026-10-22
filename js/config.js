@@ -11,7 +11,7 @@ export const CONFIG = {
   novios: { ella: 'Verónica', el: 'Abraham', monograma: 'A&V' },
 
   padres: {
-    novio: ['Salvador Alvarado Villafuerte', 'Leticia López Ávalos'],
+    novio: ['Leticia López Ávalos', 'Salvador Alvarado Villafuerte'],   // Abraham pidió a su mamá primero
     novia: ['Verónica García Guerrero', 'Félix Calderón Solorio']
   },
 
@@ -22,12 +22,12 @@ export const CONFIG = {
   evento: {
     titulo: 'Boda de Verónica y Abraham',
     inicio: '2027-03-06T16:00:00-06:00',
-    fin: '2027-03-07T01:30:00-06:00',
+    fin: '2027-03-07T02:00:00-06:00',
     zona: 'America/Mexico_City',
     lugar: 'Catedral de Morelia, Av. Francisco I. Madero Poniente S/N, Centro Histórico, 58000 Morelia, Michoacán, México',
     detalle: 'Ceremonia: 16:00 hrs en la Catedral de Morelia. '
       + 'Recepción: 17:00 hrs en el Hotel Casa Grande, Portal Matamoros 98, Centro Histórico. '
-      + 'Código de vestimenta: etiqueta rigurosa.'
+      + 'Código de vestimenta: formal.'
   },
 
   mapas: {
@@ -47,10 +47,13 @@ export const CONFIG = {
   regalos: [
     { id: 'palacio', tienda: 'El Palacio de Hierro', etiqueta: 'Número de evento', valor: '406823', enlace: '' },
     { id: 'liverpool', tienda: 'Liverpool', etiqueta: 'Número de evento', valor: '51981696', enlace: '' },
-    { id: 'transferencia', tienda: 'Transferencia', etiqueta: 'CLABE', valor: '012180028772723592', titular: '', banco: '' }   // titular y banco: pendientes
+    { id: 'transferencia', tienda: 'BBVA', etiqueta: 'CLABE', valor: '012180028772723592', titular: 'Abraham Alvarado López', banco: '' }   // confirmado el 21-oct-2026
   ],
 
   planner: { nombre: 'Fany Valencia', telefono: '', correo: '', instagram: '' },
+
+  // Valet parking: costo y horario en texto libre (p. ej. '$150 · de 16:00 a 2:00'); vacío = «Por confirmar»
+  valet: { detalle: '' },
 
   // Fotos de los novios: poner los archivos en assets/fotos/ y llenar `src`.
   // Mientras `src` esté vacío, la galería muestra un marco ilustrado.

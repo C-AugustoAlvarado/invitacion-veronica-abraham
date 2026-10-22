@@ -1,0 +1,84 @@
+/* ═══════════════════════════════════════════════════════════════
+   Avión y paracaídas — css/avion.css
+   Módulo: js/avion.js · Demo: demo/avion.html
+   Fragmentos: la zona del contador de src/portada.html (el cielo que
+   cruza el avión) y los dos .historia__vuelo de src/historia.html.
+   Aquí solo viven los estados: las trayectorias las calcula y anima el
+   módulo (Web Animations API) con transform y opacity. Sin JavaScript
+   o en modo básico nada de esto se ve: el avión está oculto y los
+   paracaídas quedan quietos, como siempre (css/historia.css).
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── El cielo sobre el contador ──
+   Franja del ancho de la ventana, pegada encima del lema «Cada segundo nos
+   acerca»; cabe en el margen que separa el contador del texto de los padres.
+   .portada la recorta en horizontal: el avión entra y sale por los bordes. */
+.avion-cielo { position: relative; }
+.avion {
+  position: absolute;
+  left: 50%;
+  bottom: 100%;
+  width: 100vw;
+  height: 64px;
+  margin-left: -50vw;
+  pointer-events: none;
+  overflow: visible;
+}
+.avion__nave {                      /* lleva «hidden» en el HTML: solo existe en vuelo */
+  position: absolute;
+  left: 0;
+  top: 50%;
+  display: none;
+  width: 92px;                      /* respaldo sin clamp() */
+  width: clamp(88px, 24vw, 132px);
+  height: 29px;                     /* 92 px × 64/204 */
+  height: calc(clamp(88px, 24vw, 132px) * 0.3137);
+  margin-top: -14px;
+  margin-top: calc(clamp(88px, 24vw, 132px) * -0.157);
+  color: var(--tinta);
+  will-change: transform;           /* solo existe mientras vuela: se quita al aterrizar */
+}
+.avion--volando .avion__nave { display: block; }
+.avion__cuerpo { width: 100%; height: 100%; overflow: visible; }
+/* La hélice gira y la estela respira solo durante el vuelo */
+.avion__helice { transform-box: fill-box; transform-origin: center; }
+.avion--volando .avion__helice { animation: avion-helice .22s linear infinite; }
+.avion--volando .avion__estela { animation: avion-estela .7s ease-in-out infinite alternate; }
+@keyframes avion-helice { to { transform: rotate(180deg); } }
+@keyframes avion-estela {
+  from { transform: translate3d(0, 0, 0); opacity: 1; }
+  to { transform: translate3d(-3px, 0, 0); opacity: .55; }
+}
+
+/* ── Los paracaidistas ──
+   .avion-salto (caída y planeo) › .avion-figura (en caída libre) + .avion-campana
+   (apertura) › imagen (el vaivén de css/historia.css). */
+.avion-salto { position: relative; display: block; }
+.avion-salto--espera { opacity: 0; }                /* la pone el módulo hasta que el contador se ve */
+.avion-salto--activo { will-change: transform, opacity; }
+.avion-campana {
+  display: block;
+  transform-origin: 50% 72%;        /* la campana brota de la espalda del paracaidista */
+}
+.avion-salto--activo .avion-campana { will-change: transform, opacity; }
+.avion-figura {                     /* display: none en línea; el módulo la muestra en el salto */
+  position: absolute;
+  left: 33%;
+  top: 66%;
+  width: 34%;
+  height: auto;
+  color: var(--tinta);
+  overflow: visible;
+  transform-origin: 50% 50%;
+}
+.avion-salto--activo .avion-figura { will-change: transform, opacity; }
+/* Mientras bajan cruzan por delante del contador (.portada__contenido tiene z-index 1);
+   el grande (a) va delante del chico si llegan a cruzarse */
+.historia__vuelo.avion-en-vuelo { z-index: 2; }
+.historia__vuelo--a.avion-en-vuelo { z-index: 3; }
+
+/* ── Movimiento reducido: nunca hay avión; el módulo funde los paracaídas ── */
+@media (prefers-reduced-motion: reduce) {
+  .avion__nave { display: none !important; }
+  .avion-figura { display: none !important; }
+}

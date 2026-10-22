@@ -137,6 +137,7 @@ html.basico { scroll-behavior: auto; }
 .basico .vestimenta__datos > * + * { margin-top: 18px; }
 .basico .dato__principal { font-size: 28px; }
 .basico .dato__muestras { display: block; text-align: center; }
+.basico .dato__boceto { max-width: 240px; margin: 22px auto 0; }
 .basico .muestra { display: inline-block; margin: 0 6px; }
 
 /* ── 4 · Atardecer: una estampa quieta ── */
@@ -202,7 +203,9 @@ html.basico { scroll-behavior: auto; }
 .basico .prog-ramita { width: 58px; height: 24px; }
 .basico .prog-remate { margin-top: 30px; }
 .basico .prog-remate__cielo { width: 260px; color: #CDBF9E; }
-.basico .prog-remate__frase { font-size: 26px; color: #F6F2EA; }
+.basico .prog-anillos,
+.basico .prog-anillos__par,
+.basico .prog-anillo__brillo { -webkit-animation: none; animation: none; }
 
 /* ── 7 · Regalos ── */
 .basico .regalos__titulo { font-size: 36px; margin-top: 14px; }
@@ -274,6 +277,11 @@ html.basico { scroll-behavior: auto; }
 .basico .recom-tarjeta__pie .boton { display: inline-block; margin: 6px 12px 0 0; }
 .basico .recom__lista-lugares { display: block; text-align: center; }
 .basico .recom__lista-lugares li { display: inline-block; margin: 5px; padding: 9px 16px; border: 1px solid #A3A67E; border-radius: 999px; }
+.basico .recom-tarjeta__texto { margin-bottom: 0; }
+.basico .recom-tarjeta__pie .boton { display: inline-block; white-space: nowrap; }
+.basico .recom-tarjeta__boton-icono { display: inline-block; }
+.basico .recom-tarjeta--compacta { padding: 16px 20px 12px; }
+.basico .visitar__ramita { width: 200px; margin: 18px auto 14px; }
 
 /* ── 10 · Cierre ── */
 .basico .cierre__nota { margin-top: 12px; }
@@ -284,8 +292,7 @@ html.basico { scroll-behavior: auto; }
 .basico .cierre__despedida { margin-top: 90px; }
 .basico .cierre__medallon { width: 240px; margin: 0 auto 26px; }
 .basico .cierre__sello { height: 240px; background: #FBF9F4; }
-.basico .cierre__corona { top: 0; left: 0; width: 240px; height: 240px; }
-.basico .cierre__monograma { top: 54px; left: 67px; width: 106px; height: 72px; -webkit-transform: none; transform: none; color: #2B2B28; }
+.basico .cierre__nutrias { top: 20px; left: 10%; width: 80%; height: auto; -webkit-transform: none; transform: none; }
 .basico .cierre__frase { color: #F6F2EA; }
 .basico .cierre__nombres { margin-top: 14px; color: #D9DBC7; }
 .basico .cierre__lugar { margin-top: 18px; font-size: 12px; color: #F6F2EA; opacity: 1; }

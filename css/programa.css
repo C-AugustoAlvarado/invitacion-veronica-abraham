@@ -6,6 +6,8 @@
    Paleta v2: el hilo, la luciérnaga y los nodos encendidos son
    filetes de dorado tenue (son luz); la ilustración de línea y los
    acentos van en olivo claro; el texto, en marfil.
+   El remate es la luna (sin frase, 21-oct-2026): de su punta cuelgan
+   dos anillos entrelazados que se balancean apenas.
    Solo se animan transform y opacity.
    ═══════════════════════════════════════════════════════════════ */
 
@@ -25,6 +27,9 @@
   --prog-punta: .6;                             /* altura de la ventana donde viaja la punta */
   overflow: hidden;                             /* los decorados nunca provocan scroll lateral */
   overflow: clip;
+  /* El remate ya es solo la luna (sin frase): el respiro inferior se acorta un poco
+     para que la siguiente sección no quede tan lejos */
+  padding-bottom: clamp(56px, 9vh, 110px);
 }
 
 /* ── Cabecera ── */
@@ -365,14 +370,54 @@
 @supports not (aspect-ratio: 1) {
   .prog-remate__halo { height: 0; padding-top: 78%; }
 }
-.prog-remate__frase {
-  margin-top: clamp(10px, 2vh, 20px);
-  font-family: var(--f-mano);
-  font-weight: 400;
-  font-size: clamp(28px, 4.6vw, 40px);
-  line-height: 1.3;
-  color: var(--prog-marfil);
-  text-wrap: balance;
+
+/* ── Anillos que cuelgan de la luna ──
+   Dos aros finos entrelazados (uno dorado tenue, otro olivo claro) penden de
+   la punta inferior de la luna por un hilo. El grupo entero pivota en la
+   punta (198.6 108 del viewBox) y el par de aros, en el nudo (198.6 129):
+   un péndulo doble muy leve y lento. Las curvas de cada tramo imitan un
+   seno (sale rápido del centro, frena en el extremo), y el reposo (0 %) es
+   la vertical: así quedan rectos cuando la animación se pausa o no corre. */
+.prog-anillos,
+.prog-anillos__par {
+  transform-box: view-box;
+  will-change: transform;
+}
+.prog-anillos {
+  transform-origin: 198.6px 108px;
+  animation: prog-balanceo 7.6s linear infinite;
+}
+.prog-anillos__par {
+  transform-origin: 198.6px 129px;
+  animation: prog-balanceo-par 5.9s linear infinite;
+}
+.prog-anillos__hilo { stroke-width: .75; opacity: .85; }
+.prog-anillos__nudo { fill: currentColor; stroke: none; }
+.prog-anillo--oro { stroke: var(--prog-luz); }
+.prog-anillo--olivo { stroke: var(--prog-linea-color); }
+/* Brillo discreto: un arco corto casi blanco que respira muy despacio */
+.prog-anillo__brillo {
+  stroke: var(--prog-luz-alta);
+  stroke-width: 1.05;
+  animation: prog-destello 6.4s ease-in-out var(--r, 0s) infinite;
+}
+@keyframes prog-balanceo {
+  0%   { transform: rotate(0deg); animation-timing-function: cubic-bezier(.39, .575, .565, 1); }
+  25%  { transform: rotate(2.4deg); animation-timing-function: cubic-bezier(.12, 0, .39, 0); }
+  50%  { transform: rotate(0deg); animation-timing-function: cubic-bezier(.39, .575, .565, 1); }
+  75%  { transform: rotate(-2.4deg); animation-timing-function: cubic-bezier(.12, 0, .39, 0); }
+  100% { transform: rotate(0deg); }
+}
+@keyframes prog-balanceo-par {
+  0%   { transform: rotate(0deg); animation-timing-function: cubic-bezier(.39, .575, .565, 1); }
+  25%  { transform: rotate(-1.7deg); animation-timing-function: cubic-bezier(.12, 0, .39, 0); }
+  50%  { transform: rotate(0deg); animation-timing-function: cubic-bezier(.39, .575, .565, 1); }
+  75%  { transform: rotate(1.7deg); animation-timing-function: cubic-bezier(.12, 0, .39, 0); }
+  100% { transform: rotate(0deg); }
+}
+@keyframes prog-destello {
+  0%, 100% { opacity: .95; }
+  50% { opacity: .4; }
 }
 
 /* Estrellas: titilan muy despacio, cada una a su ritmo */
@@ -398,11 +443,16 @@
 .prog-cielo--b { top: 46%; right: -2%; opacity: .42; }
 .prog-cielo--c { bottom: 15%; right: 4%; opacity: .48; }
 
-/* Fuera de pantalla o con la pestaña oculta, nada se mueve */
+/* Fuera de pantalla o con la pestaña oculta, nada se mueve. Sin el módulo
+   (modo básico, sin JavaScript) tampoco: nunca llega .prog-activa, y los
+   anillos quedan en su vertical de reposo. */
 .prog:not(.prog-activa) .prog-estrella,
 .prog:not(.prog-activa) .prog-chispa__vuelo,
 .prog:not(.prog-activa) .prog-chispa__halo,
-.prog:not(.prog-activa) .prog-chispa__aura {
+.prog:not(.prog-activa) .prog-chispa__aura,
+.prog:not(.prog-activa) .prog-anillos,
+.prog:not(.prog-activa) .prog-anillos__par,
+.prog:not(.prog-activa) .prog-anillo__brillo {
   animation-play-state: paused;
 }
 
@@ -445,6 +495,8 @@
 
   .prog-remate__cielo { width: 440px; }
   .prog-remate__svg { stroke-width: 1.05; }
+  .prog-anillos__hilo { stroke-width: .55; }
+  .prog-anillo__brillo { stroke-width: .8; }
   .prog-remate { margin-top: clamp(14px, 3vh, 30px); }
 
   .prog-cielo--a { top: 7%; right: 7%; }
@@ -456,7 +508,10 @@
 @media (prefers-reduced-motion: reduce) {
   .prog-linea.prog-lista { --hilo: 1; }
   .prog-chispa { display: none; }
-  .prog-estrella { animation: none; }
+  .prog-estrella,
+  .prog-anillos,
+  .prog-anillos__par,
+  .prog-anillo__brillo { animation: none; }
 }
 
 /* ═══════════ Temas de contraste (Windows): el hilo con borde real ═══════════ */

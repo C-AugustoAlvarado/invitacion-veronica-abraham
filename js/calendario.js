@@ -68,8 +68,8 @@ export function crearIcs(evento, opciones = {}) {
     'TRANSP:OPAQUE',
     'BEGIN:VALARM',
     'ACTION:DISPLAY',
-    `DESCRIPTION:${escaparIcs(`Mañana: ${evento.titulo}`)}`,
-    'TRIGGER:-P1D',
+    `DESCRIPTION:${escaparIcs(`En una semana: ${evento.titulo}`)}`,
+    'TRIGGER:-P7D',
     'END:VALARM',
     'END:VEVENT',
     'END:VCALENDAR'

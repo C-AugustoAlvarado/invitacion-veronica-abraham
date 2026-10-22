@@ -13,6 +13,11 @@
   /* El cielo de arriba ya da aire: la sección empieza más cerca de la portada */
   padding-top: 48px;
   padding-top: clamp(36px, 6vh, 80px);
+  /* Abajo, lo justo: con el padding-top de .boda (boda.css) quedan ~97 px en
+     celular (~92 en escritorio) entre el pie «Chantilly…» y «La boda»; antes
+     eran 287 / 272 (Abraham, 21-oct-2026). */
+  padding-bottom: 44px;
+  padding-bottom: clamp(36px, 5.5vh, 64px);
   color: var(--tinta-suave);
   /* Los decorados se salen por los lados sin provocar scroll lateral
      (la página ya lo recorta en main; la demo no carga secciones.css) */

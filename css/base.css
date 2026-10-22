@@ -246,14 +246,14 @@ html:not(.js) .solo-basico { display: block; }
 
 /* ═══════════ Tipografía ═══════════ */
 .t-script {
-  font-family: var(--f-script);
-  font-weight: 600;
-  font-size: clamp(42px, 8.4vw, 86px);
-  line-height: 1.12;
+  font-family: var(--f-mano);   /* desde el 21-oct-2026: la misma manuscrita que «Cada segundo nos acerca» */
+  font-weight: 400;
+  font-size: clamp(38px, 7.6vw, 74px);
+  line-height: 1.16;
   text-wrap: balance;
   color: var(--cafe);
 }
-.t-script--chica { font-size: clamp(30px, 5.6vw, 50px); line-height: 1.25; }
+.t-script--chica { font-size: clamp(28px, 5.2vw, 46px); line-height: 1.25; }
 
 .t-titulo {
   font-family: var(--f-serif);

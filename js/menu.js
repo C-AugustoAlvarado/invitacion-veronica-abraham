@@ -1,9 +1,22 @@
 // Menú superior: barra fija con accesos rápidos a las secciones.
 // El HTML (src/menu.html) ya funciona solo, con anclas normales; aquí se le
 // añade lo que necesita JavaScript: aparecer cuando se abre el sobre, el panel
-// de celular, el desplegable de «Recomendaciones» con teclado, el resaltado de
-// la sección activa y el desplazamiento suave. Se comunica solo con eventos en
-// document: escucha 'sobre:abierto' y 'ambiente:cambio' (DISENO.md §4).
+// de celular, los desplegables de los grupos (La boda, Recomendaciones, ¿Qué
+// visitar?) con ratón y teclado, el resaltado de la sección activa y el
+// desplazamiento suave. Se comunica solo con eventos en document: escucha
+// 'sobre:abierto' y 'ambiente:cambio', y emite 'menu:navegar' (DISENO.md §4).
+//
+// Contrato con el HTML:
+//   [data-menu]            el <nav>
+//   [data-menu-abrir]      botón «Menú» (celular); se le quita «hidden»
+//   [data-menu-panel]      panel que cae bajo la barra en celular
+//   [data-menu-grupo]      cada grupo con desplegable; dentro:
+//     el primer [data-menu-enlace]  cabeza: enlace a la sección del grupo
+//     [data-menu-desplegar]         botón con la flecha (aria-expanded); se le quita «hidden»
+//     [data-menu-sub]               lista de apartados
+//     data-menu-abarca="id id…"     secciones sin entrada propia que encienden al grupo
+//   [data-menu-enlace]     todo enlace que resalta y navega con suavidad
+//   .es-abierto en el grupo abierto; .es-activo y aria-current en los enlaces activos.
 
 // Color de la barra para meta theme-color: mientras el menú esté a la vista, lo
 // que toca el borde superior de la pantalla es marfil, no el cielo del ambiente.
@@ -18,20 +31,41 @@ export function iniciarMenu(opciones = {}) {
 
   const boton = nav.querySelector('[data-menu-abrir]');
   const panel = nav.querySelector('[data-menu-panel]');
-  const grupo = nav.querySelector('[data-menu-grupo]');       // <details> de Recomendaciones
-  const resumen = grupo ? grupo.querySelector('summary') : null;
-  const sub = grupo ? grupo.querySelector('[data-menu-sub]') : null;
   const enlaces = [...nav.querySelectorAll('[data-menu-enlace]')];
-
-  const consultaAncha = window.matchMedia('(min-width: 860px)');
-  const consultaReducido = window.matchMedia('(prefers-reduced-motion: reduce)');
-  const consultaRaton = window.matchMedia('(hover: hover) and (pointer: fine)');
-  const ancha = () => consultaAncha.matches;
 
   const idDe = (enlace) => {
     const href = enlace.getAttribute('href') || '';
-    return href.startsWith('#') ? decodeURIComponent(href.slice(1)) : '';
+    try { return href.startsWith('#') ? decodeURIComponent(href.slice(1)) : ''; } catch (error) { return ''; }
   };
+
+  /* ── Grupos con desplegable ── */
+  const grupos = [...nav.querySelectorAll('[data-menu-grupo]')].map((el) => {
+    const cabeza = el.querySelector('[data-menu-enlace]');
+    const desplegar = el.querySelector('[data-menu-desplegar]');
+    const sub = el.querySelector('[data-menu-sub]');
+    const enlacesSub = sub ? [...sub.querySelectorAll('a[href]')] : [];
+    return {
+      el,
+      cabeza,
+      desplegar,
+      sub,
+      enlacesSub,
+      id: cabeza ? idDe(cabeza) : '',
+      idsSub: enlacesSub.map(idDe).filter(Boolean),
+      abarca: (el.dataset.menuAbarca || '').trim().split(/\s+/).filter(Boolean),
+      temporizador: 0
+    };
+  }).filter((g) => g.sub);
+  const grupoDe = (el) => grupos.find((g) => g.el === el || g.el.contains(el));
+  const grupoDeId = (id) => grupos.find((g) => g.id === id || g.idsSub.includes(id) || g.abarca.includes(id));
+
+  /* ── Punto de corte: se lee de css/menu.css (--menu-corte) para no tenerlo dos veces ── */
+  let corte = parseInt(getComputedStyle(nav).getPropertyValue('--menu-corte'), 10);
+  if (!corte || Number.isNaN(corte)) corte = 960;
+  const consultaAncha = window.matchMedia(`(min-width: ${corte}px)`);
+  const consultaReducido = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const consultaRaton = window.matchMedia('(hover: hover) and (pointer: fine)');
+  const ancha = () => consultaAncha.matches;
 
   /* ── Barra del navegador del color del menú ── */
   const metaTema = opciones.fijarColorBarra === false ? null : document.querySelector('meta[name="theme-color"]');
@@ -64,11 +98,42 @@ export function iniciarMenu(opciones = {}) {
   if (sobreCerrado) document.addEventListener('sobre:abierto', alAbrirSobre, { once: true });
   else mostrar(true);
 
+  /* ── Grupos: abrir y cerrar (uno abierto cierra a los demás) ── */
+  let activaActual = '';
+  const abierto = (g) => g.el.classList.contains('es-abierto');
+  function fijarGrupo(g, estado) {
+    g.el.classList.toggle('es-abierto', estado);
+    if (g.desplegar) g.desplegar.setAttribute('aria-expanded', estado ? 'true' : 'false');
+  }
+  function abrirGrupo(g) {
+    if (!g) return;
+    clearTimeout(g.temporizador);
+    grupos.forEach((otro) => { if (otro !== g && abierto(otro)) fijarGrupo(otro, false); });
+    if (!abierto(g)) fijarGrupo(g, true);
+  }
+  function cerrarGrupo(g, enfocarCabeza) {
+    if (!g) return;
+    clearTimeout(g.temporizador);
+    if (!abierto(g)) return;
+    fijarGrupo(g, false);
+    if (enfocarCabeza && g.cabeza) g.cabeza.focus();
+  }
+  const grupoAbierto = () => grupos.find(abierto) || null;
+  function cerrarGrupos(enfocarCabeza) {
+    grupos.forEach((g) => cerrarGrupo(g, enfocarCabeza && document.activeElement && g.el.contains(document.activeElement)));
+  }
+  // Acordeón del celular: abierto el grupo de la sección activa, los demás cerrados
+  function acomodarAcordeon() {
+    const activo = grupoDeId(activaActual);
+    grupos.forEach((g) => fijarGrupo(g, g === activo));
+  }
+
   /* ── Panel de celular ── */
   let yAlAbrir = 0;
   const panelAbierto = () => nav.classList.contains('menu--abierto');
   function abrirPanel() {
     if (!boton || ancha() || panelAbierto()) return;
+    acomodarAcordeon();
     nav.classList.add('menu--abierto');
     boton.setAttribute('aria-expanded', 'true');
     yAlAbrir = window.scrollY;
@@ -86,66 +151,67 @@ export function iniciarMenu(opciones = {}) {
     boton.addEventListener('click', () => (panelAbierto() ? cerrarPanel(false) : abrirPanel()));
   }
 
-  /* ── Desplegable «Recomendaciones» ──
-     En celular vive abierto dentro del panel (acordeón); en escritorio es un
-     desplegable cerrado que se abre con clic, teclado o al pasar el ratón. */
-  let temporizadorRaton = 0;
-  const enlacesSub = sub ? [...sub.querySelectorAll('a')] : [];
-  function abrirGrupo() { if (grupo && !grupo.open) grupo.open = true; }
-  function cerrarGrupo(enfocarResumen) {
-    if (!grupo || !grupo.open || !ancha()) return;
-    grupo.open = false;
-    if (enfocarResumen && resumen) resumen.focus();
-  }
-  function acomodarGrupo() {
-    if (!grupo) return;
-    grupo.open = !ancha();   // celular: a la vista; escritorio: cerrado hasta que se pida
-    cerrarPanel(false);
-  }
-  acomodarGrupo();
+  /* ── Botón de la flecha: clic alterna el grupo ── */
+  grupos.forEach((g) => {
+    if (!g.desplegar) return;
+    g.desplegar.hidden = false;   // solo sirve con JavaScript
+    g.desplegar.addEventListener('click', () => {
+      if (abierto(g)) cerrarGrupo(g, false);
+      else abrirGrupo(g);
+    });
 
-  if (grupo && resumen) {
     // Ratón de escritorio: se abre al pasar y se cierra al salir, con un respiro
-    grupo.addEventListener('mouseenter', () => {
+    g.el.addEventListener('mouseenter', () => {
       if (!ancha() || !consultaRaton.matches) return;
-      clearTimeout(temporizadorRaton);
-      abrirGrupo();
+      abrirGrupo(g);
     });
-    grupo.addEventListener('mouseleave', () => {
+    g.el.addEventListener('mouseleave', () => {
       if (!ancha() || !consultaRaton.matches) return;
-      clearTimeout(temporizadorRaton);
-      temporizadorRaton = setTimeout(() => cerrarGrupo(false), 220);
+      clearTimeout(g.temporizador);
+      g.temporizador = setTimeout(() => cerrarGrupo(g, false), 220);
     });
-    // Si el ratón ya lo abrió, el clic no lo vuelve a cerrar (e.detail 0 = teclado)
-    resumen.addEventListener('click', (evento) => {
-      if (ancha() && consultaRaton.matches && evento.detail > 0 && grupo.open) evento.preventDefault();
-    });
-    // Al cerrarse por fuera (Esc, toque fuera) se olvida el resaltado del teclado
-    grupo.addEventListener('focusout', (evento) => {
+    // Tab fuera del grupo (escritorio) lo cierra
+    g.el.addEventListener('focusout', (evento) => {
       if (!ancha()) return;
-      if (evento.relatedTarget && grupo.contains(evento.relatedTarget)) return;
+      if (evento.relatedTarget && g.el.contains(evento.relatedTarget)) return;
       // Esperar: el foco puede ir a parar dentro del mismo grupo (Safari lo avisa tarde)
-      setTimeout(() => { if (!grupo.contains(document.activeElement)) cerrarGrupo(false); }, 0);
+      setTimeout(() => { if (!g.el.contains(document.activeElement)) cerrarGrupo(g, false); }, 0);
     });
+  });
+  // Al cambiar de maquetación, nada queda abierto a medias
+  function acomodar() {
+    cerrarPanel(false);
+    grupos.forEach((g) => fijarGrupo(g, false));
   }
+  acomodar();
 
   // En celular el panel se cierra si el foco se va con Tab fuera de él
   nav.addEventListener('focusout', () => {
     if (ancha() || !panelAbierto()) return;
     setTimeout(() => {
       const activo = document.activeElement;
-      if (!panel.contains(activo) && activo !== boton) cerrarPanel(false);
+      if (panel && !panel.contains(activo) && activo !== boton) cerrarPanel(false);
     }, 0);
   });
+  // Y si el foco llega a cualquier otro sitio de la página (Safari no enfoca los
+  // botones al hacer clic, así que el focusout del grupo no siempre avisa)
+  function alEnfocar(evento) {
+    const destino = evento.target;
+    if (!(destino instanceof Node) || nav.contains(destino)) {
+      if (ancha()) { const g = grupoAbierto(); if (g && destino instanceof Node && !g.el.contains(destino)) cerrarGrupo(g, false); }
+      return;
+    }
+    if (ancha()) cerrarGrupos(false);
+    else cerrarPanel(false);
+  }
+  document.addEventListener('focusin', alEnfocar);
 
   /* ── Teclado ── */
-  const focables = () => {
-    const ambito = ancha() ? sub : panel;
+  const focables = (ambito) => {
     if (!ambito) return [];
-    return [...ambito.querySelectorAll('a[href], summary')].filter((el) => el.offsetParent !== null || ancha());
+    return [...ambito.querySelectorAll('a[href], button')].filter((el) => !el.hidden && el.getClientRects().length > 0);
   };
-  function moverFoco(paso, desde) {
-    const lista = focables();
+  function moverFoco(lista, paso, desde) {
     if (!lista.length) return;
     let i = lista.indexOf(desde);
     if (paso === 'inicio') i = 0;
@@ -155,32 +221,41 @@ export function iniciarMenu(opciones = {}) {
   }
   nav.addEventListener('keydown', (evento) => {
     const objetivo = evento.target;
+    const g = grupoDe(objetivo);
     switch (evento.key) {
       case 'Escape':
-        if (ancha() && grupo && grupo.open) { evento.preventDefault(); cerrarGrupo(true); }
-        else if (panelAbierto()) { evento.preventDefault(); cerrarPanel(true); }
+        if (ancha()) {
+          const abiertoAhora = grupoAbierto();
+          if (abiertoAhora) { evento.preventDefault(); cerrarGrupo(abiertoAhora, true); }
+        } else if (panelAbierto()) { evento.preventDefault(); cerrarPanel(true); }
         break;
       case 'ArrowDown':
       case 'ArrowUp': {
         const paso = evento.key === 'ArrowDown' ? 1 : -1;
         if (ancha()) {
-          if (!grupo || !grupo.contains(objetivo)) return;
+          if (!g) return;
           evento.preventDefault();
-          if (!grupo.open) { abrirGrupo(); enlacesSub[paso > 0 ? 0 : enlacesSub.length - 1]?.focus(); return; }
-          if (objetivo === resumen) { enlacesSub[paso > 0 ? 0 : enlacesSub.length - 1]?.focus(); return; }
-          moverFoco(paso, objetivo);
+          const enCabeza = objetivo === g.cabeza || objetivo === g.desplegar;
+          if (!abierto(g)) abrirGrupo(g);
+          if (enCabeza || !g.sub.contains(objetivo)) {
+            g.enlacesSub[paso > 0 ? 0 : g.enlacesSub.length - 1]?.focus();
+            return;
+          }
+          moverFoco(g.enlacesSub, paso, objetivo);
         } else if (panelAbierto() && panel && panel.contains(objetivo)) {
           evento.preventDefault();
-          moverFoco(paso, objetivo);
+          moverFoco(focables(panel), paso, objetivo);
         }
         break;
       }
       case 'Home':
       case 'End': {
-        const dentro = ancha() ? (grupo && grupo.open && grupo.contains(objetivo)) : (panelAbierto() && panel && panel.contains(objetivo));
-        if (!dentro) return;
+        let lista = [];
+        if (ancha()) { if (g && abierto(g) && g.sub.contains(objetivo)) lista = g.enlacesSub; }
+        else if (panelAbierto() && panel && panel.contains(objetivo)) lista = focables(panel);
+        if (!lista.length) return;
         evento.preventDefault();
-        moverFoco(evento.key === 'Home' ? 'inicio' : 'fin', objetivo);
+        moverFoco(lista, evento.key === 'Home' ? 'inicio' : 'fin', objetivo);
         break;
       }
       default:
@@ -191,7 +266,8 @@ export function iniciarMenu(opciones = {}) {
   function alTocarFuera(evento) {
     const objetivo = evento.target;
     if (ancha()) {
-      if (grupo && grupo.open && !grupo.contains(objetivo)) cerrarGrupo(false);
+      const abiertoAhora = grupoAbierto();
+      if (abiertoAhora && !(objetivo instanceof Node && abiertoAhora.el.contains(objetivo))) cerrarGrupo(abiertoAhora, false);
     } else if (panelAbierto()) {
       const dentro = objetivo instanceof Element && objetivo.closest('[data-menu-panel], [data-menu-abrir]');
       if (!dentro) cerrarPanel(false);
@@ -210,8 +286,8 @@ export function iniciarMenu(opciones = {}) {
   let temporizadorViaje = 0;
   const tieneCaja = (el) => el.getClientRects().length > 0;
   function irA(destino) {
-    // Un apartado dentro de pestañas (#hospedaje, #maquillaje, #donde-ir) puede estar
-    // oculto o no ser el elegido: se pulsa su pestaña antes de desplazarse hasta él
+    // Un apartado dentro de pestañas (#hospedaje, #donde-comer…) puede estar oculto
+    // o no ser el elegido: se pulsa su pestaña antes de desplazarse hasta él
     const pestana = document.querySelector(`[role="tab"][aria-controls="${destino.id}"]`);
     if (pestana && pestana.getAttribute('aria-selected') !== 'true') pestana.click();
     // Si sigue sin caja, se va hasta la sección que lo contiene
@@ -227,9 +303,15 @@ export function iniciarMenu(opciones = {}) {
     if (!enlace || !nav.contains(enlace)) return;
     const id = idDe(enlace);
     const destino = id ? document.getElementById(id) : null;
+    // Tableta táctil con la fila completa: sin hover, el primer toque en la cabeza de un
+    // grupo cerrado lo despliega; el segundo toque navega
+    if (ancha() && !consultaRaton.matches) {
+      const g = grupoDe(enlace);
+      if (g && g.cabeza === enlace && !abierto(g)) { evento.preventDefault(); abrirGrupo(g); return; }
+    }
     cerrarPanel(false);
-    cerrarGrupo(false);
-    if (!destino) return;   // sin destino, el ancla sigue su curso normal
+    if (ancha()) cerrarGrupos(false);
+    if (!destino) return;   // sin destino (sección aún no montada), el ancla sigue su curso normal
     evento.preventDefault();
     viaje = id;
     activar(id);
@@ -250,18 +332,16 @@ export function iniciarMenu(opciones = {}) {
   window.addEventListener('scroll', alAsentarse, { passive: true });
 
   /* ── Sección activa ──
-     Una franja a la altura del 38–50 % de la ventana: la sección que la cruza
-     es la activa. Las subsecciones (#hospedaje…) encienden también a su padre. */
+     Una franja a la altura del 38–50 % de la ventana: el destino que la cruza
+     es el activo. Un apartado (#itinerario, #hospedaje…) enciende también a la
+     cabeza de su grupo; una sección «abarcada» (#vestimenta) solo a la cabeza. */
   const porId = new Map();   // id → enlace
   enlaces.forEach((enlace) => { const id = idDe(enlace); if (id) porId.set(id, enlace); });
-  const padres = new Map();  // id de subsección → id del padre (data-menu-padre)
-  enlaces.forEach((enlace) => { if (enlace.dataset.menuPadre) padres.set(idDe(enlace), enlace.dataset.menuPadre); });
   // Secciones que no tienen entrada pero marcan dónde se está (apagan el resaltado)
-  const SIN_ENTRADA = ['portada', 'atardecer', 'vestimenta', 'regalos', 'cierre'];
+  const apagan = opciones.apagan || ['portada', 'atardecer', 'cierre'];
 
   const cruzando = new Map();   // elemento → true mientras cruza la franja
   let observados = new Set();
-  let activaActual = '';
 
   const observador = new IntersectionObserver((entradas) => {
     for (const entrada of entradas) {
@@ -274,30 +354,34 @@ export function iniciarMenu(opciones = {}) {
   function elegirActiva() {
     const candidatos = [...cruzando.keys()];
     if (!candidatos.length) return;
-    // La última en el documento: la que viene entrando por abajo
-    candidatos.sort((a, b) => (a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1));
+    // El más bajo en la página: el que viene entrando por abajo (o la tarjeta
+    // dentro de la sección, que empieza después de ella). A la misma altura
+    // (dos tarjetas lado a lado) gana el primero del documento.
+    const tops = new Map(candidatos.map((el) => [el, Math.round(el.getBoundingClientRect().top)]));
+    candidatos.sort((a, b) => {
+      const d = tops.get(a) - tops.get(b);
+      if (d) return d;
+      return a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING ? 1 : -1;
+    });
     activar(candidatos[candidatos.length - 1].id);
   }
 
   function activar(id) {
     if (id === activaActual) return;
     activaActual = id;
-    const padre = padres.get(id) || '';
+    const g = grupoDeId(id);
     for (const [clave, enlace] of porId) {
-      const activo = clave === id || (padre && clave === padre);
+      const activo = clave === id || (!!g && clave === g.id);
       enlace.classList.toggle('es-activo', activo);
       if (activo) enlace.setAttribute('aria-current', 'location');
       else enlace.removeAttribute('aria-current');
     }
-    if (resumen) {
-      const esDelGrupo = enlacesSub.some((enlace) => idDe(enlace) === id || idDe(enlace) === padre)
-        || id === (grupo && grupo.dataset.menuGrupoId) || id === 'recomendaciones';
-      resumen.classList.toggle('es-activo', esDelGrupo);
-    }
+    grupos.forEach((otro) => otro.el.classList.toggle('es-activo', otro === g));
   }
 
   function observarSecciones() {
-    const ids = [...porId.keys(), ...padres.values(), ...SIN_ENTRADA];
+    const ids = [...porId.keys(), ...apagan];
+    grupos.forEach((g) => ids.push(...g.abarca));
     const nuevos = new Set();
     ids.forEach((id) => { const el = document.getElementById(id); if (el) nuevos.add(el); });
     observados.forEach((el) => { if (!nuevos.has(el)) { observador.unobserve(el); cruzando.delete(el); } });
@@ -307,22 +391,25 @@ export function iniciarMenu(opciones = {}) {
   observarSecciones();
 
   /* ── Cambios de tamaño ── */
-  const alCambiarAncho = () => { acomodarGrupo(); };
+  const alCambiarAncho = () => { acomodar(); };
   consultaAncha.addEventListener?.('change', alCambiarAncho);
 
   const api = {
     mostrar: () => mostrar(true),
     abrir: abrirPanel,
-    cerrar() { cerrarPanel(false); cerrarGrupo(false); },
+    cerrar() { cerrarPanel(false); grupos.forEach((g) => cerrarGrupo(g, false)); },
+    // Abre el desplegable de un grupo (por el id de su sección: 'boda', 'recomendaciones'…)
+    abrirGrupo: (id) => abrirGrupo(grupos.find((g) => g.id === id || g.el.dataset.menuGrupo === id)),
     activar,
     // Vuelve a buscar las secciones (por si un módulo las montó después)
     actualizar: observarSecciones,
     destruir() {
-      clearTimeout(temporizadorRaton);
+      grupos.forEach((g) => clearTimeout(g.temporizador));
       clearTimeout(temporizadorViaje);
       document.removeEventListener('sobre:abierto', alAbrirSobre);
       document.removeEventListener('ambiente:cambio', fijarColorBarra);
       document.removeEventListener('pointerdown', alTocarFuera, true);
+      document.removeEventListener('focusin', alEnfocar);
       window.removeEventListener('scroll', alDesplazar);
       window.removeEventListener('scroll', alAsentarse);
       consultaAncha.removeEventListener?.('change', alCambiarAncho);

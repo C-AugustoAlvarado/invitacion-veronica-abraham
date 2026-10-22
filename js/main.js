@@ -197,6 +197,11 @@ async function iniciar() {
   clearTimeout(window.__seguro);
 
   cargar('./petalos.js', 'iniciarPetalos');
+  // Cuando las figuritas saltan del avión caen unas hojitas desde la puerta
+  document.addEventListener('avion:salto', (evento) => {
+    const d = evento.detail || {};
+    document.dispatchEvent(new CustomEvent('petalos:rafaga', { detail: { x: d.x, y: d.y, cantidad: 6, fuerza: 0.6 } }));
+  });
 
   // Con el sobre puesto la página espera en la portada (ancla en la URL o
   // posición restaurada). Sin animación: html tiene scroll-behavior: smooth.
@@ -231,6 +236,8 @@ async function iniciar() {
   await Promise.all([
     cargar('./menu.js', 'iniciarMenu'),
     cargar('./recomendaciones.js', 'iniciarRecomendaciones'),
+    cargar('./avion.js', 'iniciarAvion'),
+    cargar('./trazo.js', 'iniciarTrazo'),
     cargar('./cuenta.js', 'iniciarCuenta'),
     cargar('./calendario.js', 'iniciarCalendario'),
     cargar('./programa.js', 'iniciarPrograma'),

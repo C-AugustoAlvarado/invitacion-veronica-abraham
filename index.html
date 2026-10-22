@@ -30,6 +30,8 @@
 <link rel="stylesheet" href="css/menu.css">
 <link rel="stylesheet" href="css/portada.css">
 <link rel="stylesheet" href="css/historia.css">
+<link rel="stylesheet" href="css/avion.css">
+<link rel="stylesheet" href="css/trazo.css">
 <link rel="stylesheet" href="css/boda.css">
 <link rel="stylesheet" href="css/recomendaciones.css">
 <link rel="stylesheet" href="css/petalos.css">
@@ -215,8 +217,16 @@
 </script>
 
 <!-- El menú va fuera de <main> para quedar por encima de las hojitas delanteras -->
-<!-- Menú superior (v2): barra fija con accesos rápidos. Se lee completa sin JavaScript
-     (anclas normales, botón «Menú» oculto, desplegable abierto); js/menu.js la enriquece. -->
+<!-- Menú superior (v2, estructura del 21-oct-2026): barra fija con accesos rápidos.
+     Cuatro entradas y el botón R.S.V.P.; tres de ellas abren un desplegable:
+       · Nuestra historia
+       · La boda ▾ Itinerario · Dress code · Valet parking · Mesa de regalos
+       · Recomendaciones ▾ Hospedaje · Make up
+       · ¿Qué visitar? ▾ Dónde comer · Dónde ir · Pátzcuaro
+     Se lee completa sin JavaScript (anclas normales, botones ocultos, desplegables a la
+     vista); js/menu.js la enriquece. Cada grupo lleva data-menu-grupo; su primer enlace es
+     la cabeza (lleva a la sección) y data-menu-abarca enumera secciones sin entrada propia
+     que también encienden al grupo (p. ej. #vestimenta, donde viven Dress code y Valet). -->
 <nav id="menu" class="menu" aria-label="Secciones de la invitación" data-menu>
   <div class="menu__barra">
     <a class="menu__inicio" href="#portada" aria-label="Volver al inicio de la invitación">
@@ -231,21 +241,56 @@
 
     <div class="menu__panel" id="menu-panel" data-menu-panel>
       <ul class="menu__lista">
-        <li class="menu__item"><a class="menu__enlace" href="#historia" data-menu-enlace>Nuestra historia</a></li>
-        <li class="menu__item"><a class="menu__enlace" href="#boda" data-menu-enlace>La boda</a></li>
-        <li class="menu__item"><a class="menu__enlace" href="#itinerario" data-menu-enlace>Itinerario</a></li>
+        <li class="menu__item">
+          <a class="menu__enlace" href="#historia" data-menu-enlace>Nuestra historia</a>
+        </li>
+
         <li class="menu__item menu__item--grupo">
-          <details class="menu__grupo" data-menu-grupo open>
-            <summary class="menu__enlace menu__enlace--grupo" data-menu-resumen>
-              <span>Recomendaciones</span>
-              <svg class="menu__flecha" viewBox="0 0 12 8" aria-hidden="true" focusable="false"><path d="M1 1.5l5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </summary>
-            <ul class="menu__sub" data-menu-sub>
-              <li><a class="menu__subenlace" href="#hospedaje" data-menu-enlace data-menu-padre="recomendaciones">Hospedaje</a></li>
-              <li><a class="menu__subenlace" href="#maquillaje" data-menu-enlace data-menu-padre="recomendaciones">Make up</a></li>
-              <li><a class="menu__subenlace" href="#donde-ir" data-menu-enlace data-menu-padre="recomendaciones">Dónde ir</a></li>
+          <div class="menu__grupo" data-menu-grupo="boda" data-menu-abarca="vestimenta">
+            <div class="menu__cabeza">
+              <a class="menu__enlace" href="#boda" data-menu-enlace>La boda</a>
+              <button class="menu__desplegar" type="button" aria-expanded="false" aria-controls="menu-sub-boda" aria-label="Apartados de La boda" data-menu-desplegar hidden>
+                <svg class="menu__flecha" viewBox="0 0 12 8" aria-hidden="true" focusable="false"><path d="M1 1.5l5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+            </div>
+            <ul class="menu__sub" id="menu-sub-boda" data-menu-sub>
+              <li><a class="menu__subenlace" href="#itinerario" data-menu-enlace>Itinerario</a></li>
+              <li><a class="menu__subenlace" href="#dress-code" data-menu-enlace>Dress code</a></li>
+              <li><a class="menu__subenlace" href="#valet" data-menu-enlace>Valet parking</a></li>
+              <li><a class="menu__subenlace" href="#regalos" data-menu-enlace>Mesa de regalos</a></li>
             </ul>
-          </details>
+          </div>
+        </li>
+
+        <li class="menu__item menu__item--grupo">
+          <div class="menu__grupo" data-menu-grupo="recomendaciones">
+            <div class="menu__cabeza">
+              <a class="menu__enlace" href="#recomendaciones" data-menu-enlace>Recomendaciones</a>
+              <button class="menu__desplegar" type="button" aria-expanded="false" aria-controls="menu-sub-recomendaciones" aria-label="Apartados de Recomendaciones" data-menu-desplegar hidden>
+                <svg class="menu__flecha" viewBox="0 0 12 8" aria-hidden="true" focusable="false"><path d="M1 1.5l5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+            </div>
+            <ul class="menu__sub" id="menu-sub-recomendaciones" data-menu-sub>
+              <li><a class="menu__subenlace" href="#hospedaje" data-menu-enlace>Hospedaje</a></li>
+              <li><a class="menu__subenlace" href="#maquillaje" data-menu-enlace>Make up</a></li>
+            </ul>
+          </div>
+        </li>
+
+        <li class="menu__item menu__item--grupo">
+          <div class="menu__grupo" data-menu-grupo="que-visitar">
+            <div class="menu__cabeza">
+              <a class="menu__enlace" href="#que-visitar" data-menu-enlace>¿Qué visitar?</a>
+              <button class="menu__desplegar" type="button" aria-expanded="false" aria-controls="menu-sub-que-visitar" aria-label="Apartados de ¿Qué visitar?" data-menu-desplegar hidden>
+                <svg class="menu__flecha" viewBox="0 0 12 8" aria-hidden="true" focusable="false"><path d="M1 1.5l5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+            </div>
+            <ul class="menu__sub" id="menu-sub-que-visitar" data-menu-sub>
+              <li><a class="menu__subenlace" href="#donde-comer" data-menu-enlace>Dónde comer</a></li>
+              <li><a class="menu__subenlace" href="#donde-ir" data-menu-enlace>Dónde ir</a></li>
+              <li><a class="menu__subenlace" href="#patzcuaro" data-menu-enlace>Pátzcuaro</a></li>
+            </ul>
+          </div>
         </li>
       </ul>
     </div>
@@ -337,22 +382,60 @@
 
         <div class="portada__padres" data-revelar-grupo>
           <div class="portada__familia" data-revelar="subir">
-            <h3 class="t-sobretitulo portada__familia-titulo">Padres del novio</h3>
-            <p class="portada__nombre" data-config="padres.novio.0">Salvador Alvarado Villafuerte</p>
-            <p class="portada__nombre" data-config="padres.novio.1">Leticia López Ávalos</p>
+            <p class="t-sobretitulo portada__familia-titulo">Padres del novio</p>
+            <p class="portada__nombre" data-config="padres.novio.0">Leticia López Ávalos</p>
+            <p class="portada__nombre" data-config="padres.novio.1">Salvador Alvarado Villafuerte</p>
           </div>
           <span class="portada__divisor" data-revelar="crecer" aria-hidden="true"></span>
           <div class="portada__familia" data-revelar="subir">
-            <h3 class="t-sobretitulo portada__familia-titulo">Padres de la novia</h3>
+            <p class="t-sobretitulo portada__familia-titulo">Padres de la novia</p>
             <p class="portada__nombre" data-config="padres.novia.0">Verónica García Guerrero</p>
             <p class="portada__nombre" data-config="padres.novia.1">Félix Calderón Solorio</p>
           </div>
         </div>
-        <p class="t-cuerpo portada__texto portada__texto--cierre" data-revelar="subir">El día <time datetime="2027-03-06">06.03.2027</time> · Morelia, Michoacán</p>
+        <p class="t-cuerpo portada__texto portada__texto--cierre" data-revelar="subir"><time datetime="2027-03-06">06.03.2027</time> · Morelia, Michoacán</p>
       </div>
 
-      <!-- 4 · Cuenta regresiva y calendario -->
-      <div class="portada__cuenta">
+      <!-- 4 · Cuenta regresiva y calendario. El cielo de arriba lo cruza el avioncito de
+           js/avion.js (css/avion.css): por su puerta saltan los paracaidistas que aterrizan
+           en «Nuestra historia». Oculto sin JavaScript y en modo básico. -->
+      <div class="portada__cuenta avion-cielo">
+        <div class="avion" data-avion aria-hidden="true">
+          <div class="avion__nave" hidden>
+            <svg class="avion__cuerpo" viewBox="-44 0 204 64" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+              <g class="avion__estela" stroke-width="1.1">
+                <path d="M-2 33.5 H -12" opacity=".5"/>
+                <path d="M-17 34 H -24" opacity=".34"/>
+                <path d="M-29 34.4 H -33" opacity=".2"/>
+                <path d="M-37 34.8 H -39" opacity=".1"/>
+              </g>
+              <!-- cola: deriva en flecha y estabilizador -->
+              <path d="M34 24.6 C 27 19, 21 12, 18 5.5 C 15.5 5.3, 13 6, 11.5 7.4 C 11 15, 12 23, 14.5 30.3"/>
+              <path d="M15 32 L 3 32.6 L 4 35.4 L 16 35.6"/>
+              <!-- fuselaje -->
+              <path d="M150 32 C 146 26, 128 23, 104 23 L 72 24 C 50 25, 30 28, 14 30.5 L 14 34 C 34 37, 60 40.5, 96 41.5 C 124 42, 144 39, 150 32 Z"/>
+              <!-- parabrisas y ventanilla -->
+              <path d="M112 23.3 C 115 25, 117.5 27.5, 119 30.5" opacity=".75"/>
+              <path d="M104 23.2 L 104 30" opacity=".55"/>
+              <!-- puerta abierta: por aquí saltan (PUERTA en js/avion.js) -->
+              <path d="M80 24 L 80 39.5" opacity=".75"/>
+              <path d="M92 23.6 L 92 40" opacity=".75"/>
+              <path d="M81.5 31 L 90.5 31" opacity=".35"/>
+              <!-- ala alta y montante -->
+              <path d="M54 18 L 126 15.5 C 130 15.4, 130.5 18, 127 18.6 L 58 21.5 C 54 21.7, 52 19, 54 18 Z"/>
+              <path d="M106 18.4 L 88 36" opacity=".7"/>
+              <!-- tren de aterrizaje -->
+              <path d="M86 41 L 84.5 46.5"/>
+              <circle cx="84.5" cy="48.5" r="2.4"/>
+              <path d="M126 41 L 126 46"/>
+              <circle cx="126" cy="48" r="2"/>
+              <!-- hélice -->
+              <ellipse cx="152.5" cy="32.5" rx="2" ry="12.5" opacity=".3"/>
+              <g class="avion__helice"><path d="M152.5 21 L 152.5 44" stroke-width="1.5"/></g>
+              <circle cx="152.5" cy="32.5" r="1.5" fill="currentColor" stroke="none"/>
+            </svg>
+          </div>
+        </div>
         <p class="portada__lema" data-revelar="subir">Cada segundo nos acerca</p>
 
         <!-- La cuenta la arma js/cuenta.js; sin JavaScript no se muestra (fecha.css / basico.css) -->
@@ -363,10 +446,10 @@
         <div class="portada__calendario" data-calendario data-revelar="subir" data-revelar-retraso="240">
           <!-- Enlace de verdad: sirve aunque js/calendario.js no llegue a cargar -->
           <a class="boton portada__boton" data-calendario-principal target="_blank" rel="noopener"
-             href="https://calendar.google.com/calendar/render?action=TEMPLATE&amp;text=Boda%20de%20Ver%C3%B3nica%20y%20Abraham&amp;dates=20270306T220000Z%2F20270307T073000Z&amp;ctz=America%2FMexico_City&amp;location=Catedral%20de%20Morelia%2C%20Morelia%2C%20Michoac%C3%A1n">Agregar a mi calendario</a>
+             href="https://calendar.google.com/calendar/render?action=TEMPLATE&amp;text=Boda+de+Ver%C3%B3nica+y+Abraham&amp;dates=20270306T220000Z%2F20270307T080000Z&amp;ctz=America%2FMexico_City&amp;details=Ceremonia%3A+16%3A00+hrs+en+la+Catedral+de+Morelia.+Recepci%C3%B3n%3A+17%3A00+hrs+en+el+Hotel+Casa+Grande%2C+Portal+Matamoros+98%2C+Centro+Hist%C3%B3rico.+C%C3%B3digo+de+vestimenta%3A+formal.%0A%0AInvitaci%C3%B3n%3A+https%3A%2F%2Fc-augustoalvarado.github.io%2Finvitacion-veronica-abraham%2F&amp;location=Catedral+de+Morelia%2C+Av.+Francisco+I.+Madero+Poniente+S%2FN%2C+Centro+Hist%C3%B3rico%2C+58000+Morelia%2C+Michoac%C3%A1n%2C+M%C3%A9xico">Agregar a mi calendario</a>
           <p class="portada__opciones">
             <a class="portada__opcion" data-calendario-google target="_blank" rel="noopener"
-               href="https://calendar.google.com/calendar/render?action=TEMPLATE&amp;text=Boda%20de%20Ver%C3%B3nica%20y%20Abraham&amp;dates=20270306T220000Z%2F20270307T073000Z&amp;ctz=America%2FMexico_City&amp;location=Catedral%20de%20Morelia%2C%20Morelia%2C%20Michoac%C3%A1n">Google Calendar</a>
+               href="https://calendar.google.com/calendar/render?action=TEMPLATE&amp;text=Boda+de+Ver%C3%B3nica+y+Abraham&amp;dates=20270306T220000Z%2F20270307T080000Z&amp;ctz=America%2FMexico_City&amp;details=Ceremonia%3A+16%3A00+hrs+en+la+Catedral+de+Morelia.+Recepci%C3%B3n%3A+17%3A00+hrs+en+el+Hotel+Casa+Grande%2C+Portal+Matamoros+98%2C+Centro+Hist%C3%B3rico.+C%C3%B3digo+de+vestimenta%3A+formal.%0A%0AInvitaci%C3%B3n%3A+https%3A%2F%2Fc-augustoalvarado.github.io%2Finvitacion-veronica-abraham%2F&amp;location=Catedral+de+Morelia%2C+Av.+Francisco+I.+Madero+Poniente+S%2FN%2C+Centro+Hist%C3%B3rico%2C+58000+Morelia%2C+Michoac%C3%A1n%2C+M%C3%A9xico">Google Calendar</a>
             <span class="portada__separador" aria-hidden="true">·</span>
             <a class="portada__opcion" data-calendario-ics href="assets/boda-veronica-y-abraham.ics">Apple / Outlook</a>
           </p>
@@ -405,11 +488,41 @@
          atrás de la página, así bajan respecto al texto). El balanceo va en la imagen interior
          para no pelear con el transform que escribe el motor en el envoltorio. -->
     <div class="historia__cielo" aria-hidden="true">
+      <!-- js/avion.js (css/avion.css) hace saltar a los paracaidistas desde el avión de la
+           portada: anima la caída en .avion-salto y la apertura en .avion-campana; la imagen
+           conserva su vaivén y el envoltorio exterior, el parallax del motor. La figurita en
+           caída libre (.avion-figura) solo se ve durante el salto. -->
       <div class="decorado historia__vuelo historia__vuelo--a" data-parallax="0.3" data-parallax-x="0.05" data-parallax-giro="5">
-        <picture><source srcset="assets/img/paracaidas-a.avif" type="image/avif"><img loading="lazy" decoding="async" src="assets/img/paracaidas-a.png" alt="" width="500" height="700"></picture>
+        <div class="avion-salto" data-avion-salto="a">
+          <svg class="avion-figura" style="display:none" viewBox="0 0 64 40" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+            <circle cx="50" cy="20" r="4"/>
+            <path d="M46.2 21.5 C 40 24, 33 24.5, 27 22.5"/>
+            <path d="M35 20.2 C 37 17.2, 41.5 17.2, 43.5 20.2" opacity=".8"/>
+            <path d="M45 22 C 43.5 18, 41.5 15, 40 13.5 C 42.5 11.5, 45 11, 47.5 11.5"/>
+            <path d="M43 23 C 41 20, 39.5 17.5, 38 16" opacity=".7"/>
+            <path d="M27.5 22.5 C 24 20.5, 21 18.5, 19 16 C 17.5 13.5, 16.5 11, 16 8.5"/>
+            <path d="M28 24 C 24 23.5, 20.5 22, 17.5 19.5" opacity=".75"/>
+          </svg>
+          <div class="avion-campana">
+            <picture><source srcset="assets/img/paracaidas-a.avif" type="image/avif"><img loading="lazy" decoding="async" src="assets/img/paracaidas-a.png" alt="" width="500" height="700"></picture>
+          </div>
+        </div>
       </div>
       <div class="decorado historia__vuelo historia__vuelo--b" data-parallax="0.18" data-parallax-x="-0.04" data-parallax-giro="-4">
-        <picture><source srcset="assets/img/paracaidas-b.avif" type="image/avif"><img loading="lazy" decoding="async" src="assets/img/paracaidas-b.png" alt="" width="500" height="700"></picture>
+        <div class="avion-salto" data-avion-salto="b">
+          <svg class="avion-figura" style="display:none" viewBox="0 0 64 40" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+            <circle cx="50" cy="20" r="4"/>
+            <path d="M46.2 21.5 C 40 24, 33 24.5, 27 22.5"/>
+            <path d="M35 20.2 C 37 17.2, 41.5 17.2, 43.5 20.2" opacity=".8"/>
+            <path d="M45 22 C 43.5 18, 41.5 15, 40 13.5 C 42.5 11.5, 45 11, 47.5 11.5"/>
+            <path d="M43 23 C 41 20, 39.5 17.5, 38 16" opacity=".7"/>
+            <path d="M27.5 22.5 C 24 20.5, 21 18.5, 19 16 C 17.5 13.5, 16.5 11, 16 8.5"/>
+            <path d="M28 24 C 24 23.5, 20.5 22, 17.5 19.5" opacity=".75"/>
+          </svg>
+          <div class="avion-campana">
+            <picture><source srcset="assets/img/paracaidas-b.avif" type="image/avif"><img loading="lazy" decoding="async" src="assets/img/paracaidas-b.png" alt="" width="500" height="700"></picture>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -619,7 +732,12 @@
     </div>
   </section>
 
-  <section id="atardecer" class="atardecer" data-ambiente="ocaso noche" data-progreso data-progreso-css aria-labelledby="atardecer-frase">
+  <!-- Interludio: el sol se pone sobre Morelia mientras la sección pasa (1.4 pantallas).
+       data-ambiente: dos tramos de ocaso y uno de noche, para que el cielo siga encendido
+       mientras la frase se lee y anochezca junto con el velo de la ciudad (motor.js funde
+       cada frontera a lo largo de un tramo). Las capas se piden desde el principio, con
+       prioridad baja: cuando el invitado llega, la escena ya está pintada. -->
+  <section id="atardecer" class="atardecer" data-ambiente="ocaso ocaso noche" data-progreso data-progreso-css aria-labelledby="atardecer-frase">
     <div class="atardecer__escena">
       <div class="atardecer__sol" aria-hidden="true"></div>
 
@@ -628,10 +746,10 @@
         <p id="atardecer-frase" class="t-script">Y cuando el sol se ponga sobre Morelia, comenzará la fiesta</p>
       </div>
 
-      <picture><source media="(max-aspect-ratio: 3/4)" srcset="assets/img/atardecer-cerros-vertical.avif" type="image/avif"><source srcset="assets/img/atardecer-cerros.avif" type="image/avif"><source media="(max-aspect-ratio: 3/4)" srcset="assets/img/atardecer-cerros-vertical.png" type="image/png"><img loading="lazy" class="atardecer__capa atardecer__capa--cerros" src="assets/img/atardecer-cerros.png" alt="" width="2400" height="700" decoding="async"></picture>
-      <picture><source media="(max-aspect-ratio: 3/4)" srcset="assets/img/atardecer-ciudad-vertical.avif" type="image/avif"><source srcset="assets/img/atardecer-ciudad.avif" type="image/avif"><source media="(max-aspect-ratio: 3/4)" srcset="assets/img/atardecer-ciudad-vertical.png" type="image/png"><img loading="lazy" class="atardecer__capa atardecer__capa--ciudad" src="assets/img/atardecer-ciudad.png" alt="" width="2400" height="700" decoding="async"></picture>
+      <picture><source media="(max-aspect-ratio: 3/4)" srcset="assets/img/atardecer-cerros-vertical.avif" type="image/avif"><source srcset="assets/img/atardecer-cerros.avif" type="image/avif"><source media="(max-aspect-ratio: 3/4)" srcset="assets/img/atardecer-cerros-vertical.png" type="image/png"><img class="atardecer__capa atardecer__capa--cerros" src="assets/img/atardecer-cerros.png" alt="" width="2400" height="700" loading="eager" fetchpriority="low" decoding="async"></picture>
+      <picture><source media="(max-aspect-ratio: 3/4)" srcset="assets/img/atardecer-ciudad-vertical.avif" type="image/avif"><source srcset="assets/img/atardecer-ciudad.avif" type="image/avif"><source media="(max-aspect-ratio: 3/4)" srcset="assets/img/atardecer-ciudad-vertical.png" type="image/png"><img class="atardecer__capa atardecer__capa--ciudad" src="assets/img/atardecer-ciudad.png" alt="" width="2400" height="700" loading="eager" fetchpriority="low" decoding="async"></picture>
       <div class="atardecer__velo" aria-hidden="true"></div>
-      <picture><source media="(max-aspect-ratio: 3/4)" srcset="assets/img/atardecer-acueducto-vertical.avif" type="image/avif"><source srcset="assets/img/atardecer-acueducto.avif" type="image/avif"><source media="(max-aspect-ratio: 3/4)" srcset="assets/img/atardecer-acueducto-vertical.png" type="image/png"><img loading="lazy" class="atardecer__capa atardecer__capa--acueducto" src="assets/img/atardecer-acueducto.png" alt="" width="2400" height="700" decoding="async"></picture>
+      <picture><source media="(max-aspect-ratio: 3/4)" srcset="assets/img/atardecer-acueducto-vertical.avif" type="image/avif"><source srcset="assets/img/atardecer-acueducto.avif" type="image/avif"><source media="(max-aspect-ratio: 3/4)" srcset="assets/img/atardecer-acueducto-vertical.png" type="image/png"><img class="atardecer__capa atardecer__capa--acueducto" src="assets/img/atardecer-acueducto.png" alt="" width="2400" height="700" loading="eager" fetchpriority="low" decoding="async"></picture>
       <div class="atardecer__suelo" aria-hidden="true"></div>
     </div>
   </section>
@@ -706,7 +824,7 @@
             <div class="prog-texto">
               <p class="prog-hora" data-revelar="subir"><time datetime="2027-03-06T16:00-06:00">16:00 <span class="prog-hora__periodo">hrs</span></time></p>
               <h3 class="prog-nombre" data-revelar="subir">Misa en Catedral</h3>
-              <p class="prog-detalle" data-revelar="subir">Todo empieza en la Catedral de Morelia, donde daremos gracias y nos diremos que sí.</p>
+              <p class="prog-detalle" data-revelar="subir">Todo empieza en la Catedral de Morelia.</p>
             </div>
             <div class="prog-icono" data-revelar="crecer" aria-hidden="true">
               <svg viewBox="0 0 80 80" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" data-trazo focusable="false">
@@ -851,13 +969,13 @@
             </div>
           </li>
 
-          <!-- 24:00 · Cena: antojito de medianoche bajo las estrellas -->
+          <!-- 24:00 · Trasnochados: el antojito de medianoche, bajo cubierta y bajo las estrellas -->
           <li class="prog-hito" data-revelar-grupo>
             <span class="prog-nodo" aria-hidden="true"><i></i></span>
             <div class="prog-texto">
               <p class="prog-hora" data-revelar="subir"><time datetime="2027-03-07T00:00-06:00">24:00 <span class="prog-hora__periodo">hrs</span></time></p>
-              <h3 class="prog-nombre" data-revelar="subir">Cena</h3>
-              <p class="prog-detalle" data-revelar="subir">Un antojo a medianoche, de los que saben mejor entre amigos, para volver a la pista con fuerzas nuevas.</p>
+              <h3 class="prog-nombre" data-revelar="subir">Trasnochados</h3>
+              <p class="prog-detalle" data-revelar="subir">Para quienes sigan de pie a medianoche: un antojo para recuperar fuerzas y seguir la fiesta.</p>
             </div>
             <div class="prog-icono" data-revelar="crecer" aria-hidden="true">
               <svg viewBox="0 0 80 80" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" data-trazo focusable="false">
@@ -880,11 +998,11 @@
             </div>
           </li>
 
-          <!-- 1:30 · Fin: luna con estrellas sobre una nube -->
+          <!-- 2:00 · Fin: luna con estrellas sobre una nube -->
           <li class="prog-hito" data-revelar-grupo>
             <span class="prog-nodo" aria-hidden="true"><i></i></span>
             <div class="prog-texto">
-              <p class="prog-hora" data-revelar="subir"><time datetime="2027-03-07T01:30-06:00">1:30 <span class="prog-hora__periodo">hrs</span></time></p>
+              <p class="prog-hora" data-revelar="subir"><time datetime="2027-03-07T02:00-06:00">2:00 <span class="prog-hora__periodo">hrs</span></time></p>
               <h3 class="prog-nombre" data-revelar="subir">Fin</h3>
               <p class="prog-detalle" data-revelar="subir">La última canción, un abrazo largo y a soñar con lo vivido.</p>
             </div>
@@ -907,7 +1025,9 @@
         <span class="prog-fin" aria-hidden="true"><i></i></span>
       </div>
 
-      <!-- Remate: luna creciente y estrellas que titilan muy despacio -->
+      <!-- Remate: luna creciente, estrellas que titilan muy despacio y, colgando de la punta
+           de la luna por un hilo fino, los dos anillos entrelazados (uno dorado, otro olivo).
+           La luna es el remate visual: ya no lleva frase. -->
       <div class="prog-remate" data-revelar-grupo>
         <div class="prog-remate__cielo" aria-hidden="true">
           <span class="prog-remate__halo"></span>
@@ -915,6 +1035,19 @@
             <path d="M160.6 38.4 C140.6 42 126 59 126 79.6 C126 102.8 144.8 121.6 168 121.6 C180.2 121.6 191 116.4 198.6 108 C175.6 110.8 156 93.6 155.4 70.8 C155.1 58.4 157 47.2 160.6 38.4 Z"/>
             <path d="M136.6 84 C137.8 94.6 143.8 103.6 152.6 108.6"/>
             <path d="M141.4 62.6 C143.4 57.4 146.8 53 151 49.8"/>
+            <!-- Anillos: el grupo pivota en la punta de la luna (198.6 108); el par, en el nudo (198.6 129).
+                 Cada aro deja un hueco donde el otro le pasa por encima: así se ven entrelazados sin
+                 pintar nada del color del fondo. Los brillos son arcos cortos casi blancos. -->
+            <g class="prog-anillos">
+              <path class="prog-anillos__hilo" d="M198.6 108 C198.9 116.4 198.4 122.7 198.6 129"/>
+              <g class="prog-anillos__par">
+                <circle class="prog-anillos__nudo" cx="198.6" cy="129" r=".9"/>
+                <path class="prog-anillo prog-anillo--oro" d="M193.89 149.1 A10.6 10.6 0 1 1 199.12 150.19"/>
+                <path class="prog-anillo prog-anillo--olivo" d="M210.71 135.9 A10.6 10.6 0 1 1 205.48 134.81"/>
+                <path class="prog-anillo__brillo" style="--r:-1.6s" d="M188.92 135.28 A10.6 10.6 0 0 1 196.17 129.28"/>
+                <path class="prog-anillo__brillo" style="--r:-4.1s" d="M211.65 136.43 A10.6 10.6 0 0 1 216.27 142.79"/>
+              </g>
+            </g>
             <path class="prog-estrella" style="--d:8s;--r:-1s" d="M188 52 Q189.6 59.4 197 61 Q189.6 62.6 188 70 Q186.4 62.6 179 61 Q186.4 59.4 188 52 Z"/>
             <path class="prog-estrella" style="--d:10s;--r:-4.6s" d="M214 84 Q214.9 88.1 219 89 Q214.9 89.9 214 94 Q213.1 89.9 209 89 Q213.1 88.1 214 84 Z"/>
             <path class="prog-estrella" style="--d:7.4s;--r:-2.8s" d="M92 40 Q93.1 44.9 98 46 Q93.1 47.1 92 52 Q90.9 47.1 86 46 Q90.9 44.9 92 40 Z"/>
@@ -929,47 +1062,76 @@
             <circle class="prog-estrella" style="--d:10.4s;--r:-3s" cx="100" cy="128" r="1"/>
             <circle class="prog-estrella" style="--d:7s;--r:-.2s" cx="298" cy="70" r="1"/>
             <circle class="prog-estrella" style="--d:9.4s;--r:-6.6s" cx="36" cy="132" r=".9"/>
-            <circle class="prog-estrella" style="--d:8.8s;--r:-2.4s" cx="206" cy="140" r=".9"/>
+            <circle class="prog-estrella" style="--d:8.8s;--r:-2.4s" cx="244" cy="152" r=".9"/>
             <circle class="prog-estrella" style="--d:7.6s;--r:-4.8s" cx="166" cy="14" r=".9"/>
           </svg>
         </div>
-        <p class="prog-remate__frase" data-revelar="subir">Y que la luna nos acompañe de regreso</p>
       </div>
 
     </div>
   </section>
 
+  <!-- Vestimenta y valet (v2, cambios de los novios del 21-oct-2026).
+       · #dress-code y #valet son los destinos de los submenús «Dress code» y «Valet parking» de «La boda».
+       · El código de vestimenta es «Formal» (ya no «Etiqueta rigurosa», que se leía como smoking).
+       · El icono es un gancho de ropa de línea: su pregunta (el garfio) y la barra.
+       · El boceto del look (assets/svg/look-formal.svg, 600×700, lo dibuja otro módulo) es una PROPUESTA
+         de Augusto mientras los novios mandan su referencia: si cambia el dibujo, solo cambia el archivo.
+         Si el archivo no llega, onerror retira la figura entera (sin icono de imagen rota ni hueco vacío).
+       · Costo y horario del valet: Vero los mandará; mientras, «Por confirmar». main.js los escribe desde
+         CONFIG.valet.detalle cuando exista (data-config). -->
   <section id="vestimenta" class="seccion seccion--noche vestimenta" data-ambiente="noche" aria-labelledby="vestimenta-titulo">
     <div class="contenedor vestimenta__contenido">
       <h2 id="vestimenta-titulo" class="t-sobretitulo vestimenta__titulo centrado" data-revelar="subir">Detalles para ese día</h2>
 
       <div class="vestimenta__datos" data-revelar-grupo>
 
-        <article class="papel dato" data-revelar="subir">
-          <svg class="dato__icono" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-            <path d="M24 9c-2.6 0-4.4 1.7-4.4 3.9 0 1.6 1 2.7 2.4 3.4l2 1 2-1c1.4-.7 2.4-1.8 2.4-3.4C28.4 10.7 26.6 9 24 9Z"/>
-            <path d="M22 17.3 9.5 25.5c-1.7 1.1-1 3.5 1 3.5h27c2 0 2.7-2.4 1-3.5L26 17.3"/>
-            <path d="M13 29v8.5h22V29"/>
-          </svg>
-          <h3 class="t-dato dato__titulo">Código de vestimenta</h3>
-          <p class="dato__principal">Etiqueta rigurosa</p>
-          <p class="t-nota dato__nota">Se sugiere evitar el verde olivo y los colores claros.</p>
-          <p class="dato__muestras" aria-hidden="true">
-            <span class="muestra muestra--olivo"></span>
-            <span class="muestra muestra--claro"></span>
-            <span class="muestra muestra--marfil"></span>
-          </p>
+        <!-- ── Código de vestimenta ── -->
+        <article id="dress-code" class="papel dato dato--vestimenta" data-revelar="subir" aria-labelledby="dress-code-titulo">
+          <div class="dato__texto">
+            <!-- Gancho de ropa: garfio en forma de pregunta, cuello, hombros y barra -->
+            <svg class="dato__icono" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+              <path d="M24 21.2v-2.6c0-2.1 1.5-3.1 2.9-4 1.6-1 2.4-2.3 2.4-3.8 0-2.6-2.3-4.6-5.3-4.6-2.6 0-4.7 1.5-5.2 3.8"/>
+              <path d="M24 21.2 8.4 32.9c-1.6 1.2-.8 3.7 1.2 3.7h28.8c2 0 2.8-2.5 1.2-3.7L24 21.2Z"/>
+              <path d="M11.6 36.6h24.8"/>
+            </svg>
+            <h3 id="dress-code-titulo" class="t-sobretitulo dato__titulo">Código de vestimenta</h3>
+            <p class="dato__principal dato__principal--grande">Formal</p>
+            <p class="t-nota dato__nota">Se sugiere evitar el verde olivo y los colores claros.</p>
+            <p class="dato__muestras" aria-hidden="true">
+              <span class="muestra muestra--olivo"></span>
+              <span class="muestra muestra--claro"></span>
+              <span class="muestra muestra--marfil"></span>
+            </p>
+          </div>
+
+          <!-- PROPUESTA (pendiente de la referencia de los novios): boceto de diseño de moda del look.
+               El hueco se reserva con la proporción 6:7 del dibujo para que la tarjeta no salte al cargar. -->
+          <figure class="dato__boceto">
+            <span class="dato__boceto-marco">
+              <picture><source srcset="assets/img/look-formal.avif" type="image/avif"><img loading="lazy" decoding="async" src="assets/img/look-formal.png" alt="Boceto del look formal: traje oscuro y vestido largo" width="600" height="700" onerror="this.closest('.dato__boceto').classList.add('es-vacio')"></picture>
+            </span>
+            <figcaption class="t-nota dato__boceto-pie">Una idea del look</figcaption>
+          </figure>
         </article>
 
-        <article class="papel dato" data-revelar="subir">
-          <svg class="dato__icono" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-            <path d="M9 30.5v-5.2c0-1.3.8-2.4 2-2.8l3.2-1 3.3-6.3c.5-1 1.5-1.7 2.7-1.7h7.6c1.2 0 2.2.7 2.7 1.7l3.3 6.3 3.2 1c1.2.4 2 1.5 2 2.8v5.2"/>
-            <path d="M7.5 30.5h33M14.5 21.5h19"/>
-            <circle cx="15" cy="31.5" r="3"/><circle cx="33" cy="31.5" r="3"/>
-          </svg>
-          <h3 class="t-dato dato__titulo">Valet parking</h3>
-          <p class="dato__principal">Llega sin preocupaciones</p>
-          <p class="t-nota dato__nota">Ese día contaremos con servicio de valet parking en la recepción del hotel.</p>
+        <!-- ── Valet parking ── -->
+        <article id="valet" class="papel dato dato--valet" data-revelar="subir" aria-labelledby="valet-titulo">
+          <div class="dato__texto">
+            <svg class="dato__icono" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+              <path d="M9 30.5v-5.2c0-1.3.8-2.4 2-2.8l3.2-1 3.3-6.3c.5-1 1.5-1.7 2.7-1.7h7.6c1.2 0 2.2.7 2.7 1.7l3.3 6.3 3.2 1c1.2.4 2 1.5 2 2.8v5.2"/>
+              <path d="M7.5 30.5h33M14.5 21.5h19"/>
+              <circle cx="15" cy="31.5" r="3"/><circle cx="33" cy="31.5" r="3"/>
+            </svg>
+            <h3 id="valet-titulo" class="t-sobretitulo dato__titulo">Valet parking</h3>
+            <p class="dato__principal">Llega sin preocupaciones</p>
+            <p class="t-nota dato__nota">Ese día contaremos con servicio de valet parking en la recepción del hotel.</p>
+            <!-- Hueco discreto para los detalles que mandará Vero -->
+            <p class="t-nota dato__pendiente">
+              <span class="dato__pendiente-etiqueta">Costo y horario</span>
+              <span class="dato__pendiente-valor" data-config="valet.detalle">Por confirmar</span>
+            </p>
+          </div>
         </article>
 
       </div>
@@ -1063,10 +1225,10 @@
                 <path d="M32 44.600c-3.500-2.300-5.300-4.300-5.200-6.200.1-1.500 1.300-2.500 2.700-2.400 1 .1 1.900.7 2.500 1.700.6-1 1.500-1.600 2.500-1.700 1.400-.1 2.600.9 2.700 2.400.1 1.900-1.700 3.900-5.200 6.200z" class="regalo__sello"/>
               </g>
             </svg>
-            <h3 id="regalo-transferencia" class="regalo__tienda" data-regalo-tienda>Transferencia</h3>
+            <h3 id="regalo-transferencia" class="regalo__tienda" data-regalo-tienda>BBVA</h3>
             <div class="regalo__filete" aria-hidden="true"><i></i></div>
             <p class="regalo__etiqueta" data-regalo-etiqueta>CLABE</p>
-            <div class="regalo__dato" data-regalo-dato><p class="regalo__valor">012180028772723592</p><dl class="regalo__detalles"><div class="regalo__detalle"><dt>Titular</dt><dd>Por confirmar</dd></div></dl></div>
+            <div class="regalo__dato" data-regalo-dato><p class="regalo__valor">012180028772723592</p><dl class="regalo__detalles"><div class="regalo__detalle"><dt>Titular</dt><dd>Abraham Alvarado López</dd></div></dl></div>
             <div class="regalo__acciones" data-regalo-acciones hidden></div>
           </article>
         </li>
@@ -1167,7 +1329,7 @@
 
             <fieldset class="rsvp-opciones" data-rsvp-campo="asiste" role="radiogroup"
                       aria-required="true" aria-describedby="rsvp-asiste-error">
-              <legend class="rsvp-leyenda">¿Asistirás?</legend>
+              <legend class="rsvp-leyenda solo-lectores">¿Asistirás?</legend>
               <div class="rsvp-opciones__par">
                 <label class="rsvp-opcion">
                   <input class="rsvp-opcion__radio" type="radio" name="asiste" value="si" required aria-describedby="rsvp-asiste-error">
@@ -1175,7 +1337,7 @@
                     <svg class="rsvp-opcion__marca" viewBox="0 0 20 20" aria-hidden="true" focusable="false">
                       <path pathLength="1" d="M10 16.600c-4.400-2.900-6.700-5.500-6.600-8 .1-2 1.700-3.400 3.500-3.200 1.300.1 2.400.9 3.100 2.200.7-1.300 1.800-2.100 3.100-2.200 1.800-.2 3.400 1.200 3.500 3.200.1 2.500-2.200 5.100-6.600 8z"/>
                     </svg>
-                    <span class="rsvp-opcion__texto">Sí, con mucho gusto</span>
+                    <span class="rsvp-opcion__texto">Sí voy</span>
                   </span>
                 </label>
                 <label class="rsvp-opcion">
@@ -1253,19 +1415,17 @@
     </div>
   </section>
 
-  <section id="recomendaciones" class="seccion seccion--noche recomendaciones" data-ambiente="noche" aria-labelledby="recomendaciones-titulo">
+  <section id="recomendaciones" class="seccion seccion--noche recomendaciones" data-ambiente="noche" aria-labelledby="recomendaciones-titulo" data-recom>
 
-    <!-- Iconos de línea de la sección (cama, brocha, tenedor, pin, teléfono, arco, camino) -->
+    <!-- Iconos de línea compartidos por las dos secciones con pestañas
+         (#recomendaciones y #que-visitar): cama, brocha, teléfono, pin, enlace -->
     <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
       <defs>
         <symbol id="recom-i-cama" viewBox="0 0 24 24"><path d="M3 19v-9M3 14h18M21 19v-6a2 2 0 0 0-2-2h-9v3M5.25 10.25a1.75 1.75 0 1 0 3.5 0 1.75 1.75 0 1 0-3.5 0"/></symbol>
         <symbol id="recom-i-brocha" viewBox="0 0 24 24"><path d="M4 20l7-7M11 13l-1.5-1.5 6.5-6.5a2.12 2.12 0 0 1 3 3l-6.5 6.5zM15.5 7.5l1 1"/></symbol>
-        <symbol id="recom-i-tenedor" viewBox="0 0 24 24"><path d="M6 3v5a3 3 0 0 0 6 0V3M9 3v18M17.5 3c-2 2.2-3 5-3 8 0 1.4.9 2 2 2h1v8M17.5 3v10"/></symbol>
-        <symbol id="recom-i-enlace" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"/><path d="M20 4 11 13"/><path d="M19 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h5"/></symbol>
-      <symbol id="recom-i-pin" viewBox="0 0 24 24"><path d="M12 21s-6-5.4-6-10a6 6 0 0 1 12 0c0 4.6-6 10-6 10zM14.2 11a2.2 2.2 0 1 1-4.4 0 2.2 2.2 0 0 1 4.4 0z"/></symbol>
+        <symbol id="recom-i-enlace" viewBox="0 0 24 24"><path d="M14 4h6v6"/><path d="M20 4 11 13"/><path d="M19 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h5"/></symbol>
+        <symbol id="recom-i-pin" viewBox="0 0 24 24"><path d="M12 21s-6-5.4-6-10a6 6 0 0 1 12 0c0 4.6-6 10-6 10zM14.2 11a2.2 2.2 0 1 1-4.4 0 2.2 2.2 0 0 1 4.4 0z"/></symbol>
         <symbol id="recom-i-telefono" viewBox="0 0 24 24"><path d="M5.5 4h3.3l1.7 4.3-2.2 1.4a10.5 10.5 0 0 0 5.9 5.9l1.4-2.2 4.3 1.7v3.3a1.6 1.6 0 0 1-1.6 1.6C10.4 20 4 13.6 4 5.6A1.6 1.6 0 0 1 5.5 4z"/></symbol>
-        <symbol id="recom-i-arco" viewBox="0 0 24 24"><path d="M3 21h18M5 21V11a7 7 0 0 1 14 0v10M9 21v-6a3 3 0 0 1 6 0v6"/></symbol>
-        <symbol id="recom-i-camino" viewBox="0 0 24 24"><path d="M4.5 21L10 3M19.5 21L14 3M12 6.5v2M12 11.5v2M12 16.5v2"/></symbol>
       </defs>
     </svg>
 
@@ -1300,7 +1460,7 @@
       </header>
 
       <!-- Pestañas: solo existen con JavaScript (js/recomendaciones.js quita «hidden»).
-           Sin él, los tres apartados se leen apilados y completos. -->
+           Sin él, los dos apartados se leen apilados y completos. -->
       <div class="recom__pestanas" role="tablist" aria-label="Apartados de recomendaciones" hidden data-recom-pestanas>
         <button type="button" class="recom__pestana" role="tab" id="pestana-hospedaje" aria-selected="true" aria-controls="hospedaje" data-recom-pestana="hospedaje">
           <svg class="recom__pestana-icono" aria-hidden="true" focusable="false"><use href="#recom-i-cama"/></svg>
@@ -1310,13 +1470,11 @@
           <svg class="recom__pestana-icono" aria-hidden="true" focusable="false"><use href="#recom-i-brocha"/></svg>
           <span>Make up</span>
         </button>
-        <button type="button" class="recom__pestana" role="tab" id="pestana-donde-ir" aria-selected="false" aria-controls="donde-ir" tabindex="-1" data-recom-pestana="donde-ir">
-          <svg class="recom__pestana-icono" aria-hidden="true" focusable="false"><use href="#recom-i-tenedor"/></svg>
-          <span>Dónde ir</span>
-        </button>
       </div>
 
-      <!-- ═══════════ Hospedaje ═══════════ -->
+      <!-- ═══════════ Hospedaje ═══════════
+           Orden pedido por Abraham (21 oct 2026): primero el hotel de la recepción;
+           Hotel Misión Catedral y Holiday Inn Express hasta el final. -->
       <div id="hospedaje" class="recom__apartado" role="tabpanel" aria-labelledby="hospedaje-titulo" tabindex="-1" data-recom-apartado="hospedaje">
         <header class="recom__cabecera centrado">
           <h3 id="hospedaje-titulo" class="recom__nombre-apartado"><svg class="recom__icono-apartado" aria-hidden="true" focusable="false"><use href="#recom-i-cama"/></svg>Hospedaje</h3>
@@ -1324,22 +1482,6 @@
         </header>
 
         <ul class="recom__rejilla recom__rejilla--hoteles" role="list" data-revelar-grupo>
-
-          <li class="recom__celda">
-            <article class="papel recom-tarjeta recom-tarjeta--sitio" data-revelar="subir" aria-labelledby="hotel-cantera-diez">
-              <div class="recom-tarjeta__cabeza">
-                <svg class="recom-tarjeta__icono" aria-hidden="true" focusable="false"><use href="#recom-i-cama"/></svg>
-                <h4 id="hotel-cantera-diez" class="recom-tarjeta__nombre">Cantera Diez Hotel Boutique</h4>
-                <p class="recom-tarjeta__zona">Centro Histórico</p>
-              </div>
-              <p class="recom-tarjeta__texto">El hotel con más de 400 años de historia en Morelia. Ex Palacio de Iturbide.</p>
-              <div class="recom-tarjeta__pie">
-                <a class="recom-tarjeta__tel" href="tel:+524433125419"><svg aria-hidden="true" focusable="false"><use href="#recom-i-telefono"/></svg><span class="solo-lectores">Teléfono: </span>443 312 5419</a>
-                <a class="boton boton--linea recom-tarjeta__boton" href="https://maps.app.goo.gl/MhYZzAjqTxQCMzRe9" target="_blank" rel="noopener noreferrer"><svg class="recom-tarjeta__boton-icono" aria-hidden="true" focusable="false"><use href="#recom-i-pin"/></svg>Ubicación<span class="solo-lectores"> de Cantera Diez Hotel Boutique (se abre en Google Maps)</span></a>
-                <a class="boton boton--linea recom-tarjeta__boton" href="https://canteradiezhotel.com/es/inicio" target="_blank" rel="noopener noreferrer"><svg class="recom-tarjeta__boton-icono" aria-hidden="true" focusable="false"><use href="#recom-i-enlace"/></svg>Ver hotel<span class="solo-lectores">: sitio de Cantera Diez Hotel Boutique (se abre en una pestaña nueva)</span></a>
-              </div>
-            </article>
-          </li>
 
           <li class="recom__celda">
             <article class="papel recom-tarjeta recom-tarjeta--destacada recom-tarjeta--sitio" data-revelar="subir" aria-labelledby="hotel-casa-grande">
@@ -1359,33 +1501,17 @@
           </li>
 
           <li class="recom__celda">
-            <article class="papel recom-tarjeta recom-tarjeta--sitio" data-revelar="subir" aria-labelledby="hotel-mision-catedral">
+            <article class="papel recom-tarjeta recom-tarjeta--sitio" data-revelar="subir" aria-labelledby="hotel-cantera-diez">
               <div class="recom-tarjeta__cabeza">
                 <svg class="recom-tarjeta__icono" aria-hidden="true" focusable="false"><use href="#recom-i-cama"/></svg>
-                <h4 id="hotel-mision-catedral" class="recom-tarjeta__nombre">Hotel Misión Catedral</h4>
+                <h4 id="hotel-cantera-diez" class="recom-tarjeta__nombre">Cantera Diez Hotel Boutique</h4>
                 <p class="recom-tarjeta__zona">Centro Histórico</p>
               </div>
-              <!-- La nota de los novios no trae teléfono ni descripción de este hotel -->
-              <p class="recom-tarjeta__texto recom-tarjeta__texto--pendiente">Teléfono y descripción por confirmar.</p>
+              <p class="recom-tarjeta__texto">El hotel con más de 400 años de historia en Morelia. Ex Palacio de Iturbide.</p>
               <div class="recom-tarjeta__pie">
-                <a class="boton boton--linea recom-tarjeta__boton" href="https://maps.app.goo.gl/CBifoeZn2BhjY9EeA" target="_blank" rel="noopener noreferrer"><svg class="recom-tarjeta__boton-icono" aria-hidden="true" focusable="false"><use href="#recom-i-pin"/></svg>Ubicación<span class="solo-lectores"> del Hotel Misión Catedral (se abre en Google Maps)</span></a>
-                <a class="boton boton--linea recom-tarjeta__boton" href="https://www.hotelesmision.com.mx/destino/hotel-mision-catedral-morelia" target="_blank" rel="noopener noreferrer"><svg class="recom-tarjeta__boton-icono" aria-hidden="true" focusable="false"><use href="#recom-i-enlace"/></svg>Ver hotel<span class="solo-lectores">: sitio de Hotel Misión Catedral (se abre en una pestaña nueva)</span></a>
-              </div>
-            </article>
-          </li>
-
-          <li class="recom__celda">
-            <article class="papel recom-tarjeta recom-tarjeta--sitio" data-revelar="subir" aria-labelledby="hotel-holiday-inn">
-              <div class="recom-tarjeta__cabeza">
-                <svg class="recom-tarjeta__icono" aria-hidden="true" focusable="false"><use href="#recom-i-cama"/></svg>
-                <h4 id="hotel-holiday-inn" class="recom-tarjeta__nombre">Holiday Inn Express</h4>
-                <p class="recom-tarjeta__zona">Centro Histórico</p>
-              </div>
-              <p class="recom-tarjeta__texto">Disfruta de un merecido alojamiento en Morelia.</p>
-              <div class="recom-tarjeta__pie">
-                <a class="recom-tarjeta__tel" href="tel:+524433108400"><svg aria-hidden="true" focusable="false"><use href="#recom-i-telefono"/></svg><span class="solo-lectores">Teléfono: </span>443 310 8400</a>
-                <a class="boton boton--linea recom-tarjeta__boton" href="https://maps.app.goo.gl/3Ar2WVAao5ihrAr27" target="_blank" rel="noopener noreferrer"><svg class="recom-tarjeta__boton-icono" aria-hidden="true" focusable="false"><use href="#recom-i-pin"/></svg>Ubicación<span class="solo-lectores"> del Holiday Inn Express (se abre en Google Maps)</span></a>
-                <a class="boton boton--linea recom-tarjeta__boton" href="https://www.holidayinn.com/hotels/us/es/find-hotels/hotel-search?fromRedirect=true&amp;qSrt=sBR&amp;qDest=Morelia&amp;qRad=30&amp;qRdU=mi" target="_blank" rel="noopener noreferrer"><svg class="recom-tarjeta__boton-icono" aria-hidden="true" focusable="false"><use href="#recom-i-enlace"/></svg>Ver hotel<span class="solo-lectores">: sitio de Holiday Inn Express (se abre en una pestaña nueva)</span></a>
+                <a class="recom-tarjeta__tel" href="tel:+524433125419"><svg aria-hidden="true" focusable="false"><use href="#recom-i-telefono"/></svg><span class="solo-lectores">Teléfono: </span>443 312 5419</a>
+                <a class="boton boton--linea recom-tarjeta__boton" href="https://maps.app.goo.gl/MhYZzAjqTxQCMzRe9" target="_blank" rel="noopener noreferrer"><svg class="recom-tarjeta__boton-icono" aria-hidden="true" focusable="false"><use href="#recom-i-pin"/></svg>Ubicación<span class="solo-lectores"> de Cantera Diez Hotel Boutique (se abre en Google Maps)</span></a>
+                <a class="boton boton--linea recom-tarjeta__boton" href="https://canteradiezhotel.com/es/inicio" target="_blank" rel="noopener noreferrer"><svg class="recom-tarjeta__boton-icono" aria-hidden="true" focusable="false"><use href="#recom-i-enlace"/></svg>Ver hotel<span class="solo-lectores">: sitio de Cantera Diez Hotel Boutique (se abre en una pestaña nueva)</span></a>
               </div>
             </article>
           </li>
@@ -1438,10 +1564,43 @@
             </article>
           </li>
 
+          <li class="recom__celda">
+            <article class="papel recom-tarjeta recom-tarjeta--sitio" data-revelar="subir" aria-labelledby="hotel-mision-catedral">
+              <div class="recom-tarjeta__cabeza">
+                <svg class="recom-tarjeta__icono" aria-hidden="true" focusable="false"><use href="#recom-i-cama"/></svg>
+                <h4 id="hotel-mision-catedral" class="recom-tarjeta__nombre">Hotel Misión Catedral</h4>
+                <p class="recom-tarjeta__zona">Centro Histórico</p>
+              </div>
+              <!-- La nota de los novios no trae teléfono ni descripción de este hotel -->
+              <p class="recom-tarjeta__texto recom-tarjeta__texto--pendiente">Teléfono y descripción por confirmar.</p>
+              <div class="recom-tarjeta__pie">
+                <a class="boton boton--linea recom-tarjeta__boton" href="https://maps.app.goo.gl/CBifoeZn2BhjY9EeA" target="_blank" rel="noopener noreferrer"><svg class="recom-tarjeta__boton-icono" aria-hidden="true" focusable="false"><use href="#recom-i-pin"/></svg>Ubicación<span class="solo-lectores"> del Hotel Misión Catedral (se abre en Google Maps)</span></a>
+                <a class="boton boton--linea recom-tarjeta__boton" href="https://www.hotelesmision.com.mx/destino/hotel-mision-catedral-morelia" target="_blank" rel="noopener noreferrer"><svg class="recom-tarjeta__boton-icono" aria-hidden="true" focusable="false"><use href="#recom-i-enlace"/></svg>Ver hotel<span class="solo-lectores">: sitio de Hotel Misión Catedral (se abre en una pestaña nueva)</span></a>
+              </div>
+            </article>
+          </li>
+
+          <li class="recom__celda">
+            <article class="papel recom-tarjeta recom-tarjeta--sitio" data-revelar="subir" aria-labelledby="hotel-holiday-inn">
+              <div class="recom-tarjeta__cabeza">
+                <svg class="recom-tarjeta__icono" aria-hidden="true" focusable="false"><use href="#recom-i-cama"/></svg>
+                <h4 id="hotel-holiday-inn" class="recom-tarjeta__nombre">Holiday Inn Express</h4>
+                <p class="recom-tarjeta__zona">Centro Histórico</p>
+              </div>
+              <p class="recom-tarjeta__texto">Disfruta de un merecido alojamiento en Morelia.</p>
+              <div class="recom-tarjeta__pie">
+                <a class="recom-tarjeta__tel" href="tel:+524433108400"><svg aria-hidden="true" focusable="false"><use href="#recom-i-telefono"/></svg><span class="solo-lectores">Teléfono: </span>443 310 8400</a>
+                <a class="boton boton--linea recom-tarjeta__boton" href="https://maps.app.goo.gl/3Ar2WVAao5ihrAr27" target="_blank" rel="noopener noreferrer"><svg class="recom-tarjeta__boton-icono" aria-hidden="true" focusable="false"><use href="#recom-i-pin"/></svg>Ubicación<span class="solo-lectores"> del Holiday Inn Express (se abre en Google Maps)</span></a>
+                <a class="boton boton--linea recom-tarjeta__boton" href="https://www.holidayinn.com/hotels/us/es/find-hotels/hotel-search?fromRedirect=true&amp;qSrt=sBR&amp;qDest=Morelia&amp;qRad=30&amp;qRdU=mi" target="_blank" rel="noopener noreferrer"><svg class="recom-tarjeta__boton-icono" aria-hidden="true" focusable="false"><use href="#recom-i-enlace"/></svg>Ver hotel<span class="solo-lectores">: sitio de Holiday Inn Express (se abre en una pestaña nueva)</span></a>
+              </div>
+            </article>
+          </li>
+
         </ul>
       </div>
 
-      <!-- ═══════════ Make up ═══════════ -->
+      <!-- ═══════════ Make up ═══════════
+           Solo nombre y teléfono (Abraham, 21 oct 2026: sin dirección del estudio). -->
       <div id="maquillaje" class="recom__apartado" role="tabpanel" aria-labelledby="maquillaje-titulo" tabindex="-1" data-recom-apartado="maquillaje">
         <header class="recom__cabecera centrado">
           <h3 id="maquillaje-titulo" class="recom__nombre-apartado"><svg class="recom__icono-apartado" aria-hidden="true" focusable="false"><use href="#recom-i-brocha"/></svg>Make up</h3>
@@ -1451,43 +1610,31 @@
         <ul class="recom__rejilla recom__rejilla--maquillaje" role="list" data-revelar-grupo>
 
           <li class="recom__celda">
-            <article class="papel recom-tarjeta" data-revelar="subir" aria-labelledby="makeup-manuel-garcia">
+            <article class="papel recom-tarjeta recom-tarjeta--compacta" data-revelar="subir" aria-labelledby="makeup-manuel-garcia">
               <div class="recom-tarjeta__cabeza">
                 <svg class="recom-tarjeta__icono" aria-hidden="true" focusable="false"><use href="#recom-i-brocha"/></svg>
                 <h4 id="makeup-manuel-garcia" class="recom-tarjeta__nombre">Manuel García</h4>
-              </div>
-              <address class="recom-tarjeta__texto recom-tarjeta__direccion">Gral. Pedro Ampudia 51, Chapultepec Nte.</address>
-              <div class="recom-tarjeta__pie">
                 <a class="recom-tarjeta__tel" href="tel:+524435282724"><svg aria-hidden="true" focusable="false"><use href="#recom-i-telefono"/></svg><span class="solo-lectores">Teléfono: </span>443 528 2724</a>
-                <a class="boton boton--linea recom-tarjeta__boton" href="https://www.google.com/maps/search/?api=1&amp;query=Gral.%20Pedro%20Ampudia%2051%2C%20Chapultepec%20Norte%2C%20Morelia%2C%20Michoac%C3%A1n" target="_blank" rel="noopener noreferrer"><svg class="recom-tarjeta__boton-icono" aria-hidden="true" focusable="false"><use href="#recom-i-pin"/></svg>Ubicación<span class="solo-lectores"> de Manuel García (se abre en Google Maps)</span></a>
               </div>
             </article>
           </li>
 
           <li class="recom__celda">
-            <article class="papel recom-tarjeta" data-revelar="subir" aria-labelledby="makeup-studio-23">
+            <article class="papel recom-tarjeta recom-tarjeta--compacta" data-revelar="subir" aria-labelledby="makeup-studio-23">
               <div class="recom-tarjeta__cabeza">
                 <svg class="recom-tarjeta__icono" aria-hidden="true" focusable="false"><use href="#recom-i-brocha"/></svg>
                 <h4 id="makeup-studio-23" class="recom-tarjeta__nombre">Studio 23</h4>
-              </div>
-              <address class="recom-tarjeta__texto recom-tarjeta__direccion">Calle Batalla de Casa Mata 785, Chapultepec Sur</address>
-              <div class="recom-tarjeta__pie">
                 <a class="recom-tarjeta__tel" href="tel:+524434018160"><svg aria-hidden="true" focusable="false"><use href="#recom-i-telefono"/></svg><span class="solo-lectores">Teléfono: </span>443 401 8160</a>
-                <a class="boton boton--linea recom-tarjeta__boton" href="https://www.google.com/maps/search/?api=1&amp;query=Calle%20Batalla%20de%20Casa%20Mata%20785%2C%20Chapultepec%20Sur%2C%20Morelia%2C%20Michoac%C3%A1n" target="_blank" rel="noopener noreferrer"><svg class="recom-tarjeta__boton-icono" aria-hidden="true" focusable="false"><use href="#recom-i-pin"/></svg>Ubicación<span class="solo-lectores"> de Studio 23 (se abre en Google Maps)</span></a>
               </div>
             </article>
           </li>
 
           <li class="recom__celda">
-            <article class="papel recom-tarjeta" data-revelar="subir" aria-labelledby="makeup-yvonne-torres">
+            <article class="papel recom-tarjeta recom-tarjeta--compacta" data-revelar="subir" aria-labelledby="makeup-yvonne-torres">
               <div class="recom-tarjeta__cabeza">
                 <svg class="recom-tarjeta__icono" aria-hidden="true" focusable="false"><use href="#recom-i-brocha"/></svg>
                 <h4 id="makeup-yvonne-torres" class="recom-tarjeta__nombre">Yvonne Torres</h4>
-              </div>
-              <address class="recom-tarjeta__texto recom-tarjeta__direccion">C. Francisco Ortiz Rubio 52A, Nueva Chapultepec</address>
-              <div class="recom-tarjeta__pie">
                 <a class="recom-tarjeta__tel" href="tel:+524431646081"><svg aria-hidden="true" focusable="false"><use href="#recom-i-telefono"/></svg><span class="solo-lectores">Teléfono: </span>443 164 6081</a>
-                <a class="boton boton--linea recom-tarjeta__boton" href="https://www.google.com/maps/search/?api=1&amp;query=Francisco%20Ortiz%20Rubio%2052A%2C%20Nueva%20Chapultepec%2C%20Morelia%2C%20Michoac%C3%A1n" target="_blank" rel="noopener noreferrer"><svg class="recom-tarjeta__boton-icono" aria-hidden="true" focusable="false"><use href="#recom-i-pin"/></svg>Ubicación<span class="solo-lectores"> de Yvonne Torres (se abre en Google Maps)</span></a>
               </div>
             </article>
           </li>
@@ -1495,21 +1642,86 @@
         </ul>
       </div>
 
-      <!-- ═══════════ Dónde ir ═══════════ -->
-      <div id="donde-ir" class="recom__apartado" role="tabpanel" aria-labelledby="donde-ir-titulo" tabindex="-1" data-recom-apartado="donde-ir">
+    </div>
+  </section>
+  <!-- ¿Qué visitar? (v2, 21 oct 2026): tres apartados con pestañas, mismas clases
+       .recom__* que #recomendaciones (css/recomendaciones.css, basico.css) y el mismo
+       módulo js/recomendaciones.js. Sin JavaScript los tres se leen apilados. -->
+  <section id="que-visitar" class="seccion seccion--noche que-visitar" data-ambiente="noche" aria-labelledby="que-visitar-titulo" data-recom>
+
+    <!-- Iconos de línea propios de la sección (tenedor, arco, camino). El pin y el
+         teléfono se comparten con #recomendaciones (#recom-i-pin, #recom-i-telefono). -->
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+      <defs>
+        <symbol id="visitar-i-tenedor" viewBox="0 0 24 24"><path d="M6 3v5a3 3 0 0 0 6 0V3M9 3v18M17.5 3c-2 2.2-3 5-3 8 0 1.4.9 2 2 2h1v8M17.5 3v10"/></symbol>
+        <symbol id="visitar-i-arco" viewBox="0 0 24 24"><path d="M3 21h18M5 21V11a7 7 0 0 1 14 0v10M9 21v-6a3 3 0 0 1 6 0v6"/></symbol>
+        <symbol id="visitar-i-camino" viewBox="0 0 24 24"><path d="M4.5 21L10 3M19.5 21L14 3M12 6.5v2M12 11.5v2M12 16.5v2"/></symbol>
+      </defs>
+    </svg>
+
+    <div class="contenedor">
+
+      <header class="recom__encabezado centrado" data-revelar-grupo>
+        <p class="t-sobretitulo" data-revelar="subir">Para disfrutar Morelia</p>
+        <h2 id="que-visitar-titulo" class="t-titulo" data-revelar="subir">¿Qué visitar?</h2>
+        <!-- Ramita de olivo tendida que se dibuja al entrar (el motor anima el trazo) -->
+        <svg class="visitar__ramita" viewBox="0 0 240 40" data-trazo aria-hidden="true" focusable="false">
+          <path class="visitar__ramita-tallo" d="M6 21C60 13 118 27 234 17"/>
+          <g class="visitar__ramita-hojas">
+            <path d="M31 18.7c3-11 12-17 22-15-1 10-10 15-22 15z"/>
+            <path d="M57 18.5c3 11 12 17 22 15-1-10-10-15-22-15z"/>
+            <path d="M86 19.4c3-11 12-17 22-15-1 10-10 15-22 15z"/>
+            <path d="M119 20.4c3 11 12 17 22 15-1-10-10-15-22-15z"/>
+            <path d="M157 20.7c3-11 12-17 22-15-1 10-10 15-22 15z"/>
+            <path d="M201 19.3c3 11 12 17 22 15-1-10-10-15-22-15z"/>
+            <path d="M226 17c2-8 9-12 16-11-1 7-8 11-16 11z"/>
+          </g>
+          <g class="visitar__ramita-relleno">
+            <path d="M31 18.7c3-11 12-17 22-15-1 10-10 15-22 15z"/>
+            <path d="M57 18.5c3 11 12 17 22 15-1-10-10-15-22-15z"/>
+            <path d="M86 19.4c3-11 12-17 22-15-1 10-10 15-22 15z"/>
+            <path d="M119 20.4c3 11 12 17 22 15-1-10-10-15-22-15z"/>
+            <path d="M157 20.7c3-11 12-17 22-15-1 10-10 15-22 15z"/>
+            <path d="M201 19.3c3 11 12 17 22 15-1-10-10-15-22-15z"/>
+            <path d="M226 17c2-8 9-12 16-11-1 7-8 11-16 11z"/>
+            <circle cx="104" cy="16.2" r="2.6"/>
+            <circle cx="179" cy="23.6" r="2.6"/>
+          </g>
+        </svg>
+        <p class="recom__frase" data-revelar="subir">Para pasear y saborear</p>
+      </header>
+
+      <!-- Pestañas: solo existen con JavaScript (js/recomendaciones.js quita «hidden»).
+           Sin él, los tres apartados se leen apilados y completos. -->
+      <div class="recom__pestanas" role="tablist" aria-label="Apartados de qué visitar" hidden data-recom-pestanas>
+        <button type="button" class="recom__pestana" role="tab" id="pestana-donde-comer" aria-selected="true" aria-controls="donde-comer" data-recom-pestana="donde-comer">
+          <svg class="recom__pestana-icono" aria-hidden="true" focusable="false"><use href="#visitar-i-tenedor"/></svg>
+          <span>Dónde comer</span>
+        </button>
+        <button type="button" class="recom__pestana" role="tab" id="pestana-donde-ir" aria-selected="false" aria-controls="donde-ir" tabindex="-1" data-recom-pestana="donde-ir">
+          <svg class="recom__pestana-icono" aria-hidden="true" focusable="false"><use href="#visitar-i-arco"/></svg>
+          <span>Dónde ir</span>
+        </button>
+        <button type="button" class="recom__pestana" role="tab" id="pestana-patzcuaro" aria-selected="false" aria-controls="patzcuaro" tabindex="-1" data-recom-pestana="patzcuaro">
+          <svg class="recom__pestana-icono" aria-hidden="true" focusable="false"><use href="#visitar-i-camino"/></svg>
+          <span>Pátzcuaro</span>
+        </button>
+      </div>
+
+      <!-- ═══════════ Dónde comer ═══════════ -->
+      <div id="donde-comer" class="recom__apartado" role="tabpanel" aria-labelledby="donde-comer-titulo" tabindex="-1" data-recom-apartado="donde-comer">
         <header class="recom__cabecera centrado">
-          <h3 id="donde-ir-titulo" class="recom__nombre-apartado"><svg class="recom__icono-apartado" aria-hidden="true" focusable="false"><use href="#recom-i-tenedor"/></svg>Dónde ir</h3>
-          <p class="t-cuerpo recom__intro">Qué visitar durante su estancia en Morelia.</p>
+          <h3 id="donde-comer-titulo" class="recom__nombre-apartado"><svg class="recom__icono-apartado" aria-hidden="true" focusable="false"><use href="#visitar-i-tenedor"/></svg>Dónde comer</h3>
+          <p class="t-cuerpo recom__intro">Nuestros restaurantes favoritos de Morelia.</p>
         </header>
 
-        <h4 class="recom__subtitulo centrado"><svg class="recom__subtitulo-icono" aria-hidden="true" focusable="false"><use href="#recom-i-tenedor"/></svg>Restaurantes</h4>
         <ul class="recom__rejilla recom__rejilla--restaurantes" role="list" data-revelar-grupo>
 
           <li class="recom__celda">
             <article class="papel recom-tarjeta" data-revelar="subir" aria-labelledby="rest-tata">
               <div class="recom-tarjeta__cabeza">
-                <svg class="recom-tarjeta__icono" aria-hidden="true" focusable="false"><use href="#recom-i-tenedor"/></svg>
-                <h5 id="rest-tata" class="recom-tarjeta__nombre">Tata Mezcalería</h5>
+                <svg class="recom-tarjeta__icono" aria-hidden="true" focusable="false"><use href="#visitar-i-tenedor"/></svg>
+                <h4 id="rest-tata" class="recom-tarjeta__nombre">Tata Mezcalería</h4>
                 <p class="recom-tarjeta__zona">Mezcalería + cocina de autor</p>
               </div>
               <p class="recom-tarjeta__texto">Más allá de sus mezcales y cocina de autor, crearon un espacio diseñado para el crecimiento del espíritu.</p>
@@ -1522,8 +1734,8 @@
           <li class="recom__celda">
             <article class="papel recom-tarjeta" data-revelar="subir" aria-labelledby="rest-conspiracion">
               <div class="recom-tarjeta__cabeza">
-                <svg class="recom-tarjeta__icono" aria-hidden="true" focusable="false"><use href="#recom-i-tenedor"/></svg>
-                <h5 id="rest-conspiracion" class="recom-tarjeta__nombre">La Conspiración de 1809</h5>
+                <svg class="recom-tarjeta__icono" aria-hidden="true" focusable="false"><use href="#visitar-i-tenedor"/></svg>
+                <h4 id="rest-conspiracion" class="recom-tarjeta__nombre">La Conspiración de 1809</h4>
                 <p class="recom-tarjeta__zona">Gastronomía mexicana</p>
               </div>
               <p class="recom-tarjeta__texto">Un lugar histórico con la mejor gastronomía mexicana, sabores bien definidos. Toque cantinero que muchos añoran.</p>
@@ -1536,8 +1748,8 @@
           <li class="recom__celda">
             <article class="papel recom-tarjeta" data-revelar="subir" aria-labelledby="rest-san-miguelito">
               <div class="recom-tarjeta__cabeza">
-                <svg class="recom-tarjeta__icono" aria-hidden="true" focusable="false"><use href="#recom-i-tenedor"/></svg>
-                <h5 id="rest-san-miguelito" class="recom-tarjeta__nombre">San Miguelito</h5>
+                <svg class="recom-tarjeta__icono" aria-hidden="true" focusable="false"><use href="#visitar-i-tenedor"/></svg>
+                <h4 id="rest-san-miguelito" class="recom-tarjeta__nombre">San Miguelito</h4>
                 <p class="recom-tarjeta__zona">Cocina michoacana contemporánea</p>
               </div>
               <p class="recom-tarjeta__texto">Un restaurante emblemático de Morelia, reconocido por su ambiente lleno de arte popular mexicano, decoración tradicional y cocina michoacana contemporánea.</p>
@@ -1550,8 +1762,8 @@
           <li class="recom__celda">
             <article class="papel recom-tarjeta" data-revelar="subir" aria-labelledby="rest-soledad">
               <div class="recom-tarjeta__cabeza">
-                <svg class="recom-tarjeta__icono" aria-hidden="true" focusable="false"><use href="#recom-i-tenedor"/></svg>
-                <h5 id="rest-soledad" class="recom-tarjeta__nombre">Hotel de la Soledad</h5>
+                <svg class="recom-tarjeta__icono" aria-hidden="true" focusable="false"><use href="#visitar-i-tenedor"/></svg>
+                <h4 id="rest-soledad" class="recom-tarjeta__nombre">Hotel de la Soledad</h4>
                 <p class="recom-tarjeta__zona">Centro Histórico</p>
               </div>
               <p class="recom-tarjeta__texto">Ubicado dentro del histórico Hotel de la Soledad, este restaurante destaca por su atmósfera elegante y tranquila en pleno centro histórico. Su propuesta gastronómica mezcla cocina mexicana contemporánea con influencias internacionales, acompañada de un entorno sofisticado con patios coloniales y jardines interiores.</p>
@@ -1562,10 +1774,16 @@
           </li>
 
         </ul>
+      </div>
+
+      <!-- ═══════════ Dónde ir ═══════════ -->
+      <div id="donde-ir" class="recom__apartado" role="tabpanel" aria-labelledby="donde-ir-titulo" tabindex="-1" data-recom-apartado="donde-ir">
+        <header class="recom__cabecera centrado">
+          <h3 id="donde-ir-titulo" class="recom__nombre-apartado"><svg class="recom__icono-apartado" aria-hidden="true" focusable="false"><use href="#visitar-i-arco"/></svg>Dónde ir</h3>
+          <p class="t-cuerpo recom__intro">Dentro del Centro Histórico de Morelia.</p>
+        </header>
 
         <div class="recom__lugares" data-revelar-grupo>
-          <h4 class="recom__subtitulo centrado" data-revelar="subir"><svg class="recom__subtitulo-icono" aria-hidden="true" focusable="false"><use href="#recom-i-arco"/></svg>Lugares</h4>
-          <p class="recom__lugares-intro centrado" data-revelar="subir">Dentro del centro histórico de Morelia</p>
           <ul class="recom__lista-lugares" role="list" data-revelar="subir">
             <li>Callejón del Romance</li>
             <li>Museo Casa Natal de Morelos</li>
@@ -1576,16 +1794,35 @@
             <li>Jardín de las Rosas</li>
           </ul>
         </div>
+      </div>
+
+      <!-- ═══════════ Pátzcuaro ═══════════
+           Texto exacto de Vero (docs/cambios-novios-2026-10-21.md). -->
+      <div id="patzcuaro" class="recom__apartado" role="tabpanel" aria-labelledby="patzcuaro-titulo" tabindex="-1" data-recom-apartado="patzcuaro">
+        <header class="recom__cabecera centrado">
+          <h3 id="patzcuaro-titulo" class="recom__nombre-apartado"><svg class="recom__icono-apartado" aria-hidden="true" focusable="false"><use href="#visitar-i-camino"/></svg>Pátzcuaro</h3>
+          <p class="t-cuerpo recom__intro">Una escapada que vale la pena.</p>
+        </header>
 
         <article class="papel recom-tarjeta recom-tarjeta--patzcuaro" data-revelar="subir" aria-labelledby="lugar-patzcuaro">
           <div class="recom-tarjeta__cabeza">
-            <svg class="recom-tarjeta__icono" aria-hidden="true" focusable="false"><use href="#recom-i-camino"/></svg>
-            <h5 id="lugar-patzcuaro" class="recom-tarjeta__nombre">Pátzcuaro</h5>
-            <p class="recom-tarjeta__zona">Pueblo mágico · a 1 hora</p>
+            <svg class="recom-tarjeta__icono" aria-hidden="true" focusable="false"><use href="#visitar-i-camino"/></svg>
+            <h4 id="lugar-patzcuaro" class="recom-tarjeta__nombre">Pátzcuaro</h4>
+            <p class="recom-tarjeta__zona">Pueblo mágico a 1 hr de Morelia</p>
           </div>
-          <p class="recom-tarjeta__texto">Uno de los pueblos mágicos más representativos de México, famoso por su arquitectura colonial, tradiciones purépechas y ambiente cultural. Sus calles empedradas, plazas tranquilas y mercados artesanales crean una experiencia auténtica y muy fotográfica. Es especialmente reconocido por la celebración de Día de Muertos, aunque durante todo el año ofrece gastronomía típica, arte popular y acceso al lago de Pátzcuaro y sus islas. Se encuentra aproximadamente a 1 hora de Morelia.</p>
+          <p class="recom-tarjeta__texto">Uno de los pueblos mágicos más representativos de México, famoso por su arquitectura colonial, tradiciones purépechas y ambiente cultural. Sus calles empedradas, plazas tranquilas y mercados artesanales crean una experiencia auténtica y muy fotográfica. Es especialmente reconocido por la celebración de Día de Muertos, aunque durante todo el año ofrece gastronomía típica, arte popular y acceso al lago de Pátzcuaro y sus islas.</p>
+          <div class="recom-tarjeta__lista">
+            <h5 class="recom-tarjeta__lista-titulo">Qué ver en Pátzcuaro</h5>
+            <ul class="recom-tarjeta__lista-items" role="list">
+              <li>Plaza Vasco de Quiroga</li>
+              <li>Basílica de Nuestra Señora de la Salud</li>
+              <li>Arcos del Templo del Sagrario</li>
+              <li>Casa de los Once Patios</li>
+              <li>Muelle de San Pedrito y paseo a Janitzio</li>
+            </ul>
+          </div>
           <div class="recom-tarjeta__pie">
-            <!-- OJO: en la nota este enlace repite el de San Miguelito; pendiente de confirmar con los novios -->
+            <!-- Enlace genérico a Maps hasta que los novios manden el suyo -->
             <a class="boton boton--linea recom-tarjeta__boton" href="https://www.google.com/maps/search/?api=1&amp;query=P%C3%A1tzcuaro%2C%20Michoac%C3%A1n" target="_blank" rel="noopener noreferrer"><svg class="recom-tarjeta__boton-icono" aria-hidden="true" focusable="false"><use href="#recom-i-pin"/></svg>Cómo llegar<span class="solo-lectores"> a Pátzcuaro (se abre en Google Maps)</span></a>
           </div>
         </article>
@@ -1615,12 +1852,8 @@
     <div class="contenedor centrado cierre__despedida" data-revelar-grupo>
       <div class="cierre__medallon" data-parallax="0.07">
         <div class="cierre__sello" data-revelar="crecer">
-          <svg class="cierre__corona" viewBox="0 0 440 440" aria-hidden="true" focusable="false">
-            <!-- Dos ramas que se encuentran abajo y suben por los lados, bajo el monograma -->
-            <use href="#rama-olivo" transform="translate(220 258) scale(-.75 .75)"/>
-            <use href="#rama-olivo" transform="translate(220 258) scale(.75)"/>
-          </svg>
-          <svg class="monograma cierre__monograma" viewBox="0 0 440 300" aria-hidden="true" focusable="false"><use href="#monograma-av"/></svg>
+          <!-- Abraham pidió «las nutrias» en lugar del monograma: PROPUESTA mientras mandan su referencia -->
+          <picture><source srcset="assets/img/nutrias.avif" type="image/avif"><img class="cierre__nutrias" src="assets/img/nutrias.png" alt="Dos nutrias flotando tomadas de la mano" width="600" height="420" loading="lazy" decoding="async"></picture>
         </div>
       </div>
       <p class="t-script t-script--chica cierre__frase" data-letras>Los esperamos con todo nuestro cariño</p>
