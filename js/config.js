@@ -38,7 +38,7 @@ export const CONFIG = {
   // Confirmación de asistencia: se arma un mensaje de WhatsApp (o correo)
   // que el invitado envía desde su propio teléfono.
   rsvp: {
-    whatsapp: '',        // solo dígitos con lada de país, p. ej. '5214431234567'
+    whatsapp: '524433010331',   // WhatsApp de la wedding planner (+52 443 301 0331), confirmado el 22-oct-2026; solo dígitos con lada de país
     correo: '',
     fechaLimite: '',     // texto libre, p. ej. '6 de febrero de 2027'
     maximoPersonas: 6
@@ -50,7 +50,7 @@ export const CONFIG = {
     { id: 'transferencia', tienda: 'BBVA', etiqueta: 'CLABE', valor: '012180028772723592', titular: 'Abraham Alvarado López', banco: '' }   // confirmado el 21-oct-2026
   ],
 
-  planner: { nombre: 'Fany Valencia', telefono: '', correo: '', instagram: '' },
+  planner: { nombre: 'Fany Valencia', telefono: '524433010331', correo: '', instagram: '' },   // +52 443 301 0331
 
   // Valet parking: costo y horario en texto libre (p. ej. '$150 · de 16:00 a 2:00'); vacío = «Por confirmar»
   valet: { detalle: '' },
