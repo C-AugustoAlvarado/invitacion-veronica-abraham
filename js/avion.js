@@ -248,10 +248,12 @@ export function iniciarAvion(opciones = {}) {
   function armar() {
     if (destruido || estado !== 'espera' || opciones.automatico === false) return;
     if (typeof IntersectionObserver !== 'function') { reproducir(); return; }
-    // Dispara cuando el contador (o el cielo de la historia) asoma un 10 % de la ventana
+    // Dispara cuando el contador (o el cielo de la historia) ya entró en la mitad superior
+    // de la ventana: antes se perdía mientras el invitado leía el texto de la invitación
+    // (lo pidieron los novios el 22-oct-2026)
     observador = new IntersectionObserver((entradas) => {
       if (entradas.some((e) => e.isIntersecting)) reproducir();
-    }, { rootMargin: '0px 0px -10% 0px', threshold: 0 });
+    }, { rootMargin: '0px 0px -45% 0px', threshold: 0 });
     const cielo = banda ? banda.parentElement : null;
     if (cielo) observador.observe(cielo);
     saltos.forEach((s) => observador.observe(s.vuelo));

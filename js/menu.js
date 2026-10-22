@@ -303,6 +303,16 @@ export function iniciarMenu(opciones = {}) {
     if (!enlace || !nav.contains(enlace)) return;
     const id = idDe(enlace);
     const destino = id ? document.getElementById(id) : null;
+    // En el panel de celular la cabeza de un grupo solo despliega (o pliega) su submenú;
+    // navegan los apartados (lo pidieron los novios el 22-oct-2026)
+    if (!ancha()) {
+      const g = grupoDe(enlace);
+      if (g && g.cabeza === enlace) {
+        evento.preventDefault();
+        if (abierto(g)) cerrarGrupo(g, false); else abrirGrupo(g);
+        return;
+      }
+    }
     // Tableta táctil con la fila completa: sin hover, el primer toque en la cabeza de un
     // grupo cerrado lo despliega; el segundo toque navega
     if (ancha() && !consultaRaton.matches) {

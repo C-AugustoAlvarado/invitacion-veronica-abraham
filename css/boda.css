@@ -358,65 +358,10 @@
 .dato__pendiente-etiqueta::after { content: '·'; margin: 0 .55em 0 .3em; letter-spacing: 0; color: #B9B5AA; color: var(--gris-claro); }
 .dato__pendiente-valor { font-style: italic; }
 
-/* ── Boceto del look (propuesta): debajo del texto, en celular; a la derecha, en escritorio ── */
-.dato__boceto {
-  position: relative;
-  width: 100%;
-  max-width: 250px;
-  margin: 26px auto 0;
-}
-/* Filete corto que separa el boceto de las muestras cuando van apilados */
-.dato__boceto::before {
-  content: '';
-  display: block;
-  width: 44px;
-  height: 1px;
-  margin: 0 auto 24px;
-  background: #CDBF9E;
-  background: var(--dorado-tenue);
-}
-/* Reserva la proporción 6:7 del dibujo: la tarjeta no salta cuando llega la imagen */
-.dato__boceto-marco {
-  position: relative;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  width: 100%;
-  aspect-ratio: 6 / 7;
-}
-.dato__boceto img {
-  width: 100%;
-  height: auto;
-  max-height: 100%;
-  object-fit: contain;
-  object-position: 50% 100%;
-}
-.dato__boceto-pie {
-  margin-top: 10px;
-  font-style: italic;
-  color: #57554D;
-  opacity: 1;
-}
-/* Si el archivo no existe (onerror en el <img>) la figura se retira entera */
-.dato__boceto.es-vacio { display: none; }
 
 @media (min-width: 720px) {
-  /* Texto y boceto forman un solo conjunto centrado en la tarjeta */
-  .dato--vestimenta {
-    display: grid;
-    grid-template-columns: minmax(0, 24em) minmax(0, 300px);
-    justify-content: center;
-    grid-column-gap: 56px;
-    column-gap: 56px;
-    column-gap: clamp(40px, 6vw, 80px);
-    align-items: center;
-    text-align: center;
-  }
-  .dato--vestimenta .dato__texto { justify-self: center; }
-  .dato--vestimenta .dato__boceto { margin: 0; max-width: none; justify-self: center; }
-  .dato--vestimenta .dato__boceto::before { display: none; }
-  /* La tarjeta del valet, con menos que decir, va más angosta y centrada */
-  .dato--valet { max-width: 600px; margin-left: auto; margin-right: auto; }
+  /* Las dos tarjetas van angostas y centradas, una bajo otra */
+  .dato--vestimenta, .dato--valet { max-width: 600px; margin-left: auto; margin-right: auto; }
 }
 .dato__muestras {
   display: flex;
@@ -460,8 +405,6 @@
 @supports not (aspect-ratio: 1) {
   .lugar__dibujo { display: block; }
   .lugar__dibujo img { max-height: none; }
-  .dato__boceto-marco { display: block; }
-  .dato__boceto img { max-height: none; }
 }
 
 /* ═══════════ Temas de contraste (Windows) ═══════════ */

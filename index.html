@@ -254,6 +254,7 @@
               </button>
             </div>
             <ul class="menu__sub" id="menu-sub-boda" data-menu-sub>
+              <li><a class="menu__subenlace" href="#boda" data-menu-enlace>Ceremonia y recepción</a></li>
               <li><a class="menu__subenlace" href="#itinerario" data-menu-enlace>Itinerario</a></li>
               <li><a class="menu__subenlace" href="#dress-code" data-menu-enlace>Dress code</a></li>
               <li><a class="menu__subenlace" href="#valet" data-menu-enlace>Valet parking</a></li>
@@ -1075,9 +1076,7 @@
        · #dress-code y #valet son los destinos de los submenús «Dress code» y «Valet parking» de «La boda».
        · El código de vestimenta es «Formal» (ya no «Etiqueta rigurosa», que se leía como smoking).
        · El icono es un gancho de ropa de línea: su pregunta (el garfio) y la barra.
-       · El boceto del look (assets/svg/look-formal.svg, 600×700, lo dibuja otro módulo) es una PROPUESTA
-         de Augusto mientras los novios mandan su referencia: si cambia el dibujo, solo cambia el archivo.
-         Si el archivo no llega, onerror retira la figura entera (sin icono de imagen rota ni hueco vacío).
+       · El boceto del look que se propuso el 21-oct se quitó el 22-oct a petición de los novios.
        · Costo y horario del valet: Vero los mandará; mientras, «Por confirmar». main.js los escribe desde
          CONFIG.valet.detalle cuando exista (data-config). -->
   <section id="vestimenta" class="seccion seccion--noche vestimenta" data-ambiente="noche" aria-labelledby="vestimenta-titulo">
@@ -1105,14 +1104,6 @@
             </p>
           </div>
 
-          <!-- PROPUESTA (pendiente de la referencia de los novios): boceto de diseño de moda del look.
-               El hueco se reserva con la proporción 6:7 del dibujo para que la tarjeta no salte al cargar. -->
-          <figure class="dato__boceto">
-            <span class="dato__boceto-marco">
-              <picture><source srcset="assets/img/look-formal.avif" type="image/avif"><img loading="lazy" decoding="async" src="assets/img/look-formal.png" alt="Boceto del look formal: traje oscuro y vestido largo" width="600" height="700" onerror="this.closest('.dato__boceto').classList.add('es-vacio')"></picture>
-            </span>
-            <figcaption class="t-nota dato__boceto-pie">Una idea del look</figcaption>
-          </figure>
         </article>
 
         <!-- ── Valet parking ── -->

@@ -137,7 +137,6 @@ html.basico { scroll-behavior: auto; }
 .basico .vestimenta__datos > * + * { margin-top: 18px; }
 .basico .dato__principal { font-size: 28px; }
 .basico .dato__muestras { display: block; text-align: center; }
-.basico .dato__boceto { max-width: 240px; margin: 22px auto 0; }
 .basico .muestra { display: inline-block; margin: 0 6px; }
 
 /* ── 4 · Atardecer: una estampa quieta ── */
