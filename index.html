@@ -147,8 +147,13 @@
     // Con el sobre puesto, la invitación siempre empieza en la portada; sin
     // sobre (ya se abrió en esta pestaña) el navegador regresa a donde estaba.
     // El valor se conserva en el historial: hay que escribir los dos casos.
+    // Excepción: una carga nueva con ancla (?abierta#rsvp) no tiene nada que
+    // restaurar, y en Safari de iPhone la restauración «auto» devolvía la página
+    // a la portada un instante después de haberse colocado en el ancla.
     if ('scrollRestoration' in history) {
-      history.scrollRestoration = window.__omitir ? 'auto' : 'manual';
+      var navegacion = (window.performance && performance.getEntriesByType) ? performance.getEntriesByType('navigation')[0] : null;
+      var nuevaConAncla = location.hash.length > 1 && (!navegacion || navegacion.type === 'navigate');
+      history.scrollRestoration = window.__omitir && !nuevaConAncla ? 'auto' : 'manual';
     }
   })();
 </script>

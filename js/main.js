@@ -261,6 +261,15 @@ async function iniciar() {
     }
   }
 
+  // El scroll suave de los enlaces internos (html.scroll-suave en css/secciones.css)
+  // se enciende solo cuando la página ya quedó colocada: en Safari de iPhone el salto
+  // al ancla de la carga se anima con scroll-behavior: smooth y, si en medio se
+  // reacomoda el destino, la animación se suma al salto (la página acababa unos
+  // 8 000 px más abajo). Los módulos piden su propio 'smooth' cuando lo quieren.
+  const suavizar = () => setTimeout(() => document.documentElement.classList.add('scroll-suave'), 250);
+  if (document.readyState === 'complete') suavizar();
+  else window.addEventListener('load', suavizar, { once: true });
+
   // Los módulos pudieron agregar contenido: el motor vuelve a buscar y a medir.
   motor.actualizar();
 }

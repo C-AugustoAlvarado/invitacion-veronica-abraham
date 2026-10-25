@@ -5,7 +5,12 @@
    el ambiente continuo de base.css.
    ═══════════════════════════════════════════════════════════════ */
 
-html { scroll-behavior: smooth; }
+/* Scroll suave para los enlaces internos, pero solo cuando la página ya está
+   colocada (js/main.js pone .scroll-suave al terminar de cargar). Con smooth
+   desde el inicio, Safari de iPhone ANIMA el salto al ancla de la URL y, si en
+   medio se reacomoda el destino, la animación se suma al salto: la página
+   terminaba unos 8 000 px más abajo de la sección pedida. */
+html.scroll-suave { scroll-behavior: smooth; }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 
 /* Los decorados se salen de la pantalla sin provocar scroll lateral */
