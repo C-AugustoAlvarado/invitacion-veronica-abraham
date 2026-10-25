@@ -2,7 +2,8 @@
    Nuestra historia (v2) — css/historia.css
    Fragmento: src/historia.html · Demo: demo/historia.html
    Composición, de arriba abajo: un cielo donde descienden los dos
-   paracaídas → encabezado → relato y tres polaroids → la acuarela
+   paracaídas → encabezado → relato y ocho polaroids (dibujo a lápiz que
+   cruza a la foto al tocarla: js/trazo.js) → la acuarela
    de Chantilly enmarcada (la pedida de mano cierra la sección).
    Solo marfil, olivo y tinta; la única ilustración con color es la
    acuarela. Adorno único: ramitas de olivo en línea.
@@ -108,23 +109,29 @@
   color: var(--olivo);
 }
 
+/* ── Las ocho polaroids ──
+   Dos columnas en celular (~160–175 px cada una), cuatro desde 760 px (dos filas).
+   Cada una gira apenas (--giro) y sube o baja unos píxeles (--dy), como fotos
+   sueltas sobre la mesa. El marcado es estático (src/historia.html): la ventana
+   es un <button> con la foto real debajo y el dibujo a lápiz precalculado encima;
+   el cruce entre ambos lo lleva js/trazo.js + css/trazo.css. */
 .historia__fotos {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   justify-content: center;
-  align-items: flex-start;
-  gap: 12px;
-  gap: clamp(10px, 3vw, 22px);
+  align-items: start;
+  gap: 18px 14px;
+  gap: clamp(16px, 4.5vw, 28px) clamp(12px, 3.6vw, 22px);
   list-style: none;
   margin: 40px auto 0;
   margin: clamp(36px, 6vh, 60px) auto 0;
-  padding: 10px 0 14px;
-  max-width: 560px;
+  padding: 10px 4px 14px;
+  max-width: 372px;
 }
-.polaroid {
-  flex: 1 1 0;
-  min-width: 0;
-  max-width: 160px;
-}
+.polaroid { min-width: 0; }
+/* Modo básico (css/basico.css las pone inline-block, sin rejilla): un ancho fijo
+   para que las ocho midan lo mismo */
+.basico .polaroid { width: 42%; max-width: 160px; }
 /* El giro va en la cara, no en el <li>: el revelado de base.css
    escribe transform en el elemento con data-revelar */
 .polaroid__cara {
@@ -144,56 +151,54 @@
   transform: rotate(var(--giro, 0deg)) translateY(var(--dy, 0px));
   transition: transform .7s var(--suave);
 }
+/* La ventana es un botón (toda la foto es la zona táctil): se le quita el traje de botón */
 .polaroid__ventana {
   position: relative;
   display: block;
+  width: 100%;
   aspect-ratio: 4 / 5;
+  padding: 0;
+  margin: 0;
   overflow: hidden;
+  font: inherit;
+  color: inherit;
+  text-align: center;
   background: linear-gradient(160deg, #EFEBE1 0%, #E3DFD1 100%);
+  border: 0;
   border-radius: 1px;
   box-shadow: inset 0 0 0 1px rgba(43, 43, 40, .07), inset 0 2px 6px -3px rgba(43, 43, 40, .28);
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none;
+  user-select: none;
 }
-.polaroid__foto {
+.polaroid__ventana:disabled { cursor: default; }
+/* La foto real y el dibujo ocupan la misma caja; el dibujo va encima
+   (su fundido vive en css/trazo.css) */
+.polaroid__foto-real,
+.polaroid__trazo {
   position: absolute;
   top: 0; right: 0; bottom: 0; left: 0;
+  inset: 0;
+  display: block;
+  margin: 0;
+}
+.polaroid__trazo { z-index: 1; }
+.polaroid__foto-real img,
+.polaroid__trazo img,
+.polaroid__foto {
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  opacity: 0;
-  transition: opacity 1.1s var(--suave);
-}
-/* base.css pone img { display: block }, que le ganaría al atributo hidden */
-.polaroid__foto[hidden] { display: none; }
-.polaroid.con-foto .polaroid__foto { opacity: 1; }
-.polaroid.con-foto .polaroid__pronto { display: none; }
-.polaroid__pronto {
-  position: absolute;
-  top: 0; right: 0; bottom: 0; left: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 2px;
-  padding: 6px;
-  font-family: var(--f-serif);
-  font-style: italic;
-  font-weight: 500;
-  font-size: 13px;
-  font-size: clamp(12px, 3.2vw, 15px);
-  letter-spacing: .05em;
-  line-height: 1.2;
-  text-align: center;
-  color: var(--olivo-hondo);
-}
-.polaroid__pronto svg {
-  width: 52%;
-  height: auto;
-  color: var(--olivo);
-  opacity: .8;
+  object-position: 50% 40%;
+  border-radius: inherit;
 }
 .polaroid__pie {
   display: block;
-  min-height: 2.5em;
   padding: 7px 2px 9px;
   font-family: var(--f-mano);
   font-weight: 400;
@@ -204,10 +209,17 @@
   color: var(--tinta);
   text-wrap: balance;
 }
-/* Sin foto todavía no hay pie que leer: se reserva el sitio, nada más */
-.polaroid:not(.con-foto) .polaroid__pie { visibility: hidden; }
 @media (hover: hover) {
   .polaroid__cara:hover { transform: rotate(0deg) translateY(calc(var(--dy, 0px) - 6px)); }
+}
+/* Desde 760 px: cuatro por fila */
+@media (min-width: 760px) {
+  .historia__fotos {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 26px 20px;
+    max-width: 764px;
+    padding: 14px 6px 18px;
+  }
 }
 
 /* ═══════════ 4 · La acuarela de Chantilly, enmarcada ═══════════ */
@@ -303,23 +315,11 @@
   .historia__vuelo--a { top: -40px; right: 2%; width: 170px; }
   .historia__vuelo--b { top: 70px; left: 3%; width: 134px; }
 
-  .historia__cuerpo {
-    display: grid;
-    grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr);
-    gap: 56px;
-    align-items: center;
-    max-width: 1000px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-  .historia__relato { max-width: none; }
-  .historia__fotos {
-    margin-top: 0;
-    max-width: none;
-    gap: 18px;
-    padding: 16px 0;
-  }
-  .polaroid { max-width: 170px; }
+  /* El relato centrado y, debajo, las ocho polaroids en cuatro columnas
+     (hasta el 24-oct-2026 eran tres, al lado del relato) */
+  .historia__cuerpo { max-width: 1000px; margin-left: auto; margin-right: auto; }
+  .historia__relato { max-width: 36em; }
+  .historia__fotos { margin-top: 44px; gap: 30px 24px; max-width: 800px; }
   .historia__hojas { top: -22px; right: -26px; }
 }
 @media (min-width: 1200px) {
@@ -340,7 +340,7 @@
 /* Sin «gap» en flexbox (ver base.css): se separa con márgenes */
 @supports not (inset: 0) {
   .historia__fotos { gap: 0; }
-  .polaroid { margin: 0 6px; }
+  .polaroid { margin: 8px 6px; }
   .historia__pie { gap: 0; }
   .historia__pie-hoja { margin: 0 12px; }
 }

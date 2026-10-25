@@ -1,19 +1,125 @@
 /* ═══════════════════════════════════════════════════════════════
    Fotos con trazo — css/trazo.css
    Módulo: js/trazo.js · Demo: demo/trazo.html
-   Encima de cada foto el módulo coloca un <canvas class="trazo__dibujo">
-   (la versión a lápiz) y un <button class="trazo__boton"> que cubre la
-   foto entera. El anfitrión (el padre de la foto) recibe:
-     .trazo-anfitrion               siempre
-     .trazo-anfitrion--posicionar   si estaba en position: static
-     .trazo--preparando             mientras se dibuja (la foto espera oculta)
-     .trazo--listo                  ya hay dibujo
-     .trazo--foto                   el invitado pidió ver la foto real
-   Solo se animan opacity y transform. Tokens en base.css.
-   Sin JavaScript nada de esto existe: se ve la foto.
+   Dos modos con el mismo cruce (~700 ms, solo opacity y transform):
+
+   1 · PRECALCULADO (la página, src/historia.html). El botón
+       <button class="trazo__boton"> ya trae la foto real
+       (.polaroid__foto-real) y encima el dibujo a lápiz servido como
+       imagen (.polaroid__trazo). js/trazo.js solo pone en el botón:
+         .trazo--precalculado .trazo--listo   al montar
+         .trazo--foto        el invitado pidió ver la foto real
+         .trazo--cruzando    mientras dura el fundido (will-change)
+         .trazo--esperando   un toque espera a que llegue la foto real
+         .trazo--sin-dibujo  el dibujo no cargó: queda la foto
+         .trazo--basico      modo básico: solo la foto real
+       La foto real viene sin src (data-src): el módulo la pide al acercarse.
+       Sin JavaScript se ve el dibujo (lleva src real y lazy nativo).
+
+   2 · CANVAS (demo y <img data-trazo-foto>). Encima de la foto el
+       módulo coloca un <canvas class="trazo__dibujo"> y un botón
+       .trazo__boton--capa que cubre la foto. El anfitrión (el padre
+       de la foto) recibe:
+         .trazo-anfitrion               siempre
+         .trazo-anfitrion--posicionar   si estaba en position: static
+         .trazo--preparando             mientras se dibuja (la foto espera oculta)
+         .trazo--listo · .trazo--foto · .trazo--cruzando   como arriba
+   Tokens en base.css. La maquetación de las polaroids, en historia.css.
    ═══════════════════════════════════════════════════════════════ */
 
 .trazo-anfitrion--posicionar { position: relative; }
+
+/* ═══════════ 1 · Modo precalculado ═══════════ */
+
+/* El dibujo, encima de la foto. Al revelar se desvanece y crece apenas (1.2 %). */
+.polaroid__trazo,
+.trazo__precalculado {
+  opacity: 1;
+  transform: translateZ(0);
+  transition: opacity .7s var(--suave), transform .7s var(--suave);
+}
+.trazo--foto .polaroid__trazo,
+.trazo--foto .trazo__precalculado {
+  opacity: 0;
+  transform: translateZ(0) scale(1.012);
+}
+/* will-change solo mientras dura el cruce (el módulo quita la clase a los ~800 ms) */
+.trazo--cruzando .polaroid__trazo,
+.trazo--cruzando .trazo__precalculado { will-change: opacity, transform; }
+/* Al tocar, el dibujo se hunde apenas: respuesta inmediata sin esperar el cruce */
+.trazo--precalculado:active:not(.trazo--foto) .polaroid__trazo { transform: translateZ(0) scale(.992); transition-duration: .12s; }
+
+/* El dibujo no cargó (archivo que falta, red): queda la foto y el botón no promete nada */
+.trazo--sin-dibujo .polaroid__trazo,
+.trazo--sin-dibujo .trazo__precalculado,
+.trazo--sin-dibujo .trazo__pista { display: none; }
+
+/* La foto real llega sin src (data-src) hasta que el módulo la pide: mientras,
+   que no asome su texto alternativo bajo el dibujo */
+.polaroid__foto-real img:not([src]) { visibility: hidden; }
+/* Mientras un toque espera a que llegue la foto, el dibujo se queda hundido */
+.trazo--esperando .polaroid__trazo { transform: translateZ(0) scale(.992); transition-duration: .12s; }
+/* La foto no cargó: el dibujo se queda y la pista lo dice */
+.trazo--sin-foto .trazo__pista { opacity: 1; }
+/* El dibujo también llega diferido (data-src): sin src no asoma nada */
+.polaroid__trazo img:not([src]) { visibility: hidden; }
+/* Sin JavaScript el dibujo lo pone <noscript> con la misma caja */
+.polaroid__trazo-sinjs { position: absolute; top: 0; right: 0; bottom: 0; left: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* Sin JavaScript (html sin .js ni .basico): se ve el dibujo, sin pista; la foto
+   real (sin src) no se muestra. Modo básico: el módulo pide la foto y marca el
+   botón .trazo--basico → se ve la foto, sin dibujo ni pista. */
+html:not(.js) .polaroid .trazo__pista,
+html:not(.js):not(.basico) .polaroid__foto-real,
+.trazo--basico .polaroid__trazo { display: none; }
+
+/* ── El botón precalculado: es la ventana de la polaroid (historia.css le quita el traje de botón) ── */
+.trazo__boton:focus-visible {
+  outline: 2px solid var(--olivo);
+  outline-offset: 3px;
+}
+
+/* ── La pista: «Toca para ver la foto» ──
+   Discreta siempre: 11–12 px en marfil sobre el borde inferior de la ventana,
+   con una sombra suave para leerse sobre el papel del dibujo. Al mostrar la
+   foto se retira y vuelve al pasar el cursor o al enfocar con el teclado. Es solo
+   visual: el nombre del botón lo da su aria-label y el estado, aria-pressed. */
+.trazo__pista {
+  position: absolute;
+  right: 0; bottom: 0; left: 0;
+  z-index: 2;
+  display: block;
+  padding: 18px 6px 6px;
+  font-family: var(--f-serif);
+  font-style: italic;
+  font-weight: 600;
+  font-size: 11px;
+  font-size: clamp(11px, 2.8vw, 12px);
+  line-height: 1.2;
+  letter-spacing: .04em;
+  text-align: center;
+  white-space: nowrap;
+  color: var(--marfil-luz);
+  text-shadow: 0 1px 2px rgba(43, 43, 40, .55);
+  background: linear-gradient(180deg, rgba(43, 43, 40, 0) 0%, rgba(43, 43, 40, .34) 55%, rgba(43, 43, 40, .5) 100%);
+  opacity: .92;
+  transform: translateZ(0);
+  transition: opacity .5s var(--suave), transform .5s var(--suave);
+  pointer-events: none;
+}
+.trazo--foto .trazo__pista {
+  opacity: 0;
+  transform: translateZ(0) translateY(6px);
+}
+@media (hover: hover) {
+  .trazo--foto .trazo__boton:hover .trazo__pista,
+  .trazo--foto.trazo__boton:hover .trazo__pista { opacity: 1; transform: translateZ(0); }
+}
+.trazo--foto .trazo__boton:focus-visible .trazo__pista,
+.trazo--foto.trazo__boton:focus-visible .trazo__pista { opacity: 1; transform: translateZ(0); }
+@media (min-width: 900px) { .trazo__pista { font-size: 12px; } }
+
+/* ═══════════ 2 · Modo canvas ═══════════ */
 
 /* La foto espera escondida unos instantes mientras nace su dibujo; si el
    dibujo no llega (CORS, error, más de 2.5 s) el módulo quita la clase. */
@@ -29,22 +135,19 @@
   opacity: 0;
   transform: translateZ(0);
   transition: opacity .7s var(--suave), transform .7s var(--suave);
-  will-change: opacity;
 }
 .trazo--listo .trazo__dibujo { opacity: 1; }
+.trazo--cruzando .trazo__dibujo { will-change: opacity, transform; }
 /* El cruce: el dibujo se desvanece y crece apenas (1.2 %) mientras aparece la foto */
 .trazo--listo.trazo--foto .trazo__dibujo {
   opacity: 0;
   transform: translateZ(0) scale(1.012);
-  will-change: auto;
 }
 
-/* ── El botón: cubre la foto; es la zona táctil completa ── */
-.trazo__boton {
+/* ── El botón que cubre la foto: es la zona táctil completa ── */
+.trazo__boton--capa {
   position: absolute;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
+  display: block;
   padding: 0;
   margin: 0;
   font: inherit;
@@ -59,76 +162,44 @@
   -webkit-user-select: none;
   user-select: none;
 }
-.trazo__boton[hidden] { display: none; }
-.trazo__boton:focus-visible {
+.trazo__boton--capa[hidden] { display: none; }
+.trazo__boton--capa:focus-visible {
   outline: 2px solid var(--olivo);
   outline-offset: -4px;
   border-radius: 2px;
 }
-/* Al tocar, el dibujo se hunde apenas: respuesta inmediata sin esperar el cruce */
-.trazo-anfitrion:has(.trazo__boton:active) .trazo__dibujo { transform: translateZ(0) scale(.992); }
-
-/* ── La pista: «Toca para ver la foto» ──
-   Pie pequeño al borde inferior de la imagen, sobre una franja de marfil
-   que se desvanece hacia arriba. Al mostrar la foto se retira (sigue en el
-   árbol de accesibilidad: es el nombre del botón) y vuelve al pasar el
-   cursor o al enfocar con el teclado. */
-.trazo__pista {
-  display: block;
-  width: 100%;
-  padding: 22px 8px 7px;
-  font-family: var(--f-serif);
-  font-style: italic;
-  font-weight: 600;
-  font-size: 12.5px;
-  font-size: clamp(12px, 3vw, 14px);
-  line-height: 1.2;
-  letter-spacing: .06em;
-  text-align: center;
-  color: var(--tinta);
-  background: linear-gradient(180deg, rgba(246, 242, 234, 0) 0%, rgba(246, 242, 234, .82) 45%, rgba(246, 242, 234, .96) 100%);
-  transform: translateZ(0);
-  transition: opacity .5s var(--suave), transform .5s var(--suave);
-}
-.trazo--foto .trazo__pista {
-  opacity: 0;
-  transform: translateZ(0) translateY(6px);
-}
-@media (hover: hover) {
-  .trazo--foto .trazo__boton:hover .trazo__pista { opacity: 1; transform: translateZ(0); }
-}
-.trazo--foto .trazo__boton:focus-visible .trazo__pista { opacity: 1; transform: translateZ(0); }
-
-/* En las polaroids (110–170 px de ancho) la pista va en una sola línea y pequeña */
-.polaroid .trazo__pista {
-  padding: 16px 4px 5px;
-  font-size: 11px;
-  font-size: clamp(11px, 2.8vw, 12.5px);
-  letter-spacing: .03em;
-  white-space: nowrap;
-}
-@media (min-width: 900px) { .polaroid .trazo__pista { font-size: 12.5px; } }
+.trazo-anfitrion:has(.trazo__boton--capa:active) .trazo__dibujo { transform: translateZ(0) scale(.992); }
 
 /* Fotos grandes (fuera de las polaroids): la pista puede respirar */
-img[data-trazo-foto] ~ .trazo__boton .trazo__pista {
-  padding: 30px 12px 11px;
-  font-size: 14px;
-  font-size: clamp(13px, 1.6vw, 15px);
+.trazo__boton--capa .trazo__pista {
+  padding: 26px 12px 10px;
+  font-size: 13px;
+  font-size: clamp(12px, 1.6vw, 14px);
   letter-spacing: .08em;
+  white-space: normal;
+}
+.polaroid .trazo__boton--capa .trazo__pista {
+  padding: 18px 6px 6px;
+  font-size: 11px;
+  font-size: clamp(11px, 2.8vw, 12px);
+  letter-spacing: .04em;
+  white-space: nowrap;
 }
 
-/* ── Movimiento reducido: cambio sin fundido ── */
+/* ═══════════ Movimiento reducido: cambio sin fundido ═══════════ */
 @media (prefers-reduced-motion: reduce) {
   .trazo__dibujo,
+  .polaroid__trazo,
+  .trazo__precalculado,
   .trazo__pista { transition: none; transform: none !important; }
 }
 
-/* ── Impresión y alto contraste: la foto real, con borde visible ── */
+/* ═══════════ Impresión y alto contraste: la foto real ═══════════ */
 @media print {
-  .trazo__dibujo, .trazo__boton { display: none !important; }
+  .trazo__dibujo, .trazo__boton--capa, .polaroid__trazo, .trazo__precalculado, .trazo__pista { display: none !important; }
   .trazo--preparando > img { visibility: visible; }
 }
 @media (forced-colors: active) {
-  .trazo__boton:focus-visible { outline: 2px solid Highlight; }
-  .trazo__pista { background: Canvas; color: CanvasText; }
+  .trazo__boton:focus-visible, .trazo__boton--capa:focus-visible { outline: 2px solid Highlight; }
+  .trazo__pista { background: Canvas; color: CanvasText; text-shadow: none; }
 }

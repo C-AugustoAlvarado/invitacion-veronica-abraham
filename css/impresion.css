@@ -72,7 +72,6 @@
     margin-right: auto !important;
   }
   .lugar__arte { width: 240px !important; margin: 0 auto !important; }
-  .regalos__celda--centro { margin-top: 0 !important; margin-bottom: 0 !important; }
 
   .papel, .dato, .prog-hito, .regalo, .planner, .cierre__medallon, .cierre__despedida {
     page-break-inside: avoid;

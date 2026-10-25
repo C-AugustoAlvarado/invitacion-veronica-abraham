@@ -46,7 +46,6 @@ export const CONFIG = {
 
   regalos: [
     { id: 'palacio', tienda: 'El Palacio de Hierro', etiqueta: 'Número de evento', valor: '406823', enlace: '' },
-    { id: 'liverpool', tienda: 'Liverpool', etiqueta: 'Número de evento', valor: '51981696', enlace: '' },
     { id: 'transferencia', tienda: 'BBVA', etiqueta: 'CLABE', valor: '012180028772723592', titular: 'Abraham Alvarado López', banco: '' }   // confirmado el 21-oct-2026
   ],
 
@@ -58,11 +57,18 @@ export const CONFIG = {
   // Fotos de los novios: poner los archivos en assets/fotos/ y llenar `src`.
   // Mientras `src` esté vacío, la galería muestra un marco ilustrado.
   fotos: [
-    { src: '', alt: '', pie: 'Donde todo empezó' },
-    { src: '', alt: '', pie: 'En caída libre' },
-    { src: '', alt: '', pie: 'Chantilly, 16 de junio de 2025' },
-    { src: '', alt: '', pie: 'Siempre juntos' },
-    { src: '', alt: '', pie: 'Próxima parada: Morelia' }
+    // Fotos que mandaron los novios el 22-oct-2026 (recortadas a 4:5). Cada una tiene su AVIF
+    // (640 px), su JPEG de respaldo (448 px) y, cuando exista, su versión «trazo» (dibujo a lápiz
+    // precalculado: <nombre>-trazo.avif/.jpg) que se muestra primero; al tocar aparece la foto.
+    // Los pies son PROPUESTA: solo lugares evidentes, sin fechas inventadas.
+    { src: 'assets/fotos/01-juntos.jpg', avif: 'assets/fotos/01-juntos.avif', alt: 'Verónica y Abraham sonriendo, muy juntos', pie: 'Juntos' },
+    { src: 'assets/fotos/02-morelia.jpg', avif: 'assets/fotos/02-morelia.avif', alt: 'Caminando abrazados por una calzada arbolada', pie: 'De paseo' },
+    { src: 'assets/fotos/03-espana.jpg', avif: 'assets/fotos/03-espana.avif', alt: 'Sentados en una banca de azulejos en España', pie: 'España' },
+    { src: 'assets/fotos/04-paris.jpg', avif: 'assets/fotos/04-paris.avif', alt: 'Frente al Louvre, en París', pie: 'París' },
+    { src: 'assets/fotos/05-arco.jpg', avif: 'assets/fotos/05-arco.avif', alt: 'Un beso frente al Arco del Triunfo', pie: 'Arco del Triunfo' },
+    { src: 'assets/fotos/06-eiffel.jpg', avif: 'assets/fotos/06-eiffel.avif', alt: 'Bajo la Torre Eiffel', pie: 'Torre Eiffel' },
+    { src: 'assets/fotos/07-risas.jpg', avif: 'assets/fotos/07-risas.avif', alt: 'Riendo juntos en una cena', pie: 'Entre risas' },
+    { src: 'assets/fotos/08-navidad.jpg', avif: 'assets/fotos/08-navidad.avif', alt: 'Junto al árbol de Navidad, ella muestra el anillo', pie: 'Navidad' }
   ],
 
   // Música opcional: si hay archivo, aparece el botón de sonido.

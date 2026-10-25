@@ -67,13 +67,11 @@
 
 @media (min-width: 900px) {
   .regalos__lista {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    max-width: 1080px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));   /* dos mesas desde el 24-oct (sin Liverpool) */
+    max-width: 760px;
     align-items: stretch;
   }
   /* La del centro baja un poco: se leen como tres papeles sobre una mesa */
-  .regalos { --regalos-caida: 34px; }
-  .regalos__celda--centro { margin-top: 34px; margin-bottom: -34px; }
   /* Los tres nombres ocupan el mismo alto aunque uno pase a dos renglones */
   .regalo__tienda {
     min-height: 2.3em;
@@ -103,7 +101,6 @@
   opacity: .42;
   transform: translate(2px, 3px);
 }
-.regalo[data-regalo="liverpool"] .regalo__lavado { fill: var(--petalo); opacity: .5; }
 .regalo[data-regalo="transferencia"] .regalo__lavado { fill: var(--oliva-claro); opacity: .42; }
 .regalo__tinta {
   fill: none;
@@ -257,7 +254,7 @@
 }
 
 .regalos__nota {
-  margin-top: calc(clamp(40px, 7vh, 84px) + var(--regalos-caida, 0px));
+  margin-top: clamp(40px, 7vh, 84px);
   font-style: italic;
   font-size: clamp(18px, 2.2vw, 21px);
   color: var(--petalo);

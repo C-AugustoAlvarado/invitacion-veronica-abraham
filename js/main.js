@@ -27,18 +27,8 @@ function aplicarDatos() {
     if (texto) el.textContent = texto;
   });
 
-  // Fotos de «Nuestra historia»: cada polaroid lleva data-foto-indice con el índice
-  // en CONFIG.fotos; sin foto (o si no carga) se queda el «Muy pronto».
-  document.querySelectorAll('img[data-foto-indice]').forEach((img) => {
-    const foto = CONFIG.fotos?.[Number(img.dataset.fotoIndice)];
-    if (!foto || typeof foto.src !== 'string' || !foto.src.trim()) return;
-    const polaroid = img.closest('.polaroid');
-    img.addEventListener('error', () => { img.hidden = true; polaroid?.classList.remove('con-foto'); }, { once: true });
-    img.alt = foto.alt || foto.pie || 'Verónica y Abraham';
-    img.src = foto.src;
-    img.hidden = false;
-    polaroid?.classList.add('con-foto');
-  });
+  // Las fotos de «Nuestra historia» van en el HTML (src/historia.html) con su dibujo
+  // precalculado; js/trazo.js se encarga del cruce dibujo → foto.
 
   // Contacto de la wedding planner
   const medios = document.querySelector('[data-planner]');
@@ -102,7 +92,8 @@ async function iniciarBasico() {
   const [, , rsvp] = await Promise.all([
     cargar('./calendario.js', 'iniciarCalendario'),
     cargar('./copiar.js', 'iniciarCopiar'),
-    cargar('./rsvp.js', 'iniciarRsvp')
+    cargar('./rsvp.js', 'iniciarRsvp'),
+    cargar('./trazo.js', 'iniciarTrazo')   // en básico solo destapa las fotos reales (sin canvas ni cruces)
   ]);
   if (rsvp) document.documentElement.classList.add('funcional');
 }
