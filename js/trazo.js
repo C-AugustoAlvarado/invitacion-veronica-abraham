@@ -4,10 +4,11 @@
 //
 // Dos modos, con el mismo botón accesible (aria-pressed) y el mismo cruce de ~700 ms:
 //
-// 1 · PRECALCULADO (el de la página). El dibujo a lápiz se calculó una sola vez con
-//     scripts/trazos.mjs (que usa dibujarEn() de aquí) y se sirve como imagen
-//     (<nombre>-trazo.avif/.jpg). En el teléfono no hay canvas ni cálculo: el módulo
-//     solo gestiona el toque/teclado, la pista y el caso en que el dibujo no cargue.
+// 1 · PRECALCULADO (el de la página). La «pintura» que tapa la foto es una imagen ya hecha:
+//     desde el 24-oct-2026 la acuarela que mandaron los novios (<nombre>-acuarela.avif/.jpg)
+//     y, donde falta, el dibujo a lápiz calculado una sola vez con scripts/trazos.mjs (que
+//     usa dibujarEn() de aquí; <nombre>-trazo). En el teléfono no hay canvas ni cálculo: el
+//     módulo solo gestiona el toque/teclado, la pista y el caso en que la pintura no cargue.
 //     Marcas en el HTML (src/historia.html):
 //       <button class="trazo__boton" aria-pressed="false">
 //         <picture class="polaroid__foto-real"><img …foto…></picture>
@@ -51,7 +52,9 @@ export const INTENSIDADES = {
   fuerte: { tau: 0.985, epsilon: 0.001,  phi: 36, bordeDesde: 0.045, bordeHasta: 0.24, pesoBorde: 1.00, pesoXdog: 1.00, lavado: 0.36, sombreado: 0.40, sombraDesde: 0.42, grano: 11, ondulacion: 1.9, radioFino: 1.0, radioAncho: 3.0, opacidad: 0.9 }
 };
 
-const PISTA = { foto: 'Toca para ver la foto', dibujo: 'Toca para ver el dibujo', cargando: 'Cargando la foto…', sinFoto: 'La foto no cargó' };
+// «dibujo» se ve sobre la foto (al pasar el cursor o enfocar): neutra, porque la pintura puede
+// ser la acuarela de los novios o el dibujo a lápiz.
+const PISTA = { foto: 'Toca para ver la foto', dibujo: 'Toca para volver', cargando: 'Cargando la foto…', sinFoto: 'La foto no cargó' };
 
 const limitar = (v, a, b) => (v < a ? a : v > b ? b : v);
 const suavizar = (a, b, x) => {
