@@ -72,6 +72,13 @@
     margin-right: auto !important;
   }
   .lugar__arte { width: 240px !important; margin: 0 auto !important; }
+  /* El carrusel se imprime completo, en filas */
+  .historia__carrusel { padding: 0 !important; }
+  .carrusel__pista { display: flex !important; flex-wrap: wrap !important; justify-content: center !important; overflow: visible !important; }
+  .carrusel__pista::before, .carrusel__pista::after, .carrusel__flecha { display: none !important; }
+  .polaroid { flex: 0 0 42% !important; margin: 8px !important; }
+  /* Chromium rasteriza la sombra difuminada como un rectángulo gris: solo el aro del papel */
+  .polaroid__cara { box-shadow: 0 0 0 1px rgba(78, 83, 48, .2) !important; transform: none !important; }
 
   .papel, .dato, .prog-hito, .regalo, .planner, .cierre__medallon, .cierre__despedida {
     page-break-inside: avoid;

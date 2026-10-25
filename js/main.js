@@ -27,8 +27,8 @@ function aplicarDatos() {
     if (texto) el.textContent = texto;
   });
 
-  // Las fotos de «Nuestra historia» van en el HTML (src/historia.html) con su dibujo
-  // precalculado; js/trazo.js se encarga del cruce dibujo → foto.
+  // Las acuarelas de «Nuestra historia» van en el HTML (src/historia.html), en un carrusel;
+  // js/carrusel.js pide las imágenes al acercarse y maneja las flechas.
 
   // Contacto de la wedding planner
   const medios = document.querySelector('[data-planner]');
@@ -93,7 +93,7 @@ async function iniciarBasico() {
     cargar('./calendario.js', 'iniciarCalendario'),
     cargar('./copiar.js', 'iniciarCopiar'),
     cargar('./rsvp.js', 'iniciarRsvp'),
-    cargar('./trazo.js', 'iniciarTrazo')   // en básico solo destapa las fotos reales (sin canvas ni cruces)
+    cargar('./carrusel.js', 'iniciarCarrusel')   // en básico solo pide las acuarelas (sin flechas)
   ]);
   if (rsvp) document.documentElement.classList.add('funcional');
 }
@@ -228,7 +228,7 @@ async function iniciar() {
     cargar('./menu.js', 'iniciarMenu'),
     cargar('./recomendaciones.js', 'iniciarRecomendaciones'),
     cargar('./avion.js', 'iniciarAvion'),
-    cargar('./trazo.js', 'iniciarTrazo'),
+    cargar('./carrusel.js', 'iniciarCarrusel'),
     cargar('./cuenta.js', 'iniciarCuenta'),
     cargar('./calendario.js', 'iniciarCalendario'),
     cargar('./programa.js', 'iniciarPrograma'),

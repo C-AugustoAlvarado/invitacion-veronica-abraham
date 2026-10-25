@@ -125,7 +125,10 @@ html.basico { scroll-behavior: auto; }
 
 /* ── 2 · Historia ── */
 .basico .historia__cuadro { margin: 26px auto 0; }
-.basico .historia__fotos { display: block; text-align: center; }
+.basico .historia__carrusel { padding: 0; }
+.basico .historia__fotos { display: block; text-align: center; overflow: visible; padding: 0; }
+.basico .historia__fotos::before, .basico .historia__fotos::after { display: none; }
+.basico .carrusel__flecha { display: none; }
 .basico .polaroid { display: inline-block; vertical-align: top; margin: 10px; }
 .basico .polaroid__cara { -webkit-transform: none; transform: none; }
 

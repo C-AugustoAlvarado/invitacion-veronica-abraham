@@ -506,8 +506,7 @@ html:not(.js) .solo-basico { display: block; }
   .regalo__enlace,
   .rsvp-opcion__cara,
   .rsvp-contador__boton,
-  .galeria__flecha,
-  .galeria-visor__boton { border: 1px solid ButtonText; }
+  .carrusel__flecha { border: 1px solid ButtonText; }
   .rsvp-opcion__radio:checked + .rsvp-opcion__cara { border: 3px solid Highlight; }
   .amb--grano { mix-blend-mode: normal; }
 }

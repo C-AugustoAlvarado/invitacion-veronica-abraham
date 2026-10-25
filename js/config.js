@@ -54,21 +54,21 @@ export const CONFIG = {
   // Valet parking: costo y horario en texto libre (p. ej. '$150 · de 16:00 a 2:00'); vacío = «Por confirmar»
   valet: { detalle: '' },
 
-  // Fotos de los novios: poner los archivos en assets/fotos/ y llenar `src`.
-  // Mientras `src` esté vacío, la galería muestra un marco ilustrado.
+  // Acuarelas de los novios (una por foto): ver src/historia.html y README. La página solo
+  // lee `pie` (data-config="fotos.N.pie", en el mismo orden que los <li> del carrusel);
+  // `acuarela`, `respaldo` y `alt` quedan como referencia de lo que lleva escrito cada polaroid.
   fotos: [
-    // Fotos que mandaron los novios el 22-oct-2026 (recortadas a 4:5). Cada una tiene su AVIF
-    // (640 px), su JPEG de respaldo (448 px) y, cuando exista, su versión «trazo» (dibujo a lápiz
-    // precalculado: <nombre>-trazo.avif/.jpg) que se muestra primero; al tocar aparece la foto.
-    // Los pies son PROPUESTA: solo lugares evidentes, sin fechas inventadas.
-    { src: 'assets/fotos/01-juntos.jpg', avif: 'assets/fotos/01-juntos.avif', alt: 'Verónica y Abraham sonriendo, muy juntos', pie: 'Juntos' },
-    { src: 'assets/fotos/02-morelia.jpg', avif: 'assets/fotos/02-morelia.avif', alt: 'Caminando abrazados por una calzada arbolada', pie: 'De paseo' },
-    { src: 'assets/fotos/03-espana.jpg', avif: 'assets/fotos/03-espana.avif', alt: 'Sentados en una banca de azulejos en España', pie: 'España' },
-    { src: 'assets/fotos/04-paris.jpg', avif: 'assets/fotos/04-paris.avif', alt: 'Frente al Louvre, en París', pie: 'París' },
-    { src: 'assets/fotos/05-arco.jpg', avif: 'assets/fotos/05-arco.avif', alt: 'Un beso frente al Arco del Triunfo', pie: 'Arco del Triunfo' },
-    { src: 'assets/fotos/06-eiffel.jpg', avif: 'assets/fotos/06-eiffel.avif', alt: 'Bajo la Torre Eiffel', pie: 'Torre Eiffel' },
-    { src: 'assets/fotos/07-risas.jpg', avif: 'assets/fotos/07-risas.avif', alt: 'Riendo juntos en una cena', pie: 'Entre risas' },
-    { src: 'assets/fotos/08-navidad.jpg', avif: 'assets/fotos/08-navidad.avif', alt: 'Junto al árbol de Navidad, ella muestra el anillo', pie: 'Navidad' }
+    // Acuarelas que mandaron los novios el 24-oct-2026, hechas sobre los recortes 4:5 de sus
+    // fotos (originales en Cambios/Acuarelas/ y Cambios/FotosCompartidas/). La página solo
+    // muestra la acuarela, en el carrusel de src/historia.html (AVIF 446 px + JPEG de respaldo).
+    // España no mandó la suya y quedó fuera. Los pies son PROPUESTA: solo lugares evidentes.
+    { acuarela: 'assets/fotos/01-juntos-acuarela.avif', respaldo: 'assets/fotos/01-juntos-acuarela.jpg', alt: 'Verónica y Abraham sonriendo, muy juntos', pie: 'Juntos' },
+    { acuarela: 'assets/fotos/02-morelia-acuarela.avif', respaldo: 'assets/fotos/02-morelia-acuarela.jpg', alt: 'Caminando abrazados por una calzada arbolada', pie: 'De paseo' },
+    { acuarela: 'assets/fotos/04-paris-acuarela.avif', respaldo: 'assets/fotos/04-paris-acuarela.jpg', alt: 'Frente al Louvre, en París', pie: 'París' },
+    { acuarela: 'assets/fotos/05-arco-acuarela.avif', respaldo: 'assets/fotos/05-arco-acuarela.jpg', alt: 'Un beso frente al Arco del Triunfo', pie: 'Arco del Triunfo' },
+    { acuarela: 'assets/fotos/06-eiffel-acuarela.avif', respaldo: 'assets/fotos/06-eiffel-acuarela.jpg', alt: 'Bajo la Torre Eiffel', pie: 'Torre Eiffel' },
+    { acuarela: 'assets/fotos/07-risas-acuarela.avif', respaldo: 'assets/fotos/07-risas-acuarela.jpg', alt: 'Riendo juntos en una cena', pie: 'Entre risas' },
+    { acuarela: 'assets/fotos/08-navidad-acuarela.avif', respaldo: 'assets/fotos/08-navidad-acuarela.jpg', alt: 'Junto al árbol de Navidad, ella muestra el anillo', pie: 'Navidad' }
   ],
 
   // Música opcional: si hay archivo, aparece el botón de sonido.

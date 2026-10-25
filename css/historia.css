@@ -2,8 +2,8 @@
    Nuestra historia (v2) — css/historia.css
    Fragmento: src/historia.html · Demo: demo/historia.html
    Composición, de arriba abajo: un cielo donde descienden los dos
-   paracaídas → encabezado → relato y ocho polaroids (dibujo a lápiz que
-   cruza a la foto al tocarla: js/trazo.js) → la acuarela
+   paracaídas → encabezado → relato y siete polaroids con las acuarelas de
+   los novios en un carrusel horizontal (js/carrusel.js) → la acuarela
    de Chantilly enmarcada (la pedida de mano cierra la sección).
    Solo marfil, olivo y tinta; la única ilustración con color es la
    acuarela. Adorno único: ramitas de olivo en línea.
@@ -109,31 +109,63 @@
   color: var(--olivo);
 }
 
-/* ── Las ocho polaroids ──
-   Dos columnas en celular (~160–175 px cada una), cuatro desde 760 px (dos filas).
-   Cada una gira apenas (--giro) y sube o baja unos píxeles (--dy), como fotos
-   sueltas sobre la mesa. El marcado es estático (src/historia.html): la ventana
-   es un <button> con la foto real debajo y el dibujo a lápiz precalculado encima;
-   el cruce entre ambos lo lleva js/trazo.js + css/trazo.css. */
-.historia__fotos {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  justify-content: center;
-  align-items: start;
-  gap: 18px 14px;
-  gap: clamp(16px, 4.5vw, 28px) clamp(12px, 3.6vw, 22px);
-  list-style: none;
+/* ── Las siete polaroids, en carrusel ──
+   Una polaroid por acuarela (las que mandaron los novios el 24-oct-2026), en una pista
+   horizontal con scroll nativo y scroll-snap: en celular se recorre con el dedo (y dos
+   flechas muy discretas sobre los bordes), en escritorio con flechas más visibles a los
+   lados o con el trackpad. Nunca avanza solo. js/carrusel.js pide las imágenes cuando la
+   pista se acerca (600 px) y enciende las flechas; sin JavaScript la pista se desplaza
+   igual (las flechas nacen con «hidden») y el <noscript> pone las imágenes. Cada polaroid
+   gira apenas (--giro) y sube o baja unos píxeles (--dy), como fotos sueltas sobre la mesa.
+   La polaroid activa queda centrada; las vecinas asoman a los lados (así se entiende que
+   hay más). --polaroid-ancho y --carrusel-gap son los dos mandos. */
+.historia__carrusel {
+  --polaroid-ancho: min(64vw, 300px);
+  --carrusel-gap: 18px;
+  --carrusel-gap: clamp(16px, 4vw, 26px);
+  position: relative;
   margin: 40px auto 0;
   margin: clamp(36px, 6vh, 60px) auto 0;
-  padding: 10px 4px 14px;
-  max-width: 372px;
 }
-.polaroid { min-width: 0; }
-/* Modo básico (css/basico.css las pone inline-block, sin rejilla): un ancho fijo
-   para que las ocho midan lo mismo */
+.carrusel__pista {
+  position: relative;   /* offsetLeft de cada polaroid relativo a la pista (js/carrusel.js) */
+  display: flex;
+  align-items: flex-start;
+  gap: var(--carrusel-gap);
+  list-style: none;
+  margin: 0;
+  /* Aire arriba y abajo para el giro y la sombra (overflow-x: auto recorta en vertical) */
+  padding: 18px 0 34px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.carrusel__pista::-webkit-scrollbar { display: none; }
+/* Separadores al inicio y al final: la primera y la última también pueden quedar centradas */
+.carrusel__pista::before,
+.carrusel__pista::after {
+  content: '';
+  flex: 0 0 calc(50% - var(--polaroid-ancho) / 2 - var(--carrusel-gap));
+}
+.carrusel__pista:focus-visible {
+  outline: 2px solid var(--olivo);
+  outline-offset: -2px;
+  border-radius: 4px;
+}
+.polaroid {
+  flex: 0 0 var(--polaroid-ancho);
+  min-width: 0;
+  scroll-snap-align: center;
+}
+/* Modo básico (css/basico.css deja la pista en bloque y las polaroids inline-block): un
+   ancho fijo para que todas midan lo mismo */
 .basico .polaroid { width: 42%; max-width: 160px; }
-/* El giro va en la cara, no en el <li>: el revelado de base.css
-   escribe transform en el elemento con data-revelar */
+/* El giro va en la cara, no en el <li>: el <li> es el ítem de la pista (flex + scroll-snap;
+   js/carrusel.js usa su offsetLeft) y el revelado (data-revelar en .historia__carrusel)
+   escribe transform en el contenedor, no aquí */
 .polaroid__cara {
   position: relative;
   margin: 0;
@@ -151,52 +183,41 @@
   transform: rotate(var(--giro, 0deg)) translateY(var(--dy, 0px));
   transition: transform .7s var(--suave);
 }
-/* La ventana es un botón (toda la foto es la zona táctil): se le quita el traje de botón */
+/* La ventana: la caja 4:5 donde vive la acuarela */
 .polaroid__ventana {
   position: relative;
   display: block;
   width: 100%;
   aspect-ratio: 4 / 5;
-  padding: 0;
-  margin: 0;
   overflow: hidden;
-  font: inherit;
-  color: inherit;
-  text-align: center;
   background: linear-gradient(160deg, #EFEBE1 0%, #E3DFD1 100%);
-  border: 0;
   border-radius: 1px;
   box-shadow: inset 0 0 0 1px rgba(43, 43, 40, .07), inset 0 2px 6px -3px rgba(43, 43, 40, .28);
-  -webkit-appearance: none;
-  appearance: none;
-  cursor: pointer;
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent;
-  -webkit-user-select: none;
-  user-select: none;
 }
-.polaroid__ventana:disabled { cursor: default; }
-/* La foto real y el dibujo ocupan la misma caja; el dibujo va encima
-   (su fundido vive en css/trazo.css) */
-.polaroid__foto-real,
-.polaroid__trazo {
+.polaroid__acuarela,
+.polaroid__sinjs {
   position: absolute;
   top: 0; right: 0; bottom: 0; left: 0;
   inset: 0;
   display: block;
   margin: 0;
 }
-.polaroid__trazo { z-index: 1; }
-.polaroid__foto-real img,
-.polaroid__trazo img,
-.polaroid__foto {
+.polaroid__acuarela img,
+.polaroid__sinjs {
   display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: 50% 40%;
   border-radius: inherit;
+  -webkit-user-drag: none;
+  user-select: none;
+  -webkit-user-select: none;
 }
+/* La acuarela llega sin src hasta que js/carrusel.js la pide: que no asome su texto
+   alternativo; sin JavaScript la pone el <noscript> */
+.polaroid__acuarela img:not([src]) { visibility: hidden; }
+html:not(.js):not(.basico) .polaroid__acuarela { display: none; }   /* en básico sí: la pide js/carrusel.js */
 .polaroid__pie {
   display: block;
   padding: 7px 2px 9px;
@@ -212,14 +233,60 @@
 @media (hover: hover) {
   .polaroid__cara:hover { transform: rotate(0deg) translateY(calc(var(--dy, 0px) - 6px)); }
 }
-/* Desde 760 px: cuatro por fila */
+
+/* ── Las flechas ──
+   En celular, muy discretas: un aro fino medio transparente sobre el borde de la pista,
+   encima del margen donde asoma la polaroid vecina; su zona táctil crece con ::before.
+   En los extremos se desvanecen (disabled). Nacen con «hidden»: solo existen con el módulo. */
+.carrusel__flecha {
+  position: absolute;
+  top: calc(50% - 34px);   /* a la altura de la acuarela (el pie queda debajo) */
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  margin: 0;
+  color: var(--olivo-hondo);
+  background: rgba(251, 249, 244, .55);
+  border: 1px solid rgba(78, 83, 48, .4);
+  border-radius: 50%;
+  opacity: .7;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition: opacity .35s var(--suave), background-color .35s var(--suave), color .35s var(--suave), transform .35s var(--suave);
+}
+.carrusel__flecha::before { content: ''; position: absolute; top: -7px; right: -7px; bottom: -7px; left: -7px; }
+.carrusel__flecha--izq { left: 6px; }
+.carrusel__flecha--der { right: 6px; }
+.carrusel__flecha svg {
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.carrusel__flecha[hidden] { display: none; }   /* nacen ocultas: display: flex no debe destaparlas */
+.carrusel__flecha[disabled] { opacity: 0; pointer-events: none; }
+.carrusel__flecha:focus-visible { outline: 2px solid var(--olivo); outline-offset: 3px; opacity: 1; }
+.carrusel__flecha:active { transform: scale(.94); }
+/* Si todo cabe sin desbordar (pantallas muy anchas) no hay a dónde ir */
+.carrusel--sin-desborde .carrusel__flecha { display: none; }
+@media (prefers-reduced-motion: reduce) {
+  .carrusel__pista { scroll-behavior: auto; }
+}
+/* Desde 760 px la polaroid crece un poco y las flechas respiran */
 @media (min-width: 760px) {
-  .historia__fotos {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 26px 20px;
-    max-width: 764px;
-    padding: 14px 6px 18px;
-  }
+  .historia__carrusel { --polaroid-ancho: 280px; --carrusel-gap: 28px; }
+  .carrusel__flecha--izq { left: 10px; }
+  .carrusel__flecha--der { right: 10px; }
 }
 
 /* ═══════════ 4 · La acuarela de Chantilly, enmarcada ═══════════ */
@@ -315,11 +382,33 @@
   .historia__vuelo--a { top: -40px; right: 2%; width: 170px; }
   .historia__vuelo--b { top: 70px; left: 3%; width: 134px; }
 
-  /* El relato centrado y, debajo, las ocho polaroids en cuatro columnas
-     (hasta el 24-oct-2026 eran tres, al lado del relato) */
+  /* El relato centrado y, debajo, el carrusel: tres polaroids a la vista (la activa al
+     centro) y las flechas, ya más visibles, en los márgenes laterales del carrusel */
   .historia__cuerpo { max-width: 1000px; margin-left: auto; margin-right: auto; }
   .historia__relato { max-width: 36em; }
-  .historia__fotos { margin-top: 44px; gap: 30px 24px; max-width: 800px; }
+  .historia__carrusel { --polaroid-ancho: 270px; --carrusel-gap: 30px; max-width: 1000px; margin-top: 44px; padding: 0 64px; }
+  /* Tres polaroids justas en la pista (3 × 270 + 2 × 30 = 870 px): se alinean al inicio, sin
+     separadores, para abrir con las tres completas y sin un tercio vacío a la izquierda
+     (js/carrusel.js lee scroll-snap-align para desplazar igual) */
+  .carrusel__pista::before,
+  .carrusel__pista::after { display: none; }
+  .polaroid { scroll-snap-align: start; }
+  .carrusel__flecha {
+    top: calc(50% - 44px);
+    width: 46px;
+    height: 46px;
+    color: var(--olivo-hondo);
+    background: var(--marfil-luz);
+    border-color: rgba(78, 83, 48, .28);
+    box-shadow: 0 10px 22px -12px rgba(43, 43, 40, .5), 0 0 0 1px rgba(255, 255, 255, .6) inset;
+    opacity: .96;
+  }
+  .carrusel__flecha svg { width: 18px; height: 18px; stroke-width: 1.5; }
+  .carrusel__flecha--izq { left: 6px; }
+  .carrusel__flecha--der { right: 6px; }
+  @media (hover: hover) {
+    .carrusel__flecha:hover { color: var(--marfil-luz); background: var(--olivo); border-color: var(--olivo); opacity: 1; }
+  }
   .historia__hojas { top: -22px; right: -26px; }
 }
 @media (min-width: 1200px) {
@@ -339,8 +428,8 @@
 }
 /* Sin «gap» en flexbox (ver base.css): se separa con márgenes */
 @supports not (inset: 0) {
-  .historia__fotos { gap: 0; }
-  .polaroid { margin: 8px 6px; }
+  .carrusel__pista { gap: 0; }
+  .polaroid { margin: 0 9px; }
   .historia__pie { gap: 0; }
   .historia__pie-hoja { margin: 0 12px; }
 }
@@ -348,4 +437,5 @@
   .historia__lienzo img { mix-blend-mode: normal; }
   .historia__lienzo::after { display: none; }
   .polaroid__cara { border: 1px solid CanvasText; }
+  .carrusel__flecha { border: 1px solid ButtonText; background: ButtonFace; color: ButtonText; opacity: 1; }
 }
