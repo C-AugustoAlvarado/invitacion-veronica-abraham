@@ -4,9 +4,10 @@
    Composición, de arriba abajo: un cielo donde descienden los dos
    paracaídas → encabezado → relato y siete polaroids con las acuarelas de
    los novios en un carrusel horizontal (js/carrusel.js) → la acuarela
-   de Chantilly enmarcada (la pedida de mano cierra la sección).
-   Solo marfil, olivo y tinta; la única ilustración con color es la
-   acuarela. Adorno único: ramitas de olivo en línea.
+   de Chantilly enmarcada (la pedida de mano cierra la sección; desde el
+   26-oct-2026 es la acuarela de los novios, en el estilo de las polaroids).
+   Solo marfil, olivo y tinta; el color lo ponen las acuarelas.
+   Adorno único: ramitas de olivo en línea.
    Solo se animan transform y opacity. Los tokens viven en base.css.
    ═══════════════════════════════════════════════════════════════ */
 
@@ -308,7 +309,8 @@ html:not(.js):not(.basico) .polaroid__acuarela { display: none; }   /* en básic
 .historia__lienzo {
   position: relative;
   overflow: hidden;
-  /* En celular se recorta a 3:2 centrado en la pareja; desde 700 px, la acuarela entera */
+  /* En celular se recorta a 3:2 centrado en la pareja; desde 700 px, la acuarela entera
+     (la de los novios, 1651×953, desde el 26-oct-2026) */
   aspect-ratio: 3 / 2;
 }
 .historia__lienzo img {
@@ -332,7 +334,7 @@ html:not(.js):not(.basico) .polaroid__acuarela { display: none; }   /* en básic
     linear-gradient(180deg, rgba(251, 249, 244, .95) 0%, rgba(251, 249, 244, 0) 9%, rgba(251, 249, 244, 0) 90%, rgba(251, 249, 244, .95) 100%);
 }
 @media (min-width: 700px) {
-  .historia__lienzo { aspect-ratio: 1400 / 658; }
+  .historia__lienzo { aspect-ratio: 1651 / 953; }
   .historia__lienzo img { object-position: 50% 50%; }
 }
 
@@ -412,7 +414,7 @@ html:not(.js):not(.basico) .polaroid__acuarela { display: none; }   /* en básic
   .polaroid__ventana::before { content: ''; display: block; padding-top: 125%; }
   .historia__lienzo::before { content: ''; display: block; padding-top: 66.67%; }
   @media (min-width: 700px) {
-    .historia__lienzo::before { padding-top: 47%; }
+    .historia__lienzo::before { padding-top: 57.7%; }
   }
 }
 /* Sin «gap» en flexbox (ver base.css): se separa con márgenes */

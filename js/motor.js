@@ -129,7 +129,29 @@ export function iniciarMotor(opciones = {}) {
     }
   }, { threshold: [0, 0.15, 0.4], rootMargin: '0px 0px -6% 0px' });
 
+  // Chromium no pide una <img loading="lazy"> mientras su clip-path la deja sin área
+  // (el revelado «acuarela» arranca en circle(0%)): la imagen llegaba cuando el círculo ya
+  // casi había terminado de abrirse. Al acercarse su vigía (600 px) se le quita el lazy,
+  // así la imagen está lista antes de revelarse y la portada sigue sin descargarla.
+  const precalentables = new Map();   // vigía → Set<img>
+  const observadorPrecalentar = new IntersectionObserver((entradas) => {
+    for (const entrada of entradas) {
+      if (!entrada.isIntersecting) continue;
+      (precalentables.get(entrada.target) || []).forEach((img) => { img.loading = 'eager'; });
+      precalentables.delete(entrada.target);
+      observadorPrecalentar.unobserve(entrada.target);
+    }
+  }, { rootMargin: '600px 0px' });
+  function precalentar(el) {
+    if (!(el instanceof HTMLImageElement) || el.loading !== 'lazy' || el.dataset.revelar !== 'acuarela') return;
+    const vigia = vigiaDe(el);
+    if (!precalentables.has(vigia)) precalentables.set(vigia, new Set());
+    precalentables.get(vigia).add(el);
+    observadorPrecalentar.observe(vigia);
+  }
+
   function vigilar(el) {
+    precalentar(el);
     const vigia = vigiaDe(el);
     if (!vigilados.has(vigia)) vigilados.set(vigia, new Set());
     vigilados.get(vigia).add(el);
@@ -137,6 +159,7 @@ export function iniciarMotor(opciones = {}) {
   }
 
   function mostrar(el) {
+    if (el instanceof HTMLImageElement && el.loading === 'lazy') el.loading = 'eager';   // por si se revela sin haberse acercado
     el.classList.add('es-visible');
     if (el.hasAttribute('data-trazo')) dibujarTrazos(el);
     pendientes.delete(el);
@@ -424,6 +447,7 @@ export function iniciarMotor(opciones = {}) {
       window.removeEventListener('scroll', pedirCuadro);
       window.removeEventListener('resize', alRedimensionar);
       observadorRevelar.disconnect();
+      observadorPrecalentar.disconnect();
       observadorVisibles.disconnect();
       observadorAlto.disconnect();
     }

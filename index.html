@@ -570,7 +570,8 @@
           <p class="t-cuerpo">Nuestra historia comenzó en caída libre, con el corazón a mil por hora y el suelo a kilómetros de distancia. Cuando nos conocimos, entendimos que nos unía algo más fuerte que el tiempo, la distancia y el destino: coincidimos en un viaje sin imaginar que lo mejor de esa experiencia sería lo que vendría después. Desde entonces hemos seguido atreviéndonos juntos, y hoy queremos dar el siguiente gran salto rodeados de las personas que más queremos.</p>
         </div>
 
-        <!-- Siete polaroids con las acuarelas que mandaron los novios (24-oct-2026; una por foto,
+        <!-- Siete polaroids con las acuarelas que mandaron los novios (24-oct-2026, y el 26-oct cambiaron
+             las de sombreros, banca y autobús; una por foto,
              hechas sobre el mismo recorte 4:5; originales en Cambios/Acuarelas/. España no mandó la
              suya y quedó fuera). Van en un carrusel horizontal de izquierda a derecha: scroll nativo
              con scroll-snap (css/historia.css); en celular se recorre con el dedo o con dos flechas
@@ -600,14 +601,14 @@
           <li class="polaroid" style="--giro: 2.5deg; --dy: -6px">
             <figure class="polaroid__cara">
               <div class="polaroid__ventana">
-                <picture class="polaroid__acuarela"><source data-srcset="assets/fotos/02-morelia-acuarela.avif" type="image/avif"><img data-src="assets/fotos/02-morelia-acuarela.jpg" alt="Caminando abrazados por una calzada arbolada" width="446" height="558" loading="eager" decoding="async"></picture><noscript><img class="polaroid__sinjs" src="assets/fotos/02-morelia-acuarela.jpg" alt="Caminando abrazados por una calzada arbolada" width="446" height="558" loading="lazy"></noscript>
+                <picture class="polaroid__acuarela"><source data-srcset="assets/fotos/02-sombreros-acuarela.avif" type="image/avif"><img data-src="assets/fotos/02-sombreros-acuarela.jpg" alt="Con sombreros y lentes de sol, sonriendo en una terraza" width="446" height="557" loading="eager" decoding="async"></picture><noscript><img class="polaroid__sinjs" src="assets/fotos/02-sombreros-acuarela.jpg" alt="Con sombreros y lentes de sol, sonriendo en una terraza" width="446" height="557" loading="lazy"></noscript>
               </div>
             </figure>
           </li>
           <li class="polaroid" style="--giro: 3deg; --dy: -4px">
             <figure class="polaroid__cara">
               <div class="polaroid__ventana">
-                <picture class="polaroid__acuarela"><source data-srcset="assets/fotos/04-paris-acuarela.avif" type="image/avif"><img data-src="assets/fotos/04-paris-acuarela.jpg" alt="Frente al Louvre, en París" width="446" height="558" loading="eager" decoding="async"></picture><noscript><img class="polaroid__sinjs" src="assets/fotos/04-paris-acuarela.jpg" alt="Frente al Louvre, en París" width="446" height="558" loading="lazy"></noscript>
+                <picture class="polaroid__acuarela"><source data-srcset="assets/fotos/04-banca-acuarela.avif" type="image/avif"><img data-src="assets/fotos/04-banca-acuarela.jpg" alt="Sentados en una banca bajo una enredadera de jazmín" width="446" height="557" loading="eager" decoding="async"></picture><noscript><img class="polaroid__sinjs" src="assets/fotos/04-banca-acuarela.jpg" alt="Sentados en una banca bajo una enredadera de jazmín" width="446" height="557" loading="lazy"></noscript>
               </div>
             </figure>
           </li>
@@ -628,7 +629,7 @@
           <li class="polaroid" style="--giro: 1.5deg; --dy: 4px">
             <figure class="polaroid__cara">
               <div class="polaroid__ventana">
-                <picture class="polaroid__acuarela"><source data-srcset="assets/fotos/07-risas-acuarela.avif" type="image/avif"><img data-src="assets/fotos/07-risas-acuarela.jpg" alt="Riendo juntos en una cena" width="446" height="558" loading="eager" decoding="async"></picture><noscript><img class="polaroid__sinjs" src="assets/fotos/07-risas-acuarela.jpg" alt="Riendo juntos en una cena" width="446" height="558" loading="lazy"></noscript>
+                <picture class="polaroid__acuarela"><source data-srcset="assets/fotos/07-autobus-acuarela.avif" type="image/avif"><img data-src="assets/fotos/07-autobus-acuarela.jpg" alt="En el piso de arriba de un autobús, abrazados" width="446" height="557" loading="eager" decoding="async"></picture><noscript><img class="polaroid__sinjs" src="assets/fotos/07-autobus-acuarela.jpg" alt="En el piso de arriba de un autobús, abrazados" width="446" height="557" loading="lazy"></noscript>
               </div>
             </figure>
           </li>
@@ -646,15 +647,21 @@
         </div>
       </div>
 
-      <!-- 4 · La pedida de mano: la acuarela de Chantilly como pieza enmarcada (única ilustración con color) -->
+      <!-- 4 · La pedida de mano: la acuarela de Chantilly como pieza enmarcada (desde el 26-oct-2026, la que
+           mandaron los novios en el estilo de las polaroids; antes, la acuarela del Save the Date, castillo.jpg) -->
       <figure class="historia__cuadro">
         <div class="decorado historia__hojas" aria-hidden="true">
           <svg viewBox="0 0 140 70" focusable="false"><use href="#historia-ramita"/></svg>
         </div>
         <div class="historia__paspartu papel">
           <div class="historia__lienzo">
-            <img loading="lazy" decoding="async" src="assets/img/castillo.jpg" width="1400" height="658" data-revelar="acuarela"
-                 alt="Acuarela del Château de Chantilly: Abraham, de rodillas, le pide matrimonio a Verónica">
+            <!-- Acuarela de la pedida que mandaron los novios el 26-oct-2026 (Cambios/Acuarelas/chantilly.png),
+                 en el mismo estilo que las polaroids; AVIF 1400 px + JPEG de respaldo (scripts/imagen.swift). -->
+            <picture>
+              <source srcset="assets/img/chantilly.avif" type="image/avif">
+              <img loading="lazy" decoding="async" src="assets/img/chantilly.jpg" width="1400" height="808" data-revelar="acuarela"
+                   alt="Acuarela del Château de Chantilly: Abraham, de rodillas, le pide matrimonio a Verónica">
+            </picture>
           </div>
         </div>
         <figcaption class="historia__pie" data-revelar="subir">

@@ -80,8 +80,11 @@
   /* Chromium rasteriza la sombra difuminada como un rectángulo gris: solo el aro del papel */
   .polaroid__cara { box-shadow: 0 0 0 1px rgba(78, 83, 48, .2) !important; transform: none !important; }
 
-  .papel, .dato, .prog-hito, .regalo, .planner, .cierre__medallon, .cierre__despedida {
+  .papel, .dato, .prog-hito, .regalo, .planner, .cierre__medallon, .cierre__despedida, .polaroid {
     page-break-inside: avoid;
     break-inside: avoid;
   }
+  /* Sobre papel blanco no hace falta fundir la acuarela con el paspartú; además el grupo de
+     transparencia que emite Chromium para el blend sale con una franja en Vista Previa (PDFKit) */
+  .historia__lienzo img { mix-blend-mode: normal !important; }
 }

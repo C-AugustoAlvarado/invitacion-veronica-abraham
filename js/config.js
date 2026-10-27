@@ -58,16 +58,18 @@ export const CONFIG = {
   // las polaroids van SIN pie de foto (lo pidieron los novios): la página no lee nada de aquí;
   // la lista queda como referencia de cada acuarela (archivo, alt que lleva el <img> y el pie que tenía).
   fotos: [
-    // Acuarelas que mandaron los novios el 24-oct-2026, hechas sobre los recortes 4:5 de sus
-    // fotos (originales en Cambios/Acuarelas/ y Cambios/FotosCompartidas/). La página solo
-    // muestra la acuarela, en el carrusel de src/historia.html (AVIF 446 px + JPEG de respaldo).
-    // España no mandó la suya y quedó fuera. Los pies son PROPUESTA: solo lugares evidentes.
+    // Acuarelas de los novios: siete del 24-oct-2026, hechas sobre los recortes 4:5 de sus fotos, y
+    // el 26-oct cambiaron tres (02-sombreros, 04-banca, 07-autobus), llevadas a 4:5 con
+    // scripts/recortar.swift (originales en Cambios/Acuarelas/, las sustituidas en
+    // Cambios/Acuarelas/sustituidas/). La página solo muestra la acuarela, en el carrusel de
+    // src/historia.html (AVIF 446 px + JPEG de respaldo). España no mandó la suya y quedó fuera.
+    // `pie` es histórico: desde el 26-oct las polaroids van sin pie.
     { acuarela: 'assets/fotos/01-juntos-acuarela.avif', respaldo: 'assets/fotos/01-juntos-acuarela.jpg', alt: 'Verónica y Abraham sonriendo, muy juntos', pie: 'Juntos' },
-    { acuarela: 'assets/fotos/02-morelia-acuarela.avif', respaldo: 'assets/fotos/02-morelia-acuarela.jpg', alt: 'Caminando abrazados por una calzada arbolada', pie: 'De paseo' },
-    { acuarela: 'assets/fotos/04-paris-acuarela.avif', respaldo: 'assets/fotos/04-paris-acuarela.jpg', alt: 'Frente al Louvre, en París', pie: 'París' },
+    { acuarela: 'assets/fotos/02-sombreros-acuarela.avif', respaldo: 'assets/fotos/02-sombreros-acuarela.jpg', alt: 'Con sombreros y lentes de sol, sonriendo en una terraza', pie: '' },   // 26-oct: sustituye a «De paseo»
+    { acuarela: 'assets/fotos/04-banca-acuarela.avif', respaldo: 'assets/fotos/04-banca-acuarela.jpg', alt: 'Sentados en una banca bajo una enredadera de jazmín', pie: '' },   // 26-oct: sustituye a «París»
     { acuarela: 'assets/fotos/05-arco-acuarela.avif', respaldo: 'assets/fotos/05-arco-acuarela.jpg', alt: 'Un beso frente al Arco del Triunfo', pie: 'Arco del Triunfo' },
     { acuarela: 'assets/fotos/06-eiffel-acuarela.avif', respaldo: 'assets/fotos/06-eiffel-acuarela.jpg', alt: 'Bajo la Torre Eiffel', pie: 'Torre Eiffel' },
-    { acuarela: 'assets/fotos/07-risas-acuarela.avif', respaldo: 'assets/fotos/07-risas-acuarela.jpg', alt: 'Riendo juntos en una cena', pie: 'Entre risas' },
+    { acuarela: 'assets/fotos/07-autobus-acuarela.avif', respaldo: 'assets/fotos/07-autobus-acuarela.jpg', alt: 'En el piso de arriba de un autobús, abrazados', pie: '' },   // 26-oct: sustituye a «Entre risas»
     { acuarela: 'assets/fotos/08-navidad-acuarela.avif', respaldo: 'assets/fotos/08-navidad-acuarela.jpg', alt: 'Junto al árbol de Navidad, ella muestra el anillo', pie: 'Navidad' }
   ],
 
