@@ -45,7 +45,7 @@ export const CONFIG = {
   },
 
   regalos: [
-    { id: 'palacio', tienda: 'El Palacio de Hierro', etiqueta: 'Número de evento', valor: '406823', enlace: '' },
+    { id: 'palacio', tienda: 'El Palacio de Hierro', etiqueta: 'Número de evento', valor: '406823', enlace: 'https://www.elpalaciodehierro.com/listaregalos#/event/406823' },   // enlace enviado el 26-oct-2026
     { id: 'transferencia', tienda: 'BBVA', etiqueta: 'CLABE', valor: '012180028772723592', titular: 'Abraham Alvarado López', banco: '' }   // confirmado el 21-oct-2026
   ],
 
@@ -54,9 +54,9 @@ export const CONFIG = {
   // Valet parking: costo y horario en texto libre (p. ej. '$150 · de 16:00 a 2:00'); vacío = «Por confirmar»
   valet: { detalle: '' },
 
-  // Acuarelas de los novios (una por foto): ver src/historia.html y README. La página solo
-  // lee `pie` (data-config="fotos.N.pie", en el mismo orden que los <li> del carrusel);
-  // `acuarela`, `respaldo` y `alt` quedan como referencia de lo que lleva escrito cada polaroid.
+  // Acuarelas de los novios (una por foto): ver src/historia.html y README. Desde el 26-oct-2026
+  // las polaroids van SIN pie de foto (lo pidieron los novios): la página no lee nada de aquí;
+  // la lista queda como referencia de cada acuarela (archivo, alt que lleva el <img> y el pie que tenía).
   fotos: [
     // Acuarelas que mandaron los novios el 24-oct-2026, hechas sobre los recortes 4:5 de sus
     // fotos (originales en Cambios/Acuarelas/ y Cambios/FotosCompartidas/). La página solo

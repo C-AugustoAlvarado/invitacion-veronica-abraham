@@ -253,10 +253,10 @@
 }
 
 /* ═══════════ Vestimenta (noche) ═══════════
-   Tres tarjetas de papel apiladas: «Código de vestimenta» (#dress-code, con
-   las prendas dibujadas de Ellos · Ellas), «Valet parking» (#valet) y «Solo
-   adultos» (#solo-adultos). Desde 600 px las prendas van en dos columnas;
-   desde 720 px la primera tarjeta es más ancha (760) que las otras (600). */
+   Tres tarjetas de papel apiladas: «Código de vestimenta» (#dress-code:
+   gancho, «Formal», nota de colores y muestras), «Valet parking» (#valet) y
+   «Solo adultos» (#solo-adultos). Desde 720 px van angostas (600) y centradas.
+   (Los bocetos de prendas Ellos · Ellas del 24-oct se quitaron el 26-oct.) */
 .vestimenta {
   padding-top: 60px;
   padding-top: clamp(60px, 10vh, 120px);
@@ -360,90 +360,10 @@
 
 
 @media (min-width: 720px) {
-  /* Las tarjetas van angostas y centradas, una bajo otra; la de vestimenta
-     se ensancha para que las dos columnas de prendas respiren */
+  /* Las tarjetas van angostas y centradas, una bajo otra */
   .dato--vestimenta, .dato--valet, .dato--adultos { max-width: 600px; margin-left: auto; margin-right: auto; }
-  .dato--vestimenta { max-width: 760px; }
 }
 
-/* ── Ellos · Ellas: prendas dibujadas + el texto de la novia ──
-   Bloque bajo la nota de colores, separado por un filete apenas dorado.
-   Una columna bajo otra en celular; dos desde 600 px. */
-.vestir {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  grid-row-gap: 34px;
-  row-gap: 34px;
-  width: 100%;
-  margin-top: 26px;
-  margin-top: clamp(26px, 4.4vw, 38px);
-  padding-top: 26px;
-  padding-top: clamp(26px, 4.4vw, 36px);
-  border-top: 1px solid rgba(205, 191, 158, .6);
-}
-.vestir__col {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-width: 0;
-}
-/* Rótulo manuscrito (La Belle Aurore es fina: ≥ 28 px y tinta olivo honda, 7:1 sobre el papel) */
-.vestir__rotulo {
-  font-family: 'Dancing Script', cursive;
-  font-family: var(--f-mano);
-  font-weight: 400;
-  font-size: 28px;
-  font-size: clamp(28px, 4.4vw, 34px);
-  line-height: 1.2;
-  color: #4E5330;
-  color: var(--olivo-hondo);
-  margin: 0 0 8px;
-}
-.vestir__dibujo {
-  display: block;
-  width: 220px;
-  width: min(62vw, 250px);
-  height: auto;
-  margin: 0 auto 14px;
-}
-/* Lista en Cormorant con viñetas de hojita; el bloque se centra, los renglones van a la izquierda */
-.vestir__lista {
-  display: inline-block;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  text-align: left;
-  font-size: 17px;
-  font-size: clamp(17px, 2vw, 19px);
-  line-height: 1.55;
-  letter-spacing: .02em;
-  color: #3A3A35;   /* 11:1 sobre el papel */
-  color: var(--tinta-suave);
-}
-.vestir__lista li { position: relative; padding-left: 22px; }
-.vestir__lista li::before {
-  content: '';
-  position: absolute;
-  left: 2px;
-  top: .66em;
-  width: 11px;
-  height: 6px;
-  border-radius: 6px 0;
-  background: #A3A67E;
-  background: var(--olivo-claro);
-  -webkit-transform: rotate(-32deg);
-  transform: rotate(-32deg);
-}
-@media (min-width: 600px) {
-  .vestir {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    grid-column-gap: 28px;
-    column-gap: 28px;
-    column-gap: clamp(28px, 4vw, 52px);
-    align-items: start;
-  }
-  .vestir__dibujo { width: 230px; width: min(30vw, 260px); }
-}
 .dato__muestras {
   display: flex;
   justify-content: center;
@@ -492,6 +412,4 @@
 @media (forced-colors: active) {
   .muestra { border: 1px solid CanvasText; }
   .boda__lugares::before { background: CanvasText; }
-  .vestir { border-top-color: CanvasText; }
-  .vestir__lista li::before { background: CanvasText; }
 }

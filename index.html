@@ -582,9 +582,9 @@
              sin JavaScript la pista se desplaza igual y el <noscript> pone las imágenes.
              El revelado va en el carrusel entero (no en cada polaroid): dentro de una pista que
              se desliza, las vecinas que asoman se quedaban invisibles en Safari de iPhone.
-             El marcado es estático: no depende de main.js. Los pies se leen de CONFIG.fotos
-             (data-config="fotos.N.pie", N en el orden de los <li>); el alt va escrito en cada <img loading="lazy" decoding="async">
-             y config.js solo lo guarda como referencia. -->
+             Sin pie de foto (los novios los quitaron el 26-oct-2026): la polaroid conserva su borde
+             ancho abajo. El marcado es estático: no depende de main.js; el alt va escrito en cada
+             <img loading="lazy" decoding="async"> y js/config.js (fotos) solo guarda la referencia de cada acuarela. -->
         <div class="historia__carrusel carrusel" data-carrusel data-revelar="subir">
           <button class="carrusel__flecha carrusel__flecha--izq" type="button" aria-label="Acuarela anterior" hidden>
             <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 5 8 12l7 7"/></svg>
@@ -595,7 +595,6 @@
               <div class="polaroid__ventana">
                 <picture class="polaroid__acuarela"><source data-srcset="assets/fotos/01-juntos-acuarela.avif" type="image/avif"><img data-src="assets/fotos/01-juntos-acuarela.jpg" alt="Verónica y Abraham sonriendo, muy juntos" width="446" height="558" loading="eager" decoding="async"></picture><noscript><img class="polaroid__sinjs" src="assets/fotos/01-juntos-acuarela.jpg" alt="Verónica y Abraham sonriendo, muy juntos" width="446" height="558" loading="lazy"></noscript>
               </div>
-              <figcaption class="polaroid__pie" data-config="fotos.0.pie">Juntos</figcaption>
             </figure>
           </li>
           <li class="polaroid" style="--giro: 2.5deg; --dy: -6px">
@@ -603,7 +602,6 @@
               <div class="polaroid__ventana">
                 <picture class="polaroid__acuarela"><source data-srcset="assets/fotos/02-morelia-acuarela.avif" type="image/avif"><img data-src="assets/fotos/02-morelia-acuarela.jpg" alt="Caminando abrazados por una calzada arbolada" width="446" height="558" loading="eager" decoding="async"></picture><noscript><img class="polaroid__sinjs" src="assets/fotos/02-morelia-acuarela.jpg" alt="Caminando abrazados por una calzada arbolada" width="446" height="558" loading="lazy"></noscript>
               </div>
-              <figcaption class="polaroid__pie" data-config="fotos.1.pie">De paseo</figcaption>
             </figure>
           </li>
           <li class="polaroid" style="--giro: 3deg; --dy: -4px">
@@ -611,7 +609,6 @@
               <div class="polaroid__ventana">
                 <picture class="polaroid__acuarela"><source data-srcset="assets/fotos/04-paris-acuarela.avif" type="image/avif"><img data-src="assets/fotos/04-paris-acuarela.jpg" alt="Frente al Louvre, en París" width="446" height="558" loading="eager" decoding="async"></picture><noscript><img class="polaroid__sinjs" src="assets/fotos/04-paris-acuarela.jpg" alt="Frente al Louvre, en París" width="446" height="558" loading="lazy"></noscript>
               </div>
-              <figcaption class="polaroid__pie" data-config="fotos.2.pie">París</figcaption>
             </figure>
           </li>
           <li class="polaroid" style="--giro: 2deg; --dy: 6px">
@@ -619,7 +616,6 @@
               <div class="polaroid__ventana">
                 <picture class="polaroid__acuarela"><source data-srcset="assets/fotos/05-arco-acuarela.avif" type="image/avif"><img data-src="assets/fotos/05-arco-acuarela.jpg" alt="Un beso frente al Arco del Triunfo" width="446" height="558" loading="eager" decoding="async"></picture><noscript><img class="polaroid__sinjs" src="assets/fotos/05-arco-acuarela.jpg" alt="Un beso frente al Arco del Triunfo" width="446" height="558" loading="lazy"></noscript>
               </div>
-              <figcaption class="polaroid__pie" data-config="fotos.3.pie">Arco del Triunfo</figcaption>
             </figure>
           </li>
           <li class="polaroid" style="--giro: -2.5deg; --dy: -6px">
@@ -627,7 +623,6 @@
               <div class="polaroid__ventana">
                 <picture class="polaroid__acuarela"><source data-srcset="assets/fotos/06-eiffel-acuarela.avif" type="image/avif"><img data-src="assets/fotos/06-eiffel-acuarela.jpg" alt="Bajo la Torre Eiffel" width="446" height="558" loading="eager" decoding="async"></picture><noscript><img class="polaroid__sinjs" src="assets/fotos/06-eiffel-acuarela.jpg" alt="Bajo la Torre Eiffel" width="446" height="558" loading="lazy"></noscript>
               </div>
-              <figcaption class="polaroid__pie" data-config="fotos.4.pie">Torre Eiffel</figcaption>
             </figure>
           </li>
           <li class="polaroid" style="--giro: 1.5deg; --dy: 4px">
@@ -635,7 +630,6 @@
               <div class="polaroid__ventana">
                 <picture class="polaroid__acuarela"><source data-srcset="assets/fotos/07-risas-acuarela.avif" type="image/avif"><img data-src="assets/fotos/07-risas-acuarela.jpg" alt="Riendo juntos en una cena" width="446" height="558" loading="eager" decoding="async"></picture><noscript><img class="polaroid__sinjs" src="assets/fotos/07-risas-acuarela.jpg" alt="Riendo juntos en una cena" width="446" height="558" loading="lazy"></noscript>
               </div>
-              <figcaption class="polaroid__pie" data-config="fotos.5.pie">Entre risas</figcaption>
             </figure>
           </li>
           <li class="polaroid" style="--giro: -3deg; --dy: -3px">
@@ -643,7 +637,6 @@
               <div class="polaroid__ventana">
                 <picture class="polaroid__acuarela"><source data-srcset="assets/fotos/08-navidad-acuarela.avif" type="image/avif"><img data-src="assets/fotos/08-navidad-acuarela.jpg" alt="Junto al árbol de Navidad, ella muestra el anillo" width="446" height="558" loading="eager" decoding="async"></picture><noscript><img class="polaroid__sinjs" src="assets/fotos/08-navidad-acuarela.jpg" alt="Junto al árbol de Navidad, ella muestra el anillo" width="446" height="558" loading="lazy"></noscript>
               </div>
-              <figcaption class="polaroid__pie" data-config="fotos.6.pie">Navidad</figcaption>
             </figure>
           </li>
           </ul>
@@ -1127,9 +1120,8 @@
        · #dress-code, #valet y #solo-adultos son destinos de los submenús de «La boda».
        · El código de vestimenta es «Formal» (ya no «Etiqueta rigurosa», que se leía como smoking).
        · El icono es un gancho de ropa de línea: su pregunta (el garfio) y la barra.
-       · Debajo de la nota de colores van dos columnas «Ellos» / «Ellas» con prendas dibujadas en el estilo
-         de la invitación (assets/svg/dresscode-*.svg, 600×700) y el texto exacto que mandó la novia.
-         El constructor envuelve las <img loading="lazy" decoding="async"> en <picture> AVIF/PNG cuando existan en assets/img.
+       · Los bocetos de prendas «Ellos / Ellas» del 24-oct se quitaron el 26-oct a petición de los novios
+         («dejarlo como estaba antes»): la tarjeta vuelve a ser gancho, «Formal», nota de colores y muestras.
        · Costo y horario del valet: Vero los mandará; mientras, «Por confirmar». main.js los escribe desde
          CONFIG.valet.detalle cuando exista (data-config). -->
   <section id="vestimenta" class="seccion seccion--noche vestimenta" data-ambiente="noche" aria-labelledby="vestimenta-titulo">
@@ -1155,30 +1147,6 @@
               <span class="muestra muestra--claro"></span>
               <span class="muestra muestra--marfil"></span>
             </p>
-          </div>
-
-          <!-- Ellos · Ellas: prendas dibujadas y el texto exacto de la novia (24-oct-2026) -->
-          <div class="vestir">
-            <div class="vestir__col">
-              <h4 id="vestir-ellos" class="vestir__rotulo">Ellos</h4>
-              <picture><source srcset="assets/img/dresscode-ellos.avif" type="image/avif"><img class="vestir__dibujo" src="assets/img/dresscode-ellos.png" width="600" height="700" alt="Traje oscuro, camisa formal, corbata y zapatos formales" loading="lazy" decoding="async"></picture>
-              <ul class="vestir__lista" aria-labelledby="vestir-ellos">
-                <li>Traje o pantalón y saco</li>
-                <li>Corbata opcional</li>
-                <li>Camisa formal</li>
-                <li>Zapato formal</li>
-                <li>Accesorios a gusto</li>
-              </ul>
-            </div>
-            <div class="vestir__col">
-              <h4 id="vestir-ellas" class="vestir__rotulo">Ellas</h4>
-              <picture><source srcset="assets/img/dresscode-ellas.avif" type="image/avif"><img class="vestir__dibujo" src="assets/img/dresscode-ellas.png" width="600" height="700" alt="Vestido largo oscuro, tacones, aretes y bolso de mano" loading="lazy" decoding="async"></picture>
-              <ul class="vestir__lista" aria-labelledby="vestir-ellas">
-                <li>Vestido largo</li>
-                <li>Zapatos formales o tacones</li>
-                <li>Accesorios a gusto</li>
-              </ul>
-            </div>
           </div>
         </article>
 

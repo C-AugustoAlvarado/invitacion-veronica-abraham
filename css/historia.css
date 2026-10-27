@@ -170,7 +170,8 @@
   position: relative;
   margin: 0;
   padding: 7px 7px 0;
-  padding: clamp(7px, 1.7vw, 11px) clamp(7px, 1.7vw, 11px) 0;
+  padding: clamp(7px, 1.7vw, 11px);
+  padding-bottom: 13%;   /* el borde ancho de la polaroid (sin pie de foto desde el 26-oct-2026) */
   background:
     radial-gradient(130% 80% at 0% 0%, rgba(255, 255, 255, .9) 0%, rgba(255, 255, 255, 0) 60%),
     linear-gradient(168deg, #FDFBF6 0%, #F5F0E4 100%);
@@ -218,18 +219,6 @@
    alternativo; sin JavaScript la pone el <noscript> */
 .polaroid__acuarela img:not([src]) { visibility: hidden; }
 html:not(.js):not(.basico) .polaroid__acuarela { display: none; }   /* en básico sí: la pide js/carrusel.js */
-.polaroid__pie {
-  display: block;
-  padding: 7px 2px 9px;
-  font-family: var(--f-mano);
-  font-weight: 400;
-  font-size: 18px;
-  font-size: clamp(18px, 4.8vw, 22px);
-  line-height: 1.1;
-  text-align: center;
-  color: var(--tinta);
-  text-wrap: balance;
-}
 @media (hover: hover) {
   .polaroid__cara:hover { transform: rotate(0deg) translateY(calc(var(--dy, 0px) - 6px)); }
 }
