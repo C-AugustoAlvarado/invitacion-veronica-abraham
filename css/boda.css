@@ -356,7 +356,7 @@
   color: var(--olivo-hondo);
 }
 .dato__pendiente-etiqueta::after { content: '·'; margin: 0 .55em 0 .3em; letter-spacing: 0; color: #B9B5AA; color: var(--gris-claro); }
-.dato__pendiente-valor { font-style: italic; }
+.dato__pendiente-valor { font-style: normal; }   /* ya no es un pendiente: cortesía de los novios, 24 h */
 
 
 @media (min-width: 720px) {

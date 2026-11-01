@@ -1129,8 +1129,8 @@
        · El icono es un gancho de ropa de línea: su pregunta (el garfio) y la barra.
        · Los bocetos de prendas «Ellos / Ellas» del 24-oct se quitaron el 26-oct a petición de los novios
          («dejarlo como estaba antes»): la tarjeta vuelve a ser gancho, «Formal», nota de colores y muestras.
-       · Costo y horario del valet: Vero los mandará; mientras, «Por confirmar». main.js los escribe desde
-         CONFIG.valet.detalle cuando exista (data-config). -->
+       · Costo y horario del valet: salen de CONFIG.valet.detalle (el constructor y main.js los escriben en el
+         data-config; vacío = «Por confirmar»). Desde el 1-nov-2026: cortesía de los novios, las 24 horas. -->
   <section id="vestimenta" class="seccion seccion--noche vestimenta" data-ambiente="noche" aria-labelledby="vestimenta-titulo">
     <div class="contenedor vestimenta__contenido">
       <h2 id="vestimenta-titulo" class="t-sobretitulo vestimenta__titulo centrado" data-revelar="subir">Detalles para ese día</h2>
@@ -1168,10 +1168,10 @@
             <h3 id="valet-titulo" class="t-sobretitulo dato__titulo">Valet parking</h3>
             <p class="dato__principal">Llega sin preocupaciones</p>
             <p class="t-nota dato__nota">Ese día contaremos con servicio de valet parking en la recepción del hotel.</p>
-            <!-- Hueco discreto para los detalles que mandará Vero -->
+            <!-- Costo y horario (CONFIG.valet.detalle) -->
             <p class="t-nota dato__pendiente">
               <span class="dato__pendiente-etiqueta">Costo y horario</span>
-              <span class="dato__pendiente-valor" data-config="valet.detalle">Por confirmar</span>
+              <span class="dato__pendiente-valor" data-config="valet.detalle">Cortesía de los novios, las 24 horas</span>
             </p>
           </div>
         </article>
@@ -1534,6 +1534,13 @@
                 <p class="recom-tarjeta__zona">Centro Histórico</p>
               </div>
               <p class="recom-tarjeta__texto">Hotel boutique: un oasis privado donde la elegancia colonial se fusiona con el confort moderno.</p>
+              <!-- Código de reservación que mandó Vero el 1-nov-2026 (tal cual lo escribió). El botón lo viste
+                   js/copiar.js ([data-copiar]); sin JavaScript se oculta y queda el código a la vista. -->
+              <div class="recom-tarjeta__codigo">
+                <p class="recom-tarjeta__codigo-etiqueta">Código de reservación</p>
+                <p class="recom-tarjeta__codigo-valor">BODA VERÓNICA Y ABRAHAM</p>
+                <button class="copiar recom-tarjeta__copiar" type="button" data-copiar="BODA VERÓNICA Y ABRAHAM" aria-label="Copiar el código de reservación">Copiar código</button>
+              </div>
               <div class="recom-tarjeta__pie">
                 <a class="recom-tarjeta__tel" href="tel:+528000874200"><svg aria-hidden="true" focusable="false"><use href="#recom-i-telefono"/></svg><span class="solo-lectores">Teléfono: </span>800 087 4200</a>
                 <a class="boton boton--linea recom-tarjeta__boton" href="https://maps.app.goo.gl/C6Z7s2LaZYEBQCQM6" target="_blank" rel="noopener noreferrer"><svg class="recom-tarjeta__boton-icono" aria-hidden="true" focusable="false"><use href="#recom-i-pin"/></svg>Ubicación<span class="solo-lectores"> del Hotel Casa Grande (se abre en Google Maps)</span></a>
@@ -1613,9 +1620,10 @@
                 <h4 id="hotel-mision-catedral" class="recom-tarjeta__nombre">Hotel Misión Catedral</h4>
                 <p class="recom-tarjeta__zona">Centro Histórico</p>
               </div>
-              <!-- La nota de los novios no trae teléfono ni descripción de este hotel -->
-              <p class="recom-tarjeta__texto recom-tarjeta__texto--pendiente">Teléfono y descripción por confirmar.</p>
+              <!-- Descripción y teléfono que mandó Vero el 1-nov-2026 -->
+              <p class="recom-tarjeta__texto">Justo frente a la Catedral de Morelia, ofrece una excelente ubicación para disfrutar del Centro Histórico de la ciudad. Esta elegante casona antigua cuenta con habitaciones con balcón hacia una de las avenidas más relevantes de Morelia y otras con vista al patio central.</p>
               <div class="recom-tarjeta__pie">
+                <a class="recom-tarjeta__tel" href="tel:+525591601680"><svg aria-hidden="true" focusable="false"><use href="#recom-i-telefono"/></svg><span class="solo-lectores">Teléfono: </span>55 9160 1680</a>
                 <a class="boton boton--linea recom-tarjeta__boton" href="https://maps.app.goo.gl/CBifoeZn2BhjY9EeA" target="_blank" rel="noopener noreferrer"><svg class="recom-tarjeta__boton-icono" aria-hidden="true" focusable="false"><use href="#recom-i-pin"/></svg>Ubicación<span class="solo-lectores"> del Hotel Misión Catedral (se abre en Google Maps)</span></a>
                 <a class="boton boton--linea recom-tarjeta__boton" href="https://www.hotelesmision.com.mx/destino/hotel-mision-catedral-morelia" target="_blank" rel="noopener noreferrer"><svg class="recom-tarjeta__boton-icono" aria-hidden="true" focusable="false"><use href="#recom-i-enlace"/></svg>Ver hotel<span class="solo-lectores">: sitio de Hotel Misión Catedral (se abre en una pestaña nueva)</span></a>
               </div>

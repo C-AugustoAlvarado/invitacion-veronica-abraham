@@ -319,6 +319,44 @@
   color: var(--gris);
 }
 
+/* ── Código de reservación (Casa Grande): cajita punteada en olivo, el código en Cormorant
+      espaciado y un botón de copiar más chico que el de la mesa de regalos ── */
+.recom-tarjeta__codigo {
+  margin-top: 16px;
+  padding: 14px 14px 12px;
+  text-align: center;
+  background: rgba(107, 112, 66, .07);
+  border: 1px dashed rgba(107, 112, 66, .5);
+  border-radius: 2px;
+}
+.recom-tarjeta__codigo p { margin: 0; }
+.recom-tarjeta__codigo-etiqueta {
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: .24em;
+  text-transform: uppercase;
+  color: var(--olivo-hondo);
+}
+.recom-tarjeta__codigo-valor {
+  margin-top: 6px !important;
+  font-family: var(--f-serif);
+  font-weight: 600;
+  font-size: 18px;
+  font-size: clamp(17px, 2vw, 19px);
+  letter-spacing: .1em;
+  line-height: 1.35;
+  color: var(--tinta);
+  text-wrap: balance;
+}
+.recom-tarjeta__copiar {
+  min-width: 0;
+  min-height: 40px;
+  margin-top: 10px;
+  padding: 7px 16px;
+  font-size: 13px;
+}
+html:not(.js) .recom-tarjeta__copiar { display: none; }
+
 .recom-tarjeta__pie {
   display: flex;
   flex-wrap: wrap;

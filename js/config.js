@@ -40,7 +40,7 @@ export const CONFIG = {
   rsvp: {
     whatsapp: '524433010331',   // WhatsApp de la wedding planner (+52 443 301 0331), confirmado el 22-oct-2026; solo dígitos con lada de país
     correo: '',
-    fechaLimite: '',     // texto libre, p. ej. '6 de febrero de 2027'
+    fechaLimite: '',     // los novios decidieron NO poner fecha límite (1-nov-2026); vacío = la línea no se muestra
     maximoPersonas: 6
   },
 
@@ -51,8 +51,9 @@ export const CONFIG = {
 
   planner: { nombre: 'Fany Valencia', telefono: '524433010331', correo: '', instagram: '' },   // +52 443 301 0331
 
-  // Valet parking: costo y horario en texto libre (p. ej. '$150 · de 16:00 a 2:00'); vacío = «Por confirmar»
-  valet: { detalle: '' },
+  // Valet parking: costo y horario en texto libre; vacío = «Por confirmar».
+  // 1-nov-2026 (Vero): lo cubren los novios y el servicio es las 24 horas.
+  valet: { detalle: 'Cortesía de los novios, las 24 horas' },
 
   // Acuarelas de los novios (una por foto): ver src/historia.html y README. Desde el 26-oct-2026
   // las polaroids van SIN pie de foto (lo pidieron los novios): la página no lee nada de aquí;
