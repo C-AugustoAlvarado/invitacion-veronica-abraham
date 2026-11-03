@@ -1,21 +1,21 @@
-// Datos del evento. Todo lo que puede cambiar vive aquí.
-// Los valores vacíos ('') están pendientes de confirmar con los novios:
-// la página muestra «Por confirmar» en su lugar y nunca inventa un dato.
+
+
+
 
 export const CONFIG = {
-  // Dirección pública de la invitación, con diagonal al final. Se usa para la
-  // vista previa al compartir el enlace (WhatsApp exige dirección completa).
-  // Al cambiar de dominio: editar aquí y correr «npm run publicar».
+
+
+
   sitio: 'https://bodaveroyabraham.com/',
 
   novios: { ella: 'Verónica', el: 'Abraham', monograma: 'A&V' },
 
   padres: {
-    novio: ['Leticia López Ávalos', 'Salvador Alvarado Villafuerte'],   // Abraham pidió a su mamá primero
+    novio: ['Leticia López Ávalos', 'Salvador Alvarado Villafuerte'],
     novia: ['Verónica García Guerrero', 'Félix Calderón Solorio']
   },
 
-  // Texto para compartir el enlace (vista previa en WhatsApp)
+
   compartir: 'Cuando nos conocimos, entendimos que nos uniría algo más fuerte que el tiempo y la distancia. '
     + 'Hoy damos gracias a Dios por habernos hecho coincidir en el camino y empezar una vida juntos.',
 
@@ -31,49 +31,49 @@ export const CONFIG = {
   },
 
   mapas: {
-    ceremonia: 'https://maps.app.goo.gl/AtauCxccpox1PgQT7',   // enlaces que mandaron los novios
+    ceremonia: 'https://maps.app.goo.gl/AtauCxccpox1PgQT7',
     recepcion: 'https://maps.app.goo.gl/oG4wzQVZz8JScBMo7'
   },
 
-  // Confirmación de asistencia: se arma un mensaje de WhatsApp (o correo)
-  // que el invitado envía desde su propio teléfono.
+
+
   rsvp: {
-    whatsapp: '524433010331',   // WhatsApp de la wedding planner (+52 443 301 0331), confirmado el 22-oct-2026; solo dígitos con lada de país
+    whatsapp: '524433010331',
     correo: '',
-    fechaLimite: '',     // los novios decidieron NO poner fecha límite (1-nov-2026); vacío = la línea no se muestra
+    fechaLimite: '',
     maximoPersonas: 6
   },
 
   regalos: [
-    { id: 'palacio', tienda: 'El Palacio de Hierro', etiqueta: 'Número de evento', valor: '406823', enlace: 'https://www.elpalaciodehierro.com/listaregalos#/event/406823' },   // enlace enviado el 26-oct-2026
-    { id: 'transferencia', tienda: 'BBVA', etiqueta: 'CLABE', valor: '012180028772723592', titular: 'Abraham Alvarado López', banco: '' }   // confirmado el 21-oct-2026
+    { id: 'palacio', tienda: 'El Palacio de Hierro', etiqueta: 'Número de evento', valor: '406823', enlace: 'https://www.elpalaciodehierro.com/listaregalos#/event/406823' },
+    { id: 'transferencia', tienda: 'BBVA', etiqueta: 'CLABE', valor: '012180028772723592', titular: 'Abraham Alvarado López', banco: '' }
   ],
 
-  planner: { nombre: 'Fany Valencia', telefono: '524433010331', correo: '', instagram: '' },   // +52 443 301 0331
+  planner: { nombre: 'Fany Valencia', telefono: '524433010331', correo: '', instagram: '' },
 
-  // Valet parking: costo y horario en texto libre; vacío = «Por confirmar».
-  // 1-nov-2026 (Vero): lo cubren los novios y el servicio es las 24 horas.
+
+
   valet: { detalle: 'Cortesía de los novios, las 24 horas' },
 
-  // Acuarelas de los novios (una por foto): ver src/historia.html y README. Desde el 26-oct-2026
-  // las polaroids van SIN pie de foto (lo pidieron los novios): la página no lee nada de aquí;
-  // la lista queda como referencia de cada acuarela (archivo, alt que lleva el <img> y el pie que tenía).
+
+
+
   fotos: [
-    // Acuarelas de los novios: siete del 24-oct-2026, hechas sobre los recortes 4:5 de sus fotos, y
-    // el 26-oct cambiaron tres (02-sombreros, 04-banca, 07-autobus), llevadas a 4:5 con
-    // scripts/recortar.swift (originales en Cambios/Acuarelas/, las sustituidas en
-    // Cambios/Acuarelas/sustituidas/). La página solo muestra la acuarela, en el carrusel de
-    // src/historia.html (AVIF 446 px + JPEG de respaldo). España no mandó la suya y quedó fuera.
-    // `pie` es histórico: desde el 26-oct las polaroids van sin pie.
+
+
+
+
+
+
     { acuarela: 'assets/fotos/01-juntos-acuarela.avif', respaldo: 'assets/fotos/01-juntos-acuarela.jpg', alt: 'Verónica y Abraham sonriendo, muy juntos', pie: 'Juntos' },
-    { acuarela: 'assets/fotos/02-sombreros-acuarela.avif', respaldo: 'assets/fotos/02-sombreros-acuarela.jpg', alt: 'Con sombreros y lentes de sol, sonriendo en una terraza', pie: '' },   // 26-oct: sustituye a «De paseo»
-    { acuarela: 'assets/fotos/04-banca-acuarela.avif', respaldo: 'assets/fotos/04-banca-acuarela.jpg', alt: 'Sentados en una banca bajo una enredadera de jazmín', pie: '' },   // 26-oct: sustituye a «París»
+    { acuarela: 'assets/fotos/02-sombreros-acuarela.avif', respaldo: 'assets/fotos/02-sombreros-acuarela.jpg', alt: 'Con sombreros y lentes de sol, sonriendo en una terraza', pie: '' },
+    { acuarela: 'assets/fotos/04-banca-acuarela.avif', respaldo: 'assets/fotos/04-banca-acuarela.jpg', alt: 'Sentados en una banca bajo una enredadera de jazmín', pie: '' },
     { acuarela: 'assets/fotos/05-arco-acuarela.avif', respaldo: 'assets/fotos/05-arco-acuarela.jpg', alt: 'Un beso frente al Arco del Triunfo', pie: 'Arco del Triunfo' },
     { acuarela: 'assets/fotos/06-eiffel-acuarela.avif', respaldo: 'assets/fotos/06-eiffel-acuarela.jpg', alt: 'Bajo la Torre Eiffel', pie: 'Torre Eiffel' },
-    { acuarela: 'assets/fotos/07-autobus-acuarela.avif', respaldo: 'assets/fotos/07-autobus-acuarela.jpg', alt: 'En el piso de arriba de un autobús, abrazados', pie: '' },   // 26-oct: sustituye a «Entre risas»
+    { acuarela: 'assets/fotos/07-autobus-acuarela.avif', respaldo: 'assets/fotos/07-autobus-acuarela.jpg', alt: 'En el piso de arriba de un autobús, abrazados', pie: '' },
     { acuarela: 'assets/fotos/08-navidad-acuarela.avif', respaldo: 'assets/fotos/08-navidad-acuarela.jpg', alt: 'Junto al árbol de Navidad, ella muestra el anillo', pie: 'Navidad' }
   ],
 
-  // Música opcional: si hay archivo, aparece el botón de sonido.
+
   musica: { archivo: '' }
 };

@@ -1,31 +1,8 @@
-/* ═══════════════════════════════════════════════════════════════
-   Menú superior (v2) — css/menu.css
-   Barra fija de marfil casi opaco con filete inferior tenue. Versalitas
-   Cormorant espaciadas, monograma pequeño a la izquierda y el botón
-   R.S.V.P. con marco a la derecha (referencia 6-IMG_7691.jpg).
 
-   Estructura (21-oct-2026): Nuestra historia · La boda ▾ · Recomendaciones ▾ ·
-   ¿Qué visitar? ▾ · R.S.V.P. Cada grupo (.menu__grupo) tiene una cabeza
-   (.menu__cabeza: el enlace a la sección + el botón con la flecha) y su
-   lista .menu__sub. js/menu.js pone .es-abierto en el grupo abierto.
-
-   Dos maquetaciones:
-   · Celular (< 960 px): monograma · «Menú» · R.S.V.P. El panel cae
-     debajo de la barra con las cuatro entradas; los tres grupos son un
-     acordeón (abierto el de la sección activa).
-   · Escritorio (≥ 960 px): todo en una fila; cada grupo es un
-     desplegable de papel que se abre al pasar el ratón, con clic o teclado.
-     «¿Qué visitar?» añade ancho: a 860 la fila ya no cabe, por eso el
-     corte sube a 960 y hasta ahí se queda el botón «Menú».
-
-   Todo lo que oculta algo lleva la clase «js»: sin JavaScript (o en modo
-   básico) la barra es estática, con las anclas y los apartados a la vista.
-   Solo se animan transform y opacity.
-   ═══════════════════════════════════════════════════════════════ */
 
 :root {
   --menu-alto: 58px;
-  --menu-corte: 960px;   /* js/menu.js lo lee para su matchMedia: debe coincidir con las @media de abajo */
+  --menu-corte: 960px;
   --menu-fondo: rgba(246, 242, 234, .96);
   --menu-filete: rgba(205, 191, 158, .62);
 }
@@ -33,10 +10,9 @@
   :root { --menu-alto: 66px; }
 }
 
-/* ═══════════ La barra ═══════════ */
 .menu {
   position: relative;
-  z-index: 1150;   /* fuera de main: por encima de las hojitas delanteras (1100); el sobre (1000) ya se retiró cuando la barra aparece */
+  z-index: 1150;
   width: 100%;
   background: var(--menu-fondo);
   color: var(--tinta);
@@ -44,7 +20,7 @@
   border-bottom: 1px solid var(--menu-filete);
   box-shadow: 0 14px 30px -26px rgba(43, 43, 40, .35);
 }
-/* Con la experiencia completa la barra queda fija arriba, respetando la muesca */
+
 .js .menu {
   position: fixed;
   top: 0;
@@ -52,7 +28,7 @@
   right: 0;
   padding-top: env(safe-area-inset-top, 0px);
 }
-/* Oculta hasta que el sobre se abre; entra deslizándose desde arriba */
+
 .js .menu {
   opacity: 0;
   visibility: hidden;
@@ -71,13 +47,13 @@
     opacity .55s var(--suave) .1s,
     visibility 0s;
 }
-/* Con ?abierta, al recargar o en la demo: se ve de inmediato, sin deslizarse */
+
 .js .menu.menu--inmediata,
 .js .menu.menu--inmediata.menu--visible { transition: none; }
 
 .menu__barra {
   display: flex;
-  flex-wrap: wrap;   /* sin JavaScript la lista pasa a una segunda fila */
+  flex-wrap: wrap;
   align-items: center;
   gap: 8px;
   min-height: var(--menu-alto);
@@ -92,7 +68,6 @@
 }
 .js .menu__barra { flex-wrap: nowrap; }
 
-/* ── Monograma: lleva al inicio ── */
 .menu__inicio {
   display: inline-flex;
   align-items: center;
@@ -108,13 +83,12 @@
 .menu__inicio .monograma {
   width: 54px;
   height: 37px;
-  --monograma-fondo: #F6F2EA;   /* el fondo de la barra, para el contorno del «&» */
+  --monograma-fondo: #F6F2EA;
 }
 @media (hover: hover) {
   .menu__inicio:hover { color: var(--olivo); }
 }
 
-/* ── Botón «Menú» (solo celular, solo con JavaScript) ── */
 .menu__abrir {
   display: inline-flex;
   align-items: center;
@@ -131,7 +105,7 @@
   border-radius: 3px;
 }
 .menu__abrir[hidden] { display: none; }
-.menu__abrir-texto { padding-left: .26em; }   /* compensa el espaciado final */
+.menu__abrir-texto { padding-left: .26em; }
 .menu__abrir-icono {
   display: grid;
   gap: 5px;
@@ -147,7 +121,6 @@
 .menu--abierto .menu__abrir-icono i:first-child { transform: translate3d(0, 3px, 0) rotate(45deg); }
 .menu--abierto .menu__abrir-icono i:last-child { transform: translate3d(0, -3px, 0) rotate(-45deg); }
 
-/* ── R.S.V.P.: con marco, siempre a la vista ── */
 .menu__rsvp {
   position: relative;
   display: inline-flex;
@@ -155,7 +128,7 @@
   justify-content: center;
   flex: none;
   min-height: 44px;
-  margin-left: auto;   /* a la derecha; con el botón «Menú» a la vista, junto a él */
+  margin-left: auto;
   padding: 0 13px 0 calc(13px + .3em);
   font-weight: 600;
   font-size: 12px;
@@ -181,21 +154,19 @@
   .menu__rsvp:hover::after { border-color: rgba(246, 242, 234, .55); }
 }
 .menu__rsvp:active { background: var(--olivo-hondo); color: var(--marfil-luz); }
-/* Cuando la confirmación es la sección a la vista, el marco se llena */
+
 .menu__rsvp.es-activo,
 .menu__rsvp[aria-current] { background: var(--olivo-hondo); color: var(--marfil-luz); }
 .menu__rsvp.es-activo::after,
 .menu__rsvp[aria-current]::after { border-color: rgba(246, 242, 234, .5); }
 .menu__abrir:not([hidden]) ~ .menu__rsvp { margin-left: 4px; }
 
-/* ═══════════ Panel y lista (celular) ═══════════ */
-/* Sin JavaScript: segunda fila de la barra, a la vista */
 .menu__panel {
   flex: 1 1 100%;
   order: 5;
   padding: 2px 0 10px;
 }
-/* Con JavaScript: cae por debajo de la barra y se abre con el botón «Menú» */
+
 .js .menu__panel {
   position: absolute;
   top: 100%;
@@ -203,7 +174,7 @@
   right: 0;
   flex: none;
   order: 0;
-  /* Si la pantalla es baja (teléfono apaisado), el panel se desplaza por dentro */
+
   max-height: calc(100vh - var(--menu-alto) - env(safe-area-inset-top, 0px));
   max-height: calc(100svh - var(--menu-alto) - env(safe-area-inset-top, 0px));
   overflow-y: auto;
@@ -229,11 +200,11 @@
     opacity .4s var(--suave),
     visibility 0s;
 }
-/* Velo tenue sobre la página mientras el panel está abierto (tocarlo cierra) */
+
 .js .menu::before {
   content: '';
   position: fixed;
-  top: calc(var(--menu-alto) + env(safe-area-inset-top, 0px)); right: 0; bottom: 0; left: 0;   /* empieza bajo la barra: el velo no la oscurece */
+  top: calc(var(--menu-alto) + env(safe-area-inset-top, 0px)); right: 0; bottom: 0; left: 0;
   z-index: -1;
   background: rgba(38, 38, 31, .22);
   opacity: 0;
@@ -266,7 +237,7 @@
   letter-spacing: .26em;
   text-transform: uppercase;
 }
-/* Marca de la sección activa: un rombo pequeño en olivo */
+
 .menu__enlace::before {
   content: '';
   position: absolute;
@@ -284,14 +255,12 @@
 .menu__enlace.es-activo::before,
 .menu__enlace[aria-current]::before { transform: rotate(45deg) scale(1); }
 
-/* ── Grupos: cabeza (enlace + flecha) y lista de apartados ── */
 .menu__grupo { display: block; }
 .menu__cabeza {
   display: flex;
   align-items: center;
 }
-/* Botón de la flecha: solo con JavaScript (el script le quita «hidden»).
-   En celular ocupa el borde derecho de la fila, con área táctil de 56 × 48. */
+
 .menu__desplegar {
   display: inline-flex;
   flex: none;
@@ -314,8 +283,6 @@
 }
 .menu__grupo.es-abierto .menu__flecha { transform: rotate(180deg); }
 
-/* Con JavaScript los apartados se pliegan; abiertos, entran escalonados.
-   La altura no se anima (cambia de golpe): solo transform y opacity. */
 .js .menu__sub { display: none; }
 .js .menu__grupo.es-abierto .menu__sub { display: block; }
 .menu__sub { padding: 0 0 10px; }
@@ -362,7 +329,6 @@
   .menu__desplegar:hover { color: var(--olivo-hondo); }
 }
 
-/* ═══════════ Escritorio: una sola fila ═══════════ */
 @media (min-width: 960px) {
   .menu__barra { gap: 18px; }
   .menu__abrir { display: none !important; }
@@ -394,7 +360,7 @@
     gap: clamp(18px, 2.4vw, 40px);
   }
   .menu__item { position: relative; border: 0 !important; }
-  /* Filete vertical entre entradas, como en el boceto */
+
   .menu__item + .menu__item::before {
     content: '';
     position: absolute;
@@ -420,7 +386,7 @@
     white-space: nowrap;
   }
   .menu__enlace::before { display: none; }
-  /* Subrayado corto que crece bajo la entrada activa */
+
   .menu__enlace::after {
     content: '';
     position: absolute;
@@ -441,20 +407,18 @@
     .menu__enlace[aria-current]:hover::after { opacity: 1; }
   }
 
-  /* La flecha va pegada a la entrada: botón angosto, alto completo */
   .menu__grupo { position: relative; }
   .menu__desplegar {
-    min-width: 44px;   /* área táctil completa (tabletas apaisadas abren con la flecha) */
+    min-width: 44px;
     min-height: 44px;
     margin: 0 -13px 0 -9px;
   }
   .menu__flecha { width: 10px; height: 7px; }
 
-  /* Desplegable de papel bajo la entrada */
   .js .menu__sub,
   .js .menu__grupo.es-abierto .menu__sub {
     position: absolute;
-    /* Cuelga por debajo del filete de la barra: la entrada mide 44 px en una barra de 66 */
+
     top: calc(100% + 18px);
     left: 50%;
     min-width: 196px;
@@ -478,7 +442,7 @@
     border-radius: 1px;
     pointer-events: none;
   }
-  /* Puente invisible entre la entrada y el papel, para que el ratón no lo cierre */
+
   .js .menu__sub::after {
     content: '';
     position: absolute;
@@ -490,7 +454,7 @@
     from { opacity: 0; transform: translate3d(-50%, -8px, 0); }
     to { opacity: 1; transform: translate3d(-50%, 0, 0); }
   }
-  /* En el papel los apartados ya llegan con él: sin entrada escalonada */
+
   .js .menu__grupo.es-abierto .menu__subenlace { animation: none; }
   .menu__subenlace {
     justify-content: center;
@@ -503,8 +467,6 @@
   .menu__subenlace.es-activo,
   .menu__subenlace[aria-current] { color: var(--olivo-hondo); font-weight: 600; }
 
-  /* Sin JavaScript los grupos no se pueden abrir y cerrar con soltura: cada
-     entrada muestra sus apartados en línea, debajo de ella */
   html:not(.js) .menu__panel { flex: 1 1 100%; order: 5; padding: 0 0 8px; }
   html:not(.js) .menu__lista { flex-wrap: wrap; align-items: flex-start; justify-content: center; }
   html:not(.js) .menu__item + .menu__item::before { display: none; }
@@ -513,9 +475,6 @@
   html:not(.js) .menu__subenlace { min-height: 34px; padding: 0 12px; }
 }
 
-/* ═══════════ Espacio para la barra al saltar a una sección ═══════════
-   Los apartados con pestañas (#hospedaje, #maquillaje, #donde-comer, #donde-ir,
-   #patzcuaro) fijan el suyo en css/recomendaciones.css (menú + barra de pestañas). */
 .js #portada,
 .js #historia,
 .js #boda,
@@ -528,14 +487,12 @@
 .js #cierre {
   scroll-margin-top: calc(var(--menu-alto) + env(safe-area-inset-top, 0px));
 }
-/* Tarjetas dentro de #vestimenta: un poco de aire sobre el papel */
+
 .js #dress-code,
 .js #valet {
   scroll-margin-top: calc(var(--menu-alto) + env(safe-area-inset-top, 0px) + 24px);
 }
 
-/* ═══════════ Modo básico (clase «basico» en html): barra estática ═══════════
-   Escrito solo con CSS viejo, como pide css/basico.css. */
 .basico .menu {
   position: static;
   background: #F6F2EA;
@@ -550,7 +507,7 @@
 .basico .menu__inicio .monograma { width: 56px; height: 38px; margin: 0 auto; }
 .basico .menu__abrir, .basico .menu__desplegar { display: none; }
 .basico .menu__panel { position: static; display: block; max-height: none; overflow: visible; padding: 0; background: none; border: 0; box-shadow: none; opacity: 1; visibility: visible; }
-/* (también sin JavaScript: misma maqueta compacta) */
+
 .basico .menu__lista, .basico .menu__sub, html:not(.js) .menu__lista, html:not(.js) .menu__sub { display: block; list-style: none; margin: 0; padding: 0; }
 .basico .menu__item, html:not(.js) .menu__item { display: block; margin: 0; border: 0; }
 .basico .menu__item::before, html:not(.js) .menu__item::before { display: none; }
@@ -573,7 +530,6 @@
 .basico .menu__rsvp, html:not(.js) .menu__rsvp { display: inline-block; min-height: 0; margin-top: 8px; padding: 11px 18px; font-size: 12px; color: #4E5330; border: 1px solid #6B7042; }
 .basico .menu__rsvp::after { display: none; }
 
-/* ═══════════ Temas de contraste ═══════════ */
 @media (forced-colors: active) {
   .menu { border-bottom: 1px solid CanvasText; }
   .menu__rsvp,

@@ -1,6 +1,6 @@
-// Cuenta regresiva hasta CONFIG.evento.inicio. Se actualiza una vez por
-// segundo, alineada al reloj, y se pausa con la pestaña oculta o fuera de
-// pantalla.
+
+
+
 
 import { CONFIG } from './config.js';
 
@@ -32,15 +32,15 @@ function montar(raiz, opciones) {
 
   const ambito = raiz.closest('section') || document;
 
-  /* ── DOM ── */
+   
   raiz.classList.add('cuenta');
   raiz.setAttribute('role', 'group');
   raiz.setAttribute('aria-label', 'Cuenta regresiva para la boda');
   raiz.textContent = '';
 
-  // Texto para lectores de pantalla: se actualiza cada minuto, sin anunciarse
+
   const lectura = crear('p', 'solo-lectores');
-  // Anuncio puntual: al aparecer y al cambiar de estado, nunca cada segundo
+
   const anuncio = crear('p', 'solo-lectores');
   anuncio.setAttribute('role', 'status');
   anuncio.setAttribute('aria-live', 'polite');
@@ -62,11 +62,11 @@ function montar(raiz, opciones) {
 
   raiz.append(lectura, rejilla, mensaje, anuncio);
 
-  /* ── Estado ── */
-  let visible = false;          // ya apareció (tras revelar)
+   
+  let visible = false;
   let enPantalla = true;
   let reloj = 0;
-  let estado = '';              // 'cuenta' | 'hoy' | 'despues'
+  let estado = '';
   let ultimoMinuto = '';
   let relojAnuncio = 0;
 
@@ -79,7 +79,7 @@ function montar(raiz, opciones) {
   function ponerNumero(pieza, texto, animar) {
     if (texto === pieza.texto) return;
     const cifras = [...texto];
-    // Ajusta la cantidad de casillas (los días pueden tener 1–3 cifras)
+
     while (pieza.digitos.length < cifras.length) {
       const casilla = crear('span', 'cuenta__digito');
       const cifra = crear('span', 'cuenta__cifra', '');
@@ -172,7 +172,7 @@ function montar(raiz, opciones) {
     return estado;
   }
 
-  /* ── Reloj: un tic por segundo, alineado al cambio de segundo ── */
+   
   function activo() { return visible && enPantalla && !document.hidden; }
 
   function programar() {
@@ -185,7 +185,7 @@ function montar(raiz, opciones) {
 
   function reanudar() {
     if (!activo()) { clearTimeout(reloj); reloj = 0; return; }
-    pintar(false);            // al volver no se anima: solo se pone al día
+    pintar(false);
     programar();
   }
 
@@ -193,13 +193,13 @@ function montar(raiz, opciones) {
     if (visible) return;
     visible = true;
     pintar(false);
-    // Un cuadro de espera para que la transición de entrada sí ocurra
+
     requestAnimationFrame(() => requestAnimationFrame(() => raiz.classList.add('cuenta--visible')));
     anunciar(estado === 'cuenta' ? lectura.textContent : MENSAJES[estado]);
     programar();
   }
 
-  /* ── Observadores y eventos ── */
+   
   const observador = new IntersectionObserver(([entrada]) => {
     enPantalla = entrada.isIntersecting;
     reanudar();

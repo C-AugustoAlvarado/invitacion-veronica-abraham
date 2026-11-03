@@ -1,41 +1,27 @@
-/* ═══════════════════════════════════════════════════════════════
-   Itinerario — línea de tiempo nocturna (v2)
-   El texto va directo sobre la noche (sin tarjetas). Un hilo de luz
-   se dibuja con el scroll (--p lo escribe el motor) y en su punta
-   viaja una luciérnaga que enciende cada hito al alcanzarlo.
-   Paleta v2: el hilo, la luciérnaga y los nodos encendidos son
-   filetes de dorado tenue (son luz); la ilustración de línea y los
-   acentos van en olivo claro; el texto, en marfil.
-   El remate es la luna (sin frase, 21-oct-2026): de su punta cuelgan
-   dos anillos entrelazados que se balancean apenas.
-   Solo se animan transform y opacity.
-   ═══════════════════════════════════════════════════════════════ */
+
 
 .prog {
-  --prog-luz: var(--dorado-tenue, #CDBF9E);     /* lo que brilla: hilo, nodos, luciérnaga, luna */
+  --prog-luz: var(--dorado-tenue, #CDBF9E);
   --prog-luz-rgb: 205, 191, 158;
-  --prog-luz-alta: #FBF4E2;                     /* corazón de la luciérnaga */
-  --prog-linea-color: var(--olivo-claro, #A3A67E);   /* ilustración de línea y acentos */
+  --prog-luz-alta: #FBF4E2;
+  --prog-linea-color: var(--olivo-claro, #A3A67E);
   --prog-linea-rgb: 163, 166, 126;
   --prog-marfil: var(--marfil, #F6F2EA);
   --prog-marfil-rgb: 246, 242, 234;
-  --prog-hora: clamp(44px, 12vw, 56px);         /* tamaño de la hora */
-  --prog-eje: 12px;                             /* posición horizontal del hilo */
-  --prog-sangria: 48px;                         /* del borde al texto (celular) */
+  --prog-hora: clamp(44px, 12vw, 56px);
+  --prog-eje: 12px;
+  --prog-sangria: 48px;
   --prog-icono: 74px;
-  --prog-trazo: 1.5;                            /* ≈ 1.4 px en pantalla */
-  --prog-punta: .6;                             /* altura de la ventana donde viaja la punta */
-  overflow: hidden;                             /* los decorados nunca provocan scroll lateral */
+  --prog-trazo: 1.5;
+  --prog-punta: .6;
+  overflow: hidden;
   overflow: clip;
-  /* El remate ya es solo la luna (sin frase): el respiro inferior se acorta un poco
-     para que la siguiente sección no quede tan lejos */
+
   padding-bottom: clamp(56px, 9vh, 110px);
 }
 
-/* ── Cabecera ── */
 .prog-cabecera { margin-bottom: clamp(64px, 11vh, 120px); }
-/* La manuscrita (--f-mano) solo trae peso 400: con más, el navegador la
-   engrosaría de mentira. Es fina, así que va en marfil pleno y grande. */
+
 .prog-titulo {
   margin-top: clamp(10px, 2vh, 18px);
   font-family: var(--f-mano);
@@ -54,7 +40,6 @@
   text-wrap: balance;
 }
 
-/* Ramita de olivo en el ornamento (el rombo compartido se sustituye aquí) */
 .prog-ornamento { color: var(--prog-linea-color); gap: 16px; }
 .prog-ramita {
   width: 58px;
@@ -73,17 +58,15 @@
   .prog-ramita { margin: 0 16px; }
 }
 
-/* ── Línea de tiempo ── */
 .prog-linea {
   position: relative;
   max-width: 980px;
   margin: 0 auto;
   padding: 26px 0 clamp(64px, 10vh, 110px);
-  /* Sin JavaScript el hilo aparece completo y los hitos encendidos */
+
   --hilo: 1;
 }
-/* Con el módulo listo, el avance del hilo sale de --p: la punta viaja a una
-   altura fija de la ventana (--prog-punta), sin importar el alto de la lista. */
+
 .prog-linea.prog-lista {
   --hilo: clamp(0,
     calc((var(--p, 0) * (var(--prog-vh, 800) + var(--prog-alto, 1600)) - var(--prog-vh, 800) * (1 - var(--prog-punta)))
@@ -107,12 +90,12 @@
   left: -.5px;
   width: 1px;
 }
-/* Guía: el camino que el hilo va a recorrer, apenas insinuado en olivo */
+
 .prog-hilo__guia {
   background: repeating-linear-gradient(180deg,
     rgba(var(--prog-linea-rgb), .3) 0 2px, rgba(var(--prog-linea-rgb), 0) 2px 9px);
 }
-/* Hilo de luz: filete de dorado tenue */
+
 .prog-hilo__oro {
   left: -.75px;
   width: 1.5px;
@@ -122,7 +105,6 @@
   will-change: transform;
 }
 
-/* ── Luciérnaga ── */
 .prog-chispa {
   position: absolute;
   top: 0;
@@ -130,7 +112,7 @@
   width: 0;
   height: 0;
   transform: translate3d(0, calc(var(--hilo) * var(--prog-alto, 0) * 1px), 0);
-  /* aparece al empezar el hilo y se apaga al llegar al final */
+
   opacity: calc(clamp(0, var(--hilo) * 40, 1) * clamp(0, (1 - var(--hilo)) * 25, 1));
   will-change: transform, opacity;
 }
@@ -176,7 +158,6 @@
   82% { transform: translate3d(-1.5px, -1.5px, 0); }
 }
 
-/* ── Hitos ── */
 .prog-hitos { list-style: none; }
 
 .prog-hito {
@@ -186,14 +167,13 @@
   column-gap: 10px;
   align-items: start;
   padding-left: var(--prog-sangria);
-  /* 0 → 1 cuando el hilo alcanza el nodo (--en lo escribe programa.js) */
+
   --luz: clamp(0, calc((var(--hilo) - var(--en, 0)) * 70), 1);
 }
 .prog-hito + .prog-hito { margin-top: clamp(64px, 10vh, 120px); }
 
 .prog-texto { min-width: 0; display: contents; }
 
-/* La hora, en marfil; «hrs» pequeño en olivo claro, como lo escriben los novios */
 .prog-hora {
   grid-column: 1;
   grid-row: 1;
@@ -250,7 +230,6 @@
   text-wrap: pretty;
 }
 
-/* ── Icono ilustrado (línea en olivo claro) ── */
 .prog-icono {
   position: relative;
   grid-column: 2;
@@ -259,7 +238,7 @@
   height: var(--prog-icono);
   color: var(--prog-linea-color);
 }
-/* Resplandor detrás del trazo: se aviva cuando llega el hilo */
+
 .prog-icono::before {
   content: '';
   position: absolute;
@@ -276,7 +255,6 @@
   stroke-width: var(--prog-trazo);
 }
 
-/* ── Nodo en el hilo ── */
 .prog-nodo {
   position: absolute;
   top: calc(var(--prog-hora) * .5);
@@ -292,7 +270,7 @@
   top: 0;
   left: 0;
 }
-/* rombo apagado: noche con contorno olivo */
+
 .prog-nodo i {
   width: 9px; height: 9px;
   margin: -4.5px 0 0 -4.5px;
@@ -300,7 +278,7 @@
   background: #2F2F27;
   box-shadow: inset 0 0 0 1px rgba(var(--prog-linea-rgb), .6);
 }
-/* rombo encendido: dorado tenue */
+
 .prog-nodo::before {
   width: 9px; height: 9px;
   margin: -4.5px 0 0 -4.5px;
@@ -310,7 +288,7 @@
   transform: rotate(45deg) scale(calc(.5 + var(--luz) * .5));
   opacity: var(--luz);
 }
-/* resplandor */
+
 .prog-nodo::after {
   width: 64px; height: 64px;
   margin: -32px 0 0 -32px;
@@ -320,7 +298,6 @@
   opacity: var(--luz);
 }
 
-/* Remate del hilo */
 .prog-fin {
   position: absolute;
   bottom: 0;
@@ -338,7 +315,6 @@
   opacity: calc(.25 + var(--luz) * .75);
 }
 
-/* ── Luna y estrellas ── */
 .prog-remate {
   margin-top: clamp(26px, 5vh, 54px);
   text-align: center;
@@ -366,18 +342,11 @@
   border-radius: 50%;
   background: radial-gradient(circle, rgba(var(--prog-luz-rgb), .2) 0%, rgba(var(--prog-luz-rgb), .08) 38%, rgba(var(--prog-luz-rgb), 0) 68%);
 }
-/* Respaldo sin aspect-ratio: el alto sale del relleno (78 % del ancho del contenedor) */
+
 @supports not (aspect-ratio: 1) {
   .prog-remate__halo { height: 0; padding-top: 78%; }
 }
 
-/* ── Anillos que cuelgan de la luna ──
-   Dos aros finos entrelazados (uno dorado tenue, otro olivo claro) penden de
-   la punta inferior de la luna por un hilo. El grupo entero pivota en la
-   punta (198.6 108 del viewBox) y el par de aros, en el nudo (198.6 129):
-   un péndulo doble muy leve y lento. Las curvas de cada tramo imitan un
-   seno (sale rápido del centro, frena en el extremo), y el reposo (0 %) es
-   la vertical: así quedan rectos cuando la animación se pausa o no corre. */
 .prog-anillos,
 .prog-anillos__par {
   transform-box: view-box;
@@ -395,7 +364,7 @@
 .prog-anillos__nudo { fill: currentColor; stroke: none; }
 .prog-anillo--oro { stroke: var(--prog-luz); }
 .prog-anillo--olivo { stroke: var(--prog-linea-color); }
-/* Brillo discreto: un arco corto casi blanco que respira muy despacio */
+
 .prog-anillo__brillo {
   stroke: var(--prog-luz-alta);
   stroke-width: 1.05;
@@ -420,7 +389,6 @@
   50% { opacity: .4; }
 }
 
-/* Estrellas: titilan muy despacio, cada una a su ritmo */
 .prog-estrella {
   transform-box: fill-box;
   transform-origin: 50% 50%;
@@ -432,7 +400,6 @@
   60% { opacity: .5; transform: scale(.88); }
 }
 
-/* Estrellas lejanas con parallax */
 .prog-cielo {
   width: clamp(90px, 16vw, 150px);
   color: var(--prog-luz);
@@ -443,9 +410,6 @@
 .prog-cielo--b { top: 46%; right: -2%; opacity: .42; }
 .prog-cielo--c { bottom: 15%; right: 4%; opacity: .48; }
 
-/* Fuera de pantalla o con la pestaña oculta, nada se mueve. Sin el módulo
-   (modo básico, sin JavaScript) tampoco: nunca llega .prog-activa, y los
-   anillos quedan en su vertical de reposo. */
 .prog:not(.prog-activa) .prog-estrella,
 .prog:not(.prog-activa) .prog-chispa__vuelo,
 .prog:not(.prog-activa) .prog-chispa__halo,
@@ -456,7 +420,6 @@
   animation-play-state: paused;
 }
 
-/* ═══════════ Escritorio: hitos alternados a los lados del hilo ═══════════ */
 @media (min-width: 860px) {
   .prog {
     --prog-hora: clamp(60px, 5.6vw, 76px);
@@ -504,7 +467,6 @@
   .prog-cielo--c { bottom: 20%; right: auto; left: 5%; }
 }
 
-/* ═══════════ Movimiento reducido: todo dibujado y encendido ═══════════ */
 @media (prefers-reduced-motion: reduce) {
   .prog-linea.prog-lista { --hilo: 1; }
   .prog-chispa { display: none; }
@@ -514,7 +476,6 @@
   .prog-anillo__brillo { animation: none; }
 }
 
-/* ═══════════ Temas de contraste (Windows): el hilo con borde real ═══════════ */
 @media (forced-colors: active) {
   .prog-hilo__oro, .prog-hilo__guia { border-left: 1px solid CanvasText; background: none; }
   .prog-nodo i { border: 1px solid CanvasText; box-shadow: none; }

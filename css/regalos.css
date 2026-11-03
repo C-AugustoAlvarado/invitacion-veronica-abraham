@@ -1,21 +1,13 @@
-/* ═══════════════════════════════════════════════════════════════
-   Mesa de regalos (#regalos) y botón de copiar (.copiar)
-   Sección nocturna: texto suelto en crema, datos en tarjetas de papel.
-   Solo se animan transform y opacity (y el trazo de la palomita).
-   ═══════════════════════════════════════════════════════════════ */
+
 
 .regalos {
   overflow: hidden;
   overflow: clip;
-  /* Arriba, la mitad de lo que daba .seccion (16vh): con el padding-bottom
-     de .vestimenta (boda.css) la distancia entre la tarjeta del valet y
-     «Mesa de regalos» baja de 270 a 135 px en celular y de 256 a 128 en
-     escritorio (Abraham, 21-oct-2026). */
+
   padding-top: 45px;
   padding-top: clamp(45px, 8vh, 90px);
 }
 
-/* ── Encabezado ── */
 .regalos__encabezado {
   max-width: 720px;
   margin: 0 auto;
@@ -33,7 +25,6 @@
   text-wrap: pretty;
 }
 
-/* ── Chispas ── */
 .regalos__chispas { top: 0; right: 0; bottom: 0; left: 0; }
 .regalos__capa { position: absolute; top: 0; right: 0; bottom: 0; left: 0; }
 .regalos__chispa {
@@ -54,7 +45,6 @@
   100% { opacity: .85; transform: scale(1) rotate(18deg); }
 }
 
-/* ── Lista de tarjetas ── */
 .regalos__lista {
   list-style: none;
   display: grid;
@@ -67,12 +57,11 @@
 
 @media (min-width: 900px) {
   .regalos__lista {
-    grid-template-columns: repeat(2, minmax(0, 1fr));   /* dos mesas desde el 24-oct (sin Liverpool) */
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     max-width: 760px;
     align-items: stretch;
   }
-  /* La del centro baja un poco: se leen como tres papeles sobre una mesa */
-  /* Los tres nombres ocupan el mismo alto aunque uno pase a dos renglones */
+
   .regalo__tienda {
     min-height: 2.3em;
     display: flex;
@@ -81,7 +70,6 @@
   }
 }
 
-/* ── Tarjeta ── */
 .regalo {
   width: 100%;
   display: flex;
@@ -144,7 +132,7 @@
   background: currentColor;
   transform: rotate(45deg);
 }
-/* Sin «gap» en flexbox (ver base.css) */
+
 @supports not (inset: 0) {
   .regalo__filete { gap: 0; }
   .regalo__filete i { margin: 0 10px; }
@@ -169,7 +157,6 @@
   align-items: center;
 }
 
-/* «Por confirmar»: un renglón en blanco de papelería, esperando la tinta */
 .regalo__pendiente {
   position: relative;
   display: inline-block;
@@ -192,7 +179,6 @@
   opacity: .75;
 }
 
-/* Valor confirmado */
 .regalo__valor {
   display: flex;
   flex-wrap: wrap;
@@ -245,7 +231,7 @@
   justify-content: center;
   gap: 10px 12px;
   position: relative;
-  z-index: 1; /* por encima del filete interior de .papel */
+  z-index: 1;
 }
 .regalo__acciones[hidden] { display: none; }
 @supports not (inset: 0) {
@@ -261,7 +247,6 @@
   opacity: 1;
 }
 
-/* ═══════════ Botón de copiar y enlace «Ver mesa» ═══════════ */
 .copiar,
 .regalo__enlace {
   position: relative;
@@ -284,7 +269,7 @@
   transition: transform .5s var(--suave), background-color .4s var(--suave), color .4s var(--suave);
 }
 .regalo__enlace { box-shadow: inset 0 0 0 1px rgba(92, 81, 56, .4); }
-/* En el botón el icono va antes del texto; en el enlace, después */
+
 @supports not (inset: 0) {
   .copiar,
   .regalo__enlace { gap: 0; }
@@ -329,7 +314,6 @@
   stroke-dashoffset: 1;
 }
 
-/* Los dos textos ocupan la misma celda: el botón no cambia de ancho */
 .copiar__textos { display: inline-grid; }
 .copiar__textos > span {
   grid-area: 1 / 1;
@@ -349,7 +333,6 @@
 
 .copiar.es-fallido { box-shadow: inset 0 0 0 1px var(--vino); }
 
-/* Sobre la noche (fuera de una tarjeta de papel) el botón va en crema */
 .seccion--noche .copiar { color: var(--crema); }
 .seccion--noche .papel .copiar { color: var(--cafe); }
 

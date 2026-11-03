@@ -1,8 +1,8 @@
-// Confirmación de asistencia.
-// El sitio es estático: no hay servidor que reciba el formulario. Se arma un
-// mensaje cálido y se abre WhatsApp (o el correo) para que el invitado lo
-// envíe desde su propio teléfono. Si todavía no hay teléfono ni correo en
-// CONFIG.rsvp, el formulario se puede llenar y avisa que pronto estará listo.
+
+
+
+
+
 
 import { CONFIG } from './config.js';
 
@@ -24,8 +24,8 @@ function primerNombre(nombre) {
   return nombre.trim().split(/\s+/)[0] || '';
 }
 
-// «josé luis de la o» → «José Luis de la O»: solo se corrige la inicial de
-// cada palabra; lo demás se respeta tal como lo escribió el invitado.
+
+
 const PARTICULAS = new Set(['de', 'del', 'la', 'las', 'los', 'y', 'e', 'da', 'do', 'van', 'von']);
 function cuidarNombre(nombre) {
   return nombre.split(' ').map((palabra, i, todas) => {
@@ -35,7 +35,7 @@ function cuidarNombre(nombre) {
   }).join(' ');
 }
 
-// Mensaje que el invitado enviará. Texto plano, sin datos inventados.
+
 export function armarMensaje({ nombre, asiste, personas, mensaje }) {
   const { ella, el } = CONFIG.novios;
   const fecha = fechaDelEvento();
@@ -55,7 +55,7 @@ export function armarMensaje({ nombre, asiste, personas, mensaje }) {
   return lineas.join('\n\n');
 }
 
-// Destino del mensaje según lo que haya en la configuración
+
 function armarDestino(rsvp, texto) {
   const telefono = String(rsvp.whatsapp ?? '').replace(/\D/g, '');
   if (telefono) {
@@ -75,8 +75,8 @@ function armarDestino(rsvp, texto) {
   return null;
 }
 
-/* ── Inicio ──
-   opciones.rsvp: valores que sustituyen a los de CONFIG.rsvp (para pruebas). */
+
+
 export function iniciarRsvp(opciones = {}) {
   const seccion = document.getElementById('rsvp');
   const formulario = (seccion || document).querySelector('[data-rsvp-formulario]');
@@ -104,7 +104,7 @@ export function iniciarRsvp(opciones = {}) {
 
   let personas = 1;
 
-  /* ── Fecha límite ── */
+   
   const limite = ambito.querySelector('[data-rsvp-limite]');
   const fechaLimite = String(rsvp.fechaLimite ?? '').trim();
   if (limite) {
@@ -113,7 +113,7 @@ export function iniciarRsvp(opciones = {}) {
     limite.hidden = !fechaLimite;
   }
 
-  /* ── Número de personas ── */
+   
   function pintarPersonas(direccion) {
     if (numero) {
       numero.textContent = String(personas);
@@ -149,7 +149,7 @@ export function iniciarRsvp(opciones = {}) {
   }
   radios.forEach((radio) => radio.addEventListener('change', alElegirAsistencia));
 
-  /* ── Validación ── */
+   
   function elementoDeError(campo) {
     return formulario.querySelector(`[data-rsvp-error="${campo}"]`);
   }
@@ -210,24 +210,24 @@ export function iniciarRsvp(opciones = {}) {
   });
   campoMensaje?.addEventListener('input', limpiarAviso);
 
-  // Lleva un elemento a la vista solo si quedó fuera (respuesta a una acción
-  // del invitado, nunca durante el scroll).
+
+
   function acercar(el) {
     if (!el) return;
     const caja = el.getBoundingClientRect();
     const fuera = caja.top < 70 || caja.bottom > window.innerHeight - 30;
     if (!fuera) return false;
-    // Una tarjeta más alta que la ventana se alinea arriba; lo demás, al centro
+
     const bloque = caja.height > window.innerHeight - 100 ? 'start' : 'center';
     el.scrollIntoView({ block: bloque, behavior: reducido.matches ? 'auto' : 'smooth' });
     return true;
   }
 
-  /* ── Envío ── */
+   
   function abrir(destino) {
     try {
       if (destino.medio === 'correo') {
-        // Un enlace de verdad: el navegador abre la aplicación de correo
+
         const enlace = document.createElement('a');
         enlace.href = destino.url;
         enlace.hidden = true;
@@ -237,10 +237,10 @@ export function iniciarRsvp(opciones = {}) {
         return;
       }
       const ventana = window.open(destino.url, '_blank');
-      if (ventana) { try { ventana.opener = null; } catch (e) { /* nada */ } }
+      if (ventana) { try { ventana.opener = null; } catch (e) {   } }
       else window.location.href = destino.url;
     } catch (e) {
-      // Si el navegador bloquea la ventana, queda el enlace del agradecimiento
+
     }
   }
 
@@ -293,7 +293,7 @@ export function iniciarRsvp(opciones = {}) {
       gracias.hidden = false;
       tarjeta.classList.add('es-enviada');
       gracias.focus({ preventScroll: true });
-      // La ráfaga sale cuando la tarjeta ya llegó a su sitio
+
       const huboViaje = acercar(tarjeta);
       setTimeout(() => lanzarPetalos(datos.asiste), huboViaje && !reducido.matches ? 700 : 60);
     };
@@ -303,7 +303,7 @@ export function iniciarRsvp(opciones = {}) {
     setTimeout(cambiar, 380);
   }
 
-  // Seguro contra el doble toque: solo se activa cuando de verdad se abre el destino
+
   let enviando = false;
 
   function alEnviar(evento) {
@@ -315,7 +315,7 @@ export function iniciarRsvp(opciones = {}) {
 
     const destino = armarDestino(rsvp, armarMensaje(datos));
     if (!destino) {
-      // Aún no hay teléfono ni correo: se avisa con cariño y no se envía nada
+
       if (aviso) {
         aviso.textContent = AVISO_PENDIENTE;
         acercar(aviso);
@@ -330,7 +330,7 @@ export function iniciarRsvp(opciones = {}) {
   }
   formulario.addEventListener('submit', alEnviar);
 
-  /* ── Volver al formulario ── */
+   
   gracias?.querySelector('[data-rsvp-editar]')?.addEventListener('click', () => {
     enviando = false;
     gracias.hidden = true;
@@ -340,7 +340,7 @@ export function iniciarRsvp(opciones = {}) {
     acercar(tarjeta);
   });
 
-  /* ── Las chispas solo titilan con la sección en pantalla y la pestaña visible ── */
+   
   if (seccion) {
     let enPantalla = false;
     const aplicar = () => seccion.classList.toggle('es-activa', enPantalla && !document.hidden);
@@ -356,7 +356,7 @@ export function iniciarRsvp(opciones = {}) {
   pintarPersonas(0);
   alElegirAsistencia();
 
-  // El formulario ya responde: se muestra en lugar del enlace directo (css/rsvp.css)
+
   (seccion || formulario.closest('section'))?.classList.add('es-funcional');
 
   formulario._rsvp = { armarMensaje, validar };

@@ -1,25 +1,25 @@
-// Hojitas de olivo: la firma del sitio (v2; en v1 eran pétalos, por eso el
-// archivo, la función y los eventos conservan el nombre «petalos»).
-// Dos lienzos fijos a pantalla completa:
-//   · «fondo»  (detrás del contenido): muchas hojitas chicas y nítidas.
-//   · «frente» (encima de todo, incluido el sobre): pocas hojas grandes,
-//     desenfocadas y muy translúcidas, como profundidad de campo.
-// De noche las hojitas se funden hacia chispas tenues y estrellas.
-// No importa otros módulos: escucha 'petalos:rafaga' y 'ambiente:cambio'
-// en document (DISENO.md §4). No emite eventos.
-// La calidad se ajusta sola: si el teléfono no sostiene el ritmo, bajan los
-// píxeles y la cantidad de hojitas (ver «Calidad»). En uno rápido no cambia nada.
+
+
+
+
+
+
+
+
+
+
+
 
 const limitar = (v, a, b) => Math.min(b, Math.max(a, v));
 const mezclar = (a, b, t) => a + (b - a) * t;
 const azar = (a, b) => a + Math.random() * (b - a);
 const DOS_PI = Math.PI * 2;
 
-// Paleta v2 (css/base.css): olivo claro dominante, olivo y marfil con borde
-// olivo. «peso» = qué tan seguido aparece cada tono. Cada hoja tiene dos
-// caras: el haz (arriba, más hondo) y el envés (abajo, más claro y plateado,
-// como en el olivo de verdad); al voltearse en el aire se ve la otra cara.
-//   nervio: color del nervio central (RGB); borde: contorno fino (RGB) y su alfa.
+
+
+
+
+
 const TONOS = [
   {
     nombre: 'olivo-claro', peso: 0.55,
@@ -44,11 +44,11 @@ const TONOS = [
   }
 ];
 
-// Tres siluetas lanceoladas, con curvas bézier en una caja de −0.5 a 0.5.
-// La base de la hoja (donde nace el rabillo) queda abajo (y = 0.5) y la
-// punta arriba. Cada forma trae su contorno y el trazo de su nervio central.
+
+
+
 const FORMAS = [
-  // Hoja de olivo clásica: larga, angosta y recta
+
   {
     contorno(c) {
       c.moveTo(0, 0.5);
@@ -61,7 +61,7 @@ const FORMAS = [
     },
     rabillo: [0, 0.5, 0, 0.58]
   },
-  // Hoja un poco combada por el viento, con la punta ladeada
+
   {
     contorno(c) {
       c.moveTo(-0.03, 0.5);
@@ -74,7 +74,7 @@ const FORMAS = [
     },
     rabillo: [-0.03, 0.5, -0.045, 0.58]
   },
-  // Hoja más corta y ancha, de brote joven
+
   {
     contorno(c) {
       c.moveTo(0, 0.42);
@@ -89,37 +89,37 @@ const FORMAS = [
   }
 ];
 
-// Chispas de noche sobre --noche #26261F. Dos tonos posibles (núcleo, medio y
-// halo en RGB): «dorado» apenas insinuado (--dorado-tenue) o marfil cálido
-// (--marfil / --olivo-palido). El predeterminado se eligió comparando capturas.
+
+
+
 const CHISPAS = {
   dorado: { nucleo: '255, 250, 238', medio: '236, 224, 192', halo: '205, 191, 158' },
   marfil: { nucleo: '255, 253, 248', medio: '241, 238, 228', halo: '217, 219, 199' }
 };
 
-// Niveles de desenfoque: fracción útil del sprite y radio relativo.
-// Las hojas son delgadas: con menos desenfoque que los pétalos de v1 ya se
-// leen como «fuera de foco» sin perder la silueta.
+
+
+
 const DESENFOQUES = [
   { util: 0.92, radio: 0 },
   { util: 0.80, radio: 0.022 },
   { util: 0.64, radio: 0.03 }
 ];
 
-// Niveles de calidad: 0 = completa (la de siempre), 1 = ligera, 2 = mínima.
-// Lo caro no es calcular las hojitas sino los píxeles de dos lienzos a
-// pantalla completa: por eso lo primero que baja es la resolución.
+
+
+
 const CALIDADES = [
   { dpr: 2, dprFrente: 1.5, densidad: 1, frente: true },
   { dpr: 1.5, dprFrente: 1, densidad: 0.75, frente: true },
   { dpr: 1, dprFrente: 1, densidad: 0.5, frente: false }
 ];
-// Un cuadro «lento» dura más de 42 ms (menos de 24 por segundo): un iPhone en
-// bajo consumo (33 ms) no cuenta. Para volver a subir se pide un ritmo
-// claramente mejor (36 ms) y sostenido mucho más tiempo: así no oscila.
+
+
+
 const CUADRO_LENTO = 0.042;
 const CUADRO_AGIL = 0.036;
-const CUADRO_PAUSA = 0.25;      // más que esto no es lentitud: la pestaña estuvo detenida
+const CUADRO_PAUSA = 0.25;
 const LENTOS_PARA_BAJAR = 90;
 const AGILES_PARA_SUBIR = 1200;
 
@@ -131,9 +131,9 @@ export function iniciarPetalos(opciones = {}) {
 
   const ajustes = {
     contenedor: document.body,
-    densidad: 1,          // multiplicador de la cantidad de hojitas
-    puntero: true,        // en escritorio, el puntero las aparta
-    chispas: 'dorado',    // tono de las chispas de noche: 'dorado' (tenue) o 'marfil'
+    densidad: 1,
+    puntero: true,
+    chispas: 'dorado',
     ...opciones
   };
   if (!CHISPAS[ajustes.chispas]) ajustes.chispas = 'dorado';
@@ -143,10 +143,10 @@ export function iniciarPetalos(opciones = {}) {
   const consultaPuntero = window.matchMedia('(hover: hover) and (pointer: fine)');
   let reducido = consultaReducido.matches;
 
-  /* ── Calidad ── */
-  // Pista inicial, cuando el navegador la da. La memoria solo la informan
-  // Chrome y Samsung; los núcleos no bastan para bajar la calidad (Safari los
-  // redondea), solo hacen que la medición decida más pronto.
+   
+
+
+
   const memoria = +navigator.deviceMemory || 0;
   const nucleos = +navigator.hardwareConcurrency || 0;
   let calidad = memoria > 0 && memoria <= 1 ? 2 : (memoria > 0 && memoria <= 2 ? 1 : 0);
@@ -154,10 +154,10 @@ export function iniciarPetalos(opciones = {}) {
   let lentos = 0;
   let agiles = 0;
   let subidas = 0;
-  let calidadFija = false;      // ya subió y volvió a bajar: se queda donde está
+  let calidadFija = false;
   if (calidad === 2) raiz.classList.add('modesto');
 
-  /* ── Lienzos ── */
+   
   function crearLienzo(capa) {
     const lienzo = document.createElement('canvas');
     lienzo.className = `petalos-lienzo petalos-lienzo--${capa}`;
@@ -178,11 +178,11 @@ export function iniciarPetalos(opciones = {}) {
   let alto = 0;
   let dprFondo = 1;
   let dprFrente = 1;
-  let escala = 1;         // las hojitas crecen un poco en pantallas grandes
+  let escala = 1;
 
-  /* ── Sprites pre-renderizados ── */
+   
   const admiteFiltro = typeof ctxFondo.filter === 'string';
-  let sprites = null;     // sprites[calido][cara][tono][forma][desenfoque]; cara 0 = haz, 1 = envés
+  let sprites = null;
   let spriteChispa = null;
   let spriteEstrella = null;
   let dprSprites = 0;
@@ -194,9 +194,9 @@ export function iniciarPetalos(opciones = {}) {
     return l;
   }
 
-  // Una hojita de olivo: relleno plano con un leve degradado a lo largo,
-  // nervio central fino, contorno delgado y un rabillo corto. Nada de
-  // lavados: en v2 las ilustraciones son de línea limpia.
+
+
+
   function dibujarHoja(tono, forma, lado, util, enves) {
     const l = nuevoLienzo(lado);
     const c = l.getContext('2d');
@@ -207,7 +207,7 @@ export function iniciarPetalos(opciones = {}) {
     c.lineCap = 'round';
     c.lineJoin = 'round';
 
-    // Rabillo: se dibuja antes para que la hoja lo tape donde se tocan
+
     c.strokeStyle = `rgba(${tono.borde}, ${Math.min(1, tono.bordeAlfa + 0.25)})`;
     c.lineWidth = 0.022;
     c.beginPath();
@@ -219,7 +219,7 @@ export function iniciarPetalos(opciones = {}) {
     f.contorno(c);
     c.closePath();
 
-    // Color de la lámina: un poco más hondo en la base, más luminoso en la punta
+
     const lamina = c.createLinearGradient(0, 0.5, 0, -0.5);
     lamina.addColorStop(0, cara.base);
     lamina.addColorStop(0.45, cara.medio);
@@ -229,8 +229,8 @@ export function iniciarPetalos(opciones = {}) {
 
     c.save();
     c.clip();
-    // Media luz: una mitad de la lámina apenas más clara, como si el nervio
-    // la plegara un poco (en el envés, al revés)
+
+
     const pliegue = c.createLinearGradient(-0.2, 0, 0.2, 0);
     const luz = enves ? 'rgba(255, 255, 255, .16)' : 'rgba(255, 255, 255, .13)';
     const sombra = `rgba(${tono.nervio}, ${enves ? 0.05 : 0.09})`;
@@ -240,7 +240,7 @@ export function iniciarPetalos(opciones = {}) {
     c.fillStyle = pliegue;
     c.fillRect(-0.6, -0.6, 1.2, 1.2);
 
-    // Nervio central, fino y continuo
+
     c.strokeStyle = `rgba(${tono.nervio}, ${enves ? tono.nervioEnves : tono.nervioAlfa})`;
     c.lineWidth = enves ? 0.012 : 0.014;
     c.beginPath();
@@ -248,8 +248,8 @@ export function iniciarPetalos(opciones = {}) {
     c.stroke();
     c.restore();
 
-    // Contorno: el que separa la hoja del fondo (la marfil lo necesita
-    // para verse sobre el papel marfil)
+
+
     c.beginPath();
     f.contorno(c);
     c.closePath();
@@ -269,11 +269,11 @@ export function iniciarPetalos(opciones = {}) {
       c.filter = 'none';
       return l;
     }
-    // Sin ctx.filter (Safari, incluido iOS): desenfoque de caja separable,
-    // tres pasadas (casi gaussiano), sobre píxeles premultiplicados para que
-    // el borde no cambie de color. La suma de copias translúcidas de v1
-    // dejaba rayas y manchas rosadas en formas delgadas como estas.
-    // Solo ocurre una vez, al crear los sprites.
+
+
+
+
+
     const datos = origen.getContext('2d').getImageData(0, 0, lado, lado);
     const src = datos.data;
     const n = lado * lado;
@@ -286,7 +286,7 @@ export function iniciarPetalos(opciones = {}) {
     const r = Math.max(1, Math.round(radio * 0.95));
     const peso = 1 / (r * 2 + 1);
     const ultimo = lado - 1;
-    // Una pasada de caja en una dirección: suma corrida de los cuatro canales
+
     const pasada = (de, hacia, pasoPix, pasoLin) => {
       const sp = pasoPix * 4;
       const sl = pasoLin * 4;
@@ -308,8 +308,8 @@ export function iniciarPetalos(opciones = {}) {
       }
     };
     for (let p = 0; p < 3; p++) {
-      pasada(a, b, 1, lado);      // horizontal
-      pasada(b, a, lado, 1);      // vertical
+      pasada(a, b, 1, lado);
+      pasada(b, a, lado, 1);
     }
     const fuera = c.createImageData(lado, lado);
     const dst = fuera.data;
@@ -323,8 +323,8 @@ export function iniciarPetalos(opciones = {}) {
     return l;
   }
 
-  // Al atardecer las hojitas se entibian apenas con el dorado tenue de los
-  // filetes (--dorado-tenue): nada de naranja.
+
+
   function entibiar(origen) {
     const l = nuevoLienzo(origen.width);
     const c = l.getContext('2d');
@@ -338,7 +338,7 @@ export function iniciarPetalos(opciones = {}) {
   function crearSpritesLuz() {
     const paleta = CHISPAS[tonoChispas];
 
-    // Chispa: núcleo de luz con halo tenue
+
     const ladoChispa = 72 * dprFondo;
     spriteChispa = nuevoLienzo(ladoChispa);
     {
@@ -354,7 +354,7 @@ export function iniciarPetalos(opciones = {}) {
       c.fillRect(0, 0, ladoChispa, ladoChispa);
     }
 
-    // Estrella: punto fino con un destello en cruz
+
     const ladoEstrella = 40 * dprFondo;
     spriteEstrella = nuevoLienzo(ladoEstrella);
     {
@@ -385,7 +385,7 @@ export function iniciarPetalos(opciones = {}) {
     dprSprites = dprFondo;
     const ladoNitido = 60 * dprFondo;
     const ladoGrande = 168 * Math.min(dprFondo, 1.5);
-    // [calido][cara][tono][forma][desenfoque]
+
     sprites = [[[], []], [[], []]];
     TONOS.forEach((tono, it) => {
       for (const cara of [0, 1]) {
@@ -414,13 +414,13 @@ export function iniciarPetalos(opciones = {}) {
     return 0;
   }
 
-  /* ── Partículas ── */
-  let fondo = [];       // hojitas detrás del contenido
-  let frente = [];      // hojas grandes desenfocadas
-  let rafagas = [];     // hojitas temporales (sobre el lienzo de frente)
-  let chispas = [];     // luciérnagas doradas (fondo)
-  let destellos = [];   // chispas grandes desenfocadas (frente)
-  let estrellas = [];   // fijas, arriba
+   
+  let fondo = [];
+  let frente = [];
+  let rafagas = [];
+  let chispas = [];
+  let destellos = [];
+  let estrellas = [];
   const MAX_RAFAGA = 160;
 
   function crearPetalo(capa, repartir) {
@@ -434,7 +434,7 @@ export function iniciarPetalos(opciones = {}) {
       desenfoque: cerca ? 2 : (z < 0.3 ? 1 : 0),
       x: 0,
       y: 0,
-      ix: 0,              // impulsos (puntero, ráfaga): se disipan solos
+      ix: 0,
       iy: 0,
       giro: azar(0, DOS_PI),
       vGiro: azar(-0.5, 0.5),
@@ -451,8 +451,8 @@ export function iniciarPetalos(opciones = {}) {
       vida: 0,
       duracion: 0
     };
-    // «tamano» es el largo de la hoja (la caja del sprite); el ancho es
-    // apenas un cuarto, por eso miden algo más que los pétalos de v1.
+
+
     if (cerca) {
       p.tamano = azar(52, 108) * (ancho < 700 ? 0.74 : 1) * escala;
       p.alfa = azar(0.2, 0.32);
@@ -472,11 +472,11 @@ export function iniciarPetalos(opciones = {}) {
     return p;
   }
 
-  // Pone la hojita en un punto de entrada (o repartido por toda la ventana)
+
   function colocar(p, repartir, desdeAbajo) {
     const margen = p.tamano;
     if (p.capa === 'frente') {
-      // Las hojas cercanas prefieren las orillas: dejan libre la lectura
+
       const lado = Math.random() < 0.5 ? -1 : 1;
       const orilla = Math.pow(Math.random(), 1.7);
       p.x = ancho / 2 + lado * (ancho / 2) * (1.04 - orilla * 0.62);
@@ -510,7 +510,7 @@ export function iniciarPetalos(opciones = {}) {
   function crearEstrella() {
     return {
       x: Math.random(),
-      y: Math.pow(Math.random(), 1.6) * 0.6,   // más densas hacia arriba
+      y: Math.pow(Math.random(), 1.6) * 0.6,
       tamano: azar(9, 20),
       alfa: azar(0.45, 1),
       fase: azar(0, DOS_PI),
@@ -525,7 +525,7 @@ export function iniciarPetalos(opciones = {}) {
   }
 
   function poblar() {
-    // De ~18 en un celular chico a ~60 en un escritorio grande
+
     const area = ancho * alto;
     const base = mezclar(18, 60, limitar((area - 260000) / (2000000 - 260000), 0, 1));
     const nivel = CALIDADES[calidad];
@@ -545,7 +545,7 @@ export function iniciarPetalos(opciones = {}) {
     for (const c of destellos) { if (c.x > ancho) c.x = azar(0, ancho); if (c.y > alto) c.y = azar(0, alto); }
   }
 
-  /* ── Medición ── */
+   
   function medir(forzar) {
     const w = lienzoFondo.clientWidth || window.innerWidth;
     const h = lienzoFondo.clientHeight || window.innerHeight;
@@ -555,7 +555,7 @@ export function iniciarPetalos(opciones = {}) {
     ancho = w;
     alto = h;
     dprFondo = dpr;
-    // El frente es casi todo desenfoque: no necesita toda la resolución
+
     dprFrente = Math.min(dpr, nivel.dprFrente);
     escala = limitar(Math.sqrt(ancho / 900), 0.82, 1.3);
 
@@ -569,20 +569,20 @@ export function iniciarPetalos(opciones = {}) {
     return true;
   }
 
-  /* ── Calidad: cambio de nivel y vigilancia del ritmo ── */
+   
   function fijarCalidad(nivel) {
     const nuevo = limitar(Math.round(nivel) || 0, 0, CALIDADES.length - 1);
     lentos = 0;
     agiles = 0;
     if (nuevo === calidad) return;
     calidad = nuevo;
-    // La hoja de estilos aligera el grano del fondo con esta clase
+
     raiz.classList.toggle('modesto', calidad === 2);
-    medir(true);              // nueva resolución, sprites y cantidad de hojitas
+    medir(true);
     if (reducido) pedirEstatico();
   }
 
-  // Recibe la duración real de cada cuadro, en segundos
+
   function vigilarRitmo(real) {
     if (!(real > 0) || real > CUADRO_PAUSA) return;
     if (real > CUADRO_LENTO) {
@@ -590,7 +590,7 @@ export function iniciarPetalos(opciones = {}) {
       agiles = Math.max(0, agiles - 30);
     } else {
       lentos = Math.max(0, lentos - 1);
-      if (real < CUADRO_AGIL && calidad < CALIDADES.length - 1) agiles++;   // el nivel mínimo es definitivo
+      if (real < CUADRO_AGIL && calidad < CALIDADES.length - 1) agiles++;
     }
     if (calidad < CALIDADES.length - 1 && lentos > (sospechoso ? LENTOS_PARA_BAJAR / 2 : LENTOS_PARA_BAJAR)) {
       if (subidas) calidadFija = true;
@@ -601,7 +601,7 @@ export function iniciarPetalos(opciones = {}) {
     }
   }
 
-  /* ── Ambiente ── */
+   
   const pesos = { ocaso: 0, noche: 0 };
   const pesosMeta = { ocaso: 0, noche: 0 };
   {
@@ -621,27 +621,27 @@ export function iniciarPetalos(opciones = {}) {
     }
   }
 
-  /* ── Viento: ráfagas suaves y aleatorias ── */
+   
   const viento = { actual: 0, meta: 6, cambio: 0 };
   function moverViento(t, dt) {
     if (t >= viento.cambio) {
       const enCalma = Math.abs(viento.meta) > 14;
       if (enCalma) {
-        viento.meta = azar(-9, 9);              // vuelve la calma
+        viento.meta = azar(-9, 9);
         viento.cambio = t + azar(5, 11);
       } else {
         viento.meta = azar(26, 58) * (Math.random() < 0.5 ? -1 : 1);
-        viento.cambio = t + azar(2.2, 4.2);     // sopla unos segundos
+        viento.cambio = t + azar(2.2, 4.2);
       }
     }
     viento.actual += (viento.meta - viento.actual) * (1 - Math.exp(-dt * 0.9));
   }
 
-  /* ── Scroll (velocidad propia: no depende del motor) ── */
+   
   let yScroll = window.scrollY;
   let velScroll = 0;
 
-  /* ── Puntero ── */
+   
   const puntero = { x: 0, y: 0, activo: false };
   function alMoverPuntero(e) {
     if (e.pointerType && e.pointerType !== 'mouse') return;
@@ -663,13 +663,13 @@ export function iniciarPetalos(opciones = {}) {
     p.iy += (dy / d) * empuje * 0.7;
   }
 
-  /* ── Física ── */
+   
   function moverPetalo(p, dt, dy, agitacion) {
     p.vaiven += p.vVaiven * dt;
     p.volteo += p.vVolteo * dt * (1 + agitacion * 1.6);
     p.giro += (p.vGiro + Math.cos(p.vaiven) * 0.35) * dt;
 
-    // De canto cae más rápido; de cara, el aire lo frena
+
     const cara = Math.abs(Math.cos(p.volteo));
     const caida = p.caida * (1.22 - cara * 0.42);
     const profundidad = p.capa === 'frente' ? 1.25 : 0.45 + p.z * 0.65;
@@ -704,18 +704,18 @@ export function iniciarPetalos(opciones = {}) {
     else if (c.x < -m) c.x = ancho + m;
   }
 
-  /* ── Dibujo ── */
+   
   function pintarPetalo(ctx, dpr, p, alfa, calido) {
     if (alfa < 0.004) return;
     const nivel = DESENFOQUES[p.desenfoque];
     const lado = (p.tamano / nivel.util) * dpr;
-    // Volteo en 3D simulado: un eje se encoge y se invierte
+
     let v = Math.cos(p.volteo);
     if (v > -0.1 && v < 0.1) v = v < 0 ? -0.1 : 0.1;
     const cos = Math.cos(p.giro);
     const sen = Math.sin(p.giro);
     ctx.setTransform(cos * lado, sen * lado, -sen * lado * v, cos * lado * v, p.x * dpr, p.y * dpr);
-    // Al voltearse se ve el envés, más claro y plateado (sprite propio)
+
     const cara = v < 0 ? 1 : 0;
     const juego = sprites[0][cara][p.color][p.forma][p.desenfoque];
     ctx.globalAlpha = alfa;
@@ -734,7 +734,7 @@ export function iniciarPetalos(opciones = {}) {
     ctx.drawImage(sprite, -0.5, -0.5, 1, 1);
   }
 
-  // Las hojas cercanas se atenúan al cruzar la columna de lectura
+
   function atenuarCentro(x) {
     const d = Math.abs(x - ancho / 2) / (ancho / 2);
     return mezclar(0.55, 1, limitar(d * 1.25, 0, 1));
@@ -751,11 +751,11 @@ export function iniciarPetalos(opciones = {}) {
   let frenteVisible = true;
 
   function cuadroAnimado(t, dt) {
-    // Scroll: desplazamiento exacto de este cuadro + velocidad suavizada
+
     const y = window.scrollY;
     let dy = y - yScroll;
     yScroll = y;
-    if (Math.abs(dy) > alto * 1.5) dy = 0;        // salto (ancla): no arrastrar
+    if (Math.abs(dy) > alto * 1.5) dy = 0;
     const vel = dt > 0 ? dy / dt : 0;
     velScroll += (vel - velScroll) * (1 - Math.exp(-dt * 8));
     const agitacion = limitar(Math.abs(velScroll) / 1800, 0, 1);
@@ -770,7 +770,7 @@ export function iniciarPetalos(opciones = {}) {
     moverViento(t, dt);
     const conPuntero = puntero.activo && ajustes.puntero && consultaPuntero.matches;
 
-    /* Fondo */
+     
     limpiar(ctxFondo, lienzoFondo);
     if (noche > 0) {
       for (const e of estrellas) {
@@ -788,17 +788,17 @@ export function iniciarPetalos(opciones = {}) {
       moverChispa(c, t, dt, dy);
       if (noche > 0) {
         if (conPuntero) apartar(c, 130, 500, dt);
-        // Parpadeo de luciérnaga: se enciende y se apaga despacio
+
         const pulso = Math.sin(t * c.ritmo + c.fase);
         const brillo = 0.3 + 0.7 * pulso * pulso;
         pintarLuz(ctxFondo, dprFondo, spriteChispa, c.x, c.y, c.tamano * (0.85 + 0.15 * brillo), c.alfa * brillo * noche);
       }
     }
 
-    /* Frente */
-    // Sin nada que pintar delante, el lienzo de frente no se toca y se esconde
-    // (una capa menos que componer). Las ráfagas lo vuelven a encender
-    // mientras duran: por eso no se usa display: none.
+     
+
+
+
     const hayFrente = frente.length > 0 || destellos.length > 0 || rafagas.length > 0;
     if (hayFrente !== frenteVisible) {
       frenteVisible = hayFrente;
@@ -836,7 +836,7 @@ export function iniciarPetalos(opciones = {}) {
     fondoSucio = true;
   }
 
-  // Movimiento reducido: unas pocas hojitas quietas y tenues (o chispas, de noche)
+
   let estaticoPedido = 0;
   function pedirEstatico() {
     if (estaticoPedido) return;
@@ -863,21 +863,21 @@ export function iniciarPetalos(opciones = {}) {
     }
   }
 
-  /* ── Bucle: un solo requestAnimationFrame ── */
+   
   let cuadro = 0;
   let anterior = 0;
   let pausado = false;
   let destruido = false;
   let relojManual = 0;
-  let pintado = 0;        // momento del último cuadro pintado
+  let pintado = 0;
 
   function bucle(ahora) {
     cuadro = 0;
     if (destruido || pausado || reducido || document.hidden) return;
     if (anterior) vigilarRitmo((ahora - anterior) / 1000);
     anterior = ahora;
-    // En calidad mínima las hojitas se pintan a lo sumo unas 30 veces por
-    // segundo: el resto de los cuadros queda libre para el scroll.
+
+
     if (calidad === 2 && pintado && ahora - pintado < 30) {
       cuadro = requestAnimationFrame(bucle);
       return;
@@ -903,7 +903,7 @@ export function iniciarPetalos(opciones = {}) {
     cuadro = 0;
   }
 
-  /* ── Ráfaga ── */
+   
   function rafaga(x, y, cantidad, fuerza) {
     if (destruido || reducido || !sprites) return 0;
     const cx = Number.isFinite(x) ? x : ancho / 2;
@@ -923,7 +923,7 @@ export function iniciarPetalos(opciones = {}) {
       p.arrastre = 0.5 + p.z * 0.4;
       p.amplitud = 16 + p.z * 22;
       p.vVolteo *= 1.7;
-      // Abanico hacia arriba, con los extremos un poco más lentos
+
       const abanico = azar(-1, 1);
       const angulo = -Math.PI / 2 + abanico * 1.25;
       const impulso = azar(230, 640) * f * (1 - Math.abs(abanico) * 0.25);
@@ -931,7 +931,7 @@ export function iniciarPetalos(opciones = {}) {
       p.iy = Math.sin(angulo) * impulso;
       p.x = cx + Math.cos(angulo) * azar(0, 10);
       p.y = cy + Math.sin(angulo) * azar(0, 10);
-      p.vida = -i * 0.012;                       // salen escalonados
+      p.vida = -i * 0.012;
       p.duracion = azar(9, 14);
       rafagas.push(p);
       creados++;
@@ -945,7 +945,7 @@ export function iniciarPetalos(opciones = {}) {
     rafaga(d.x, d.y, d.cantidad, d.fuerza);
   }
 
-  /* ── Eventos ── */
+   
   let temporizador = 0;
   function alRedimensionar() {
     clearTimeout(temporizador);
@@ -981,7 +981,7 @@ export function iniciarPetalos(opciones = {}) {
   document.addEventListener('ambiente:cambio', alCambiarAmbiente);
   if (consultaReducido.addEventListener) consultaReducido.addEventListener('change', alCambiarMovimiento);
 
-  // El lienzo avisa si cambia de tamaño aunque no llegue el evento resize
+
   const observadorTamano = typeof ResizeObserver === 'function' ? new ResizeObserver(alRedimensionar) : null;
   if (observadorTamano) observadorTamano.observe(lienzoFondo);
 
@@ -1021,7 +1021,7 @@ export function iniciarPetalos(opciones = {}) {
       sprites = null;
       instancia = null;
     },
-    // Cambia el tono de las chispas de noche ('dorado' o 'marfil') en caliente
+
     chispas(nombre) {
       if (destruido) return tonoChispas;
       if (CHISPAS[nombre] && nombre !== tonoChispas) {
@@ -1031,13 +1031,13 @@ export function iniciarPetalos(opciones = {}) {
       }
       return tonoChispas;
     },
-    // Hoja con todos los sprites, para revisarlos de cerca:
-    // hojas[calido][cara][tono][forma][desenfoque] (cara 0 = haz, 1 = envés)
+
+
     muestrario() {
       return sprites ? { hojas: sprites, tonos: TONOS.map((t) => t.nombre), chispa: spriteChispa, estrella: spriteEstrella } : null;
     },
-    // Solo para diagnóstico (demo y pruebas): no son parte del contrato.
-    // avanzar() simula y pinta sin esperar a requestAnimationFrame.
+
+
     avanzar(segundos = 1, paso = 1 / 60) {
       if (destruido || reducido || !sprites) return;
       const pasos = Math.min(3000, Math.round(segundos / paso));
@@ -1046,14 +1046,14 @@ export function iniciarPetalos(opciones = {}) {
         cuadroAnimado(relojManual, paso);
       }
     },
-    // Fuerza un nivel de calidad (0, 1 o 2) y lo deja fijo
+
     calidad(nivel) {
       if (destruido) return calidad;
       calidadFija = true;
       fijarCalidad(nivel);
       return calidad;
     },
-    // Simula cuadros de cierta duración (en segundos) para probar la vigilancia
+
     ritmo(real, cuadros = 1) {
       if (destruido) return calidad;
       for (let i = 0; i < cuadros; i++) vigilarRitmo(real);

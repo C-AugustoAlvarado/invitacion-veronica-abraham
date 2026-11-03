@@ -1,9 +1,4 @@
-/* ═══════════════════════════════════════════════════════════════
-   Boda Verónica & Abraham — Base de diseño
-   Identidad heredada del Save the Date (colores y tipografías).
-   Este archivo define tokens, tipografía, componentes compartidos
-   y el "ambiente" continuo (día → dorado → ocaso → noche).
-   ═══════════════════════════════════════════════════════════════ */
+
 
 @font-face {
   font-family: 'Dancing Script';
@@ -12,9 +7,7 @@
   font-display: swap;
   src: url('../assets/fuentes/dancing-script.woff2') format('woff2');
 }
-/* Manuscrita elegida por los novios (SIL Open Font License, Kimberly Geswein).
-   Trazo fino y minúsculas altas (ojo de 0.44 em frente a 0.33 de Dancing Script):
-   no necesita size-adjust, pero pide tinta oscura y tamaños ≥ 1.4rem. */
+
 @font-face {
   font-family: 'La Belle Aurore';
   font-style: normal;
@@ -38,11 +31,7 @@
 }
 
 :root {
-  /* ── Paleta v2 (retroalimentación de los novios, 12 oct 2026):
-     solo ivory y verde olivo, negro o gris para textos, dorado apenas
-     insinuado en filetes. Los nombres heredados de v1 (crema, café,
-     dorado, pétalo…) apuntan a los valores nuevos para que todo el CSS
-     existente cambie de golpe. ── */
+
   --marfil: #F6F2EA;
   --marfil-luz: #FBF9F4;
   --blanco-calido: #FFFDF8;
@@ -57,7 +46,6 @@
   --gris-claro: #B9B5AA;
   --dorado-tenue: #CDBF9E;
 
-  /* Nombres heredados (v1) → paleta v2 */
   --crema: var(--marfil);
   --crema-luz: var(--marfil-luz);
   --crema-calida: #F1ECE0;
@@ -80,19 +68,16 @@
   --noche-alta: #32332A;
   --noche-honda: #1B1B16;
 
-  /* ── Tipografía ── */
   --f-script: 'Dancing Script', 'Snell Roundhand', cursive;
-  --f-mano: 'La Belle Aurore', 'Bradley Hand', 'Segoe Print', var(--f-script);   /* manuscrita casual elegida por los novios */
+  --f-mano: 'La Belle Aurore', 'Bradley Hand', 'Segoe Print', var(--f-script);
   --f-serif: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
 
-  /* ── Ritmo y movimiento ── */
   --ancho: 1120px;
   --margen: max(clamp(22px, 5vw, 64px), env(safe-area-inset-left, 0px), env(safe-area-inset-right, 0px));
   --suave: cubic-bezier(.22, .61, .36, 1);
   --elastica: cubic-bezier(.34, 1.4, .64, 1);
   --entrada: cubic-bezier(.16, 1, .3, 1);
 
-  /* ── Ambiente: el motor de scroll escribe estos pesos (0 → 1) ── */
   --amb-dorado: 0;
   --amb-ocaso: 0;
   --amb-noche: 0;
@@ -105,7 +90,7 @@
 html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
-  font-synthesis: none;   /* La Belle Aurore solo existe en 400: nada de negrita falsa */
+  font-synthesis: none;
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -123,14 +108,14 @@ body {
 
 body.bloqueado {
   overflow: hidden;
-  height: 100vh;    /* respaldo donde no existe svh */
+  height: 100vh;
   height: 100svh;
-  touch-action: none;
+  touch-action: pinch-zoom;
 }
 
 img, svg, canvas, video { display: block; max-width: 100%; }
 img { height: auto; }
-/* <picture> solo elige el formato: no debe generar caja propia */
+
 picture { display: contents; }
 button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
 a { color: inherit; }
@@ -148,9 +133,29 @@ a { color: inherit; }
   clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
 }
 
-/* ═══════════ Ambiente continuo ═══════════
-   Capas fijas que se funden según el avance del scroll. Nunca hay
-   un corte: el fondo es un solo cielo que cambia de hora. */
+.saltar {
+  position: fixed;
+  top: 10px; left: 10px;
+  z-index: 3000;
+  padding: 10px 18px;
+  font-family: var(--f-serif);
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--olivo-hondo);
+  background: var(--crema);
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  text-decoration: none;
+  opacity: 0;
+  transform: translateY(-200%);
+}
+.saltar:focus {
+  opacity: 1;
+  transform: none;
+  outline: 2px solid var(--olivo-hondo);
+  outline-offset: 2px;
+}
+
 #ambiente {
   position: fixed;
   top: 0; right: 0; bottom: 0; left: 0;
@@ -159,11 +164,7 @@ a { color: inherit; }
   overflow: hidden;
   background: var(--crema);
 }
-/* El fondo del documento sigue al ambiente: es lo que iOS pinta al rebotar
-   y de donde Safari 26 toma el tinte de sus barras. Se pinta body y
-   #ambiente, nunca html: si html tuviera fondo propio, el de body dejaría
-   de propagarse al lienzo y taparía #ambiente (z-index: -1). En pantalla no
-   cambia nada: las capas .amb cubren todo. */
+
 html[data-ambiente="dorado"] body,
 html[data-ambiente="dorado"] #ambiente { background-color: #EBDDC2; }
 html[data-ambiente="ocaso"] body,
@@ -196,24 +197,22 @@ html[data-ambiente="noche"] #ambiente { background-color: var(--noche); }
 }
 .amb--noche {
   opacity: var(--amb-noche);
-  /* La mitad inferior es --noche plano: ahí se funde sin costura el primer
-     plano del atardecer, que usa exactamente ese color. */
+
   background:
     radial-gradient(70% 42% at 85% 0%, rgba(122, 96, 60, .42) 0%, rgba(122, 96, 60, 0) 72%),
     radial-gradient(60% 36% at 8% 6%, rgba(163, 166, 126, .12) 0%, rgba(163, 166, 126, 0) 70%),
     linear-gradient(180deg, var(--noche-alta) 0%, var(--noche) 46%, var(--noche) 100%);
 }
-/* Grano de papel: una sola textura fija sobre todo el recorrido */
+
 .amb--grano {
   opacity: .5;
   background-image: url('../assets/svg/grano.svg');
   background-size: 320px 320px;
   mix-blend-mode: multiply;
 }
-/* Teléfono modesto (lo marca js/petalos.js): el grano sin mezcla cuesta menos */
+
 .modesto .amb--grano { mix-blend-mode: normal; opacity: .3; }
 
-/* ═══════════ Estructura ═══════════ */
 main { position: relative; z-index: 1; }
 
 .seccion {
@@ -229,24 +228,20 @@ main { position: relative; z-index: 1; }
 .contenedor--angosto { max-width: 760px; }
 .centrado { text-align: center; }
 
-/* Las secciones nocturnas invierten la tinta */
 .seccion--noche { color: var(--crema); }
 .seccion--noche .t-sobretitulo,
 .seccion--noche .t-fecha { color: var(--petalo); }
 .seccion--noche .t-script { color: var(--crema); }
 .seccion--noche .t-titulo { color: var(--petalo); }
-/* Sin JavaScript el ambiente no oscurece: la sección trae su propio fondo.
-   Lo mismo si el cielo fijo quedó sin tamaño (.sin-ambiente, lo marca el motor) */
+
 html:not(.js) .seccion--noche,
 .sin-ambiente .seccion--noche { background: var(--noche); }
 
-/* Avisos que solo se leen cuando el motor no arrancó (o no hay JavaScript) */
 .solo-basico { display: none; }
 html:not(.js) .solo-basico { display: block; }
 
-/* ═══════════ Tipografía ═══════════ */
 .t-script {
-  font-family: var(--f-mano);   /* desde el 21-oct-2026: la misma manuscrita que «Cada segundo nos acerca» */
+  font-family: var(--f-mano);
   font-weight: 400;
   font-size: clamp(38px, 7.6vw, 74px);
   line-height: 1.16;
@@ -284,7 +279,6 @@ html:not(.js) .solo-basico { display: block; }
 }
 .t-nombres .inicial { font-size: 1.32em; }
 
-
 .t-lugar {
   font-family: var(--f-serif);
   font-weight: 600;
@@ -305,7 +299,6 @@ html:not(.js) .solo-basico { display: block; }
   font-size: clamp(14px, 1.9vw, 16px);
 }
 
-/* ═══════════ Ornamentos ═══════════ */
 .ornamento {
   display: flex;
   align-items: center;
@@ -328,15 +321,12 @@ html:not(.js) .solo-basico { display: block; }
   background: currentColor;
   transform: rotate(45deg);
 }
-/* Respaldo sin «gap» en flexbox (Safari anterior a 14.1, Chrome anterior a 84).
-   No se puede preguntar por él con @supports, así que se pregunta por «inset»,
-   que llegó a la vez o poco después: quien no lo conoce separa con márgenes. */
+
 @supports not (inset: 0) {
   .ornamento { gap: 0; }
   .ornamento i { margin: 0 14px; }
 }
 
-/* ═══════════ Botones ═══════════ */
 .boton {
   position: relative;
   display: inline-flex;
@@ -366,15 +356,14 @@ html:not(.js) .solo-basico { display: block; }
   box-shadow: inset 0 0 0 1px var(--dorado);
 }
 .seccion--noche .boton--linea { color: var(--crema); }
-/* Dentro de una tarjeta de papel (clara) el botón de contorno vuelve a olivo, también de noche
-   (p. ej. «Llamar» en la tarjeta de la wedding planner) */
+
 .papel .boton--linea,
 .seccion--noche .papel .boton--linea { color: var(--olivo-hondo); box-shadow: inset 0 0 0 1px var(--olivo); }
 @supports not (inset: 0) {
   .boton { gap: 0; }
   .boton > svg { margin-right: 12px; }
 }
-/* Destello que cruza el botón */
+
 .boton::after {
   content: '';
   position: absolute;
@@ -399,9 +388,6 @@ html:not(.js) .solo-basico { display: block; }
   text-decoration-thickness: 1px;
 }
 
-/* ═══════════ Papel ═══════════
-   Tarjetas que flotan sobre el ambiente: papel de algodón con
-   sombra suave. Siempre claras, incluso de noche. */
 .papel {
   position: relative;
   background:
@@ -427,9 +413,6 @@ html:not(.js) .solo-basico { display: block; }
 .papel .t-sobretitulo { color: var(--dorado-tinta); }
 .papel .t-script, .papel .t-titulo { color: var(--cafe); }
 
-/* ═══════════ Revelados (el motor añade .es-visible) ═══════════
-   Solo se ocultan si hay JavaScript: sin él, todo el contenido
-   queda visible. */
 .js [data-revelar] {
   opacity: 0;
   transition:
@@ -452,14 +435,13 @@ html:not(.js) .solo-basico { display: block; }
   opacity: 1;
   transform: none;
   filter: none;
-  /* Ya revelado no necesita capa propia: se libera la memoria */
+
   will-change: auto;
 }
 .js [data-revelar="acuarela"].es-visible { clip-path: circle(140% at 50% 60%); }
 
-/* Texto partido en palabras por el motor ([data-letras]) */
 .palabra { display: inline-block; white-space: pre; }
-/* Par de palabras que no debe separarse entre renglones */
+
 .js [data-letras] .palabra {
   opacity: 0;
   transform: translate3d(0, .55em, 0) rotate(3deg);
@@ -469,8 +451,6 @@ html:not(.js) .solo-basico { display: block; }
 }
 .js [data-letras].es-visible .palabra { opacity: 1; transform: none; }
 
-/* Capas con parallax: el motor escribe transform directamente. Solo las
-   cercanas a la ventana (.en-vista, la pone el motor) piden capa propia */
 [data-parallax].en-vista { will-change: transform; }
 
 .decorado {
@@ -480,7 +460,6 @@ html:not(.js) .solo-basico { display: block; }
   -webkit-user-select: none;
 }
 
-/* ═══════════ Movimiento reducido ═══════════ */
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto !important; }
   *, *::before, *::after {
@@ -497,9 +476,6 @@ html:not(.js) .solo-basico { display: block; }
   }
 }
 
-/* ═══════════ Temas de contraste (Windows) ═══════════
-   box-shadow y degradados se anulan, así que los contornos se dibujan
-   con borde real. */
 @media (forced-colors: active) {
   .boton,
   .copiar,

@@ -1,11 +1,4 @@
-/* ═══════════════════════════════════════════════════════════════
-   Sobre de bienvenida (v2)
-   Un sobre de papel marfil a pantalla completa, cerrado con un
-   sello de lacre blanco que lleva grabado el monograma A&V. Lo
-   construye js/sobre.js dentro de <div id="sobre">.
-   Paleta: marfil, gris para las sombras, olivo para los textos y
-   el dorado apenas en el filete. Solo se animan transform y opacity.
-   ═══════════════════════════════════════════════════════════════ */
+
 
 #sobre {
   position: fixed;
@@ -14,16 +7,16 @@
   overflow: hidden;
   background: #F3F1EA;
   color: var(--tinta, #2B2B28);
-  /* Medidas propias del módulo */
+
   --sobre-sello: clamp(88px, min(27vw, 17vh), 136px);
   --sobre-punta: 56%;
-  --sobre-sombra: 58, 58, 53;   /* gris neutro para todas las sombras */
+  --sobre-sombra: 58, 58, 53;
   contain: layout paint style;
   -webkit-user-select: none;
   user-select: none;
-  touch-action: none;
+  touch-action: pinch-zoom;
 }
-/* Al terminar, el fondo propio se apaga para que solo queden las capas */
+
 #sobre.sobre--abriendo { background: transparent; }
 
 .sobre__defs { position: absolute; width: 0; height: 0; overflow: hidden; }
@@ -37,7 +30,6 @@
 .sobre__escena > * { position: absolute; top: 0; right: 0; bottom: 0; left: 0; }
 .sobre__escena svg { width: 100%; height: 100%; overflow: visible; }
 
-/* ── Interior: el fondo del sobre, forrado con hojitas de olivo ── */
 .sobre__interior {
   background: linear-gradient(180deg, #ECE9E0 0%, #F4F2EB 40%, #F3F1EA 100%);
   will-change: opacity;
@@ -49,7 +41,7 @@
   will-change: transform;
   transform-origin: 50% 0%;
 }
-/* Papel del forro: marfil con una luz que baja desde la abertura */
+
 .sobre__forro::before {
   content: '';
   position: absolute;
@@ -58,7 +50,7 @@
     radial-gradient(80% 30% at 50% 26%, rgba(255, 255, 255, .75) 0%, rgba(255, 255, 255, 0) 70%),
     linear-gradient(180deg, #F1EEE6 0%, #F6F4EE 55%, #F4F2EB 100%);
 }
-/* Patrón de hojitas de olivo en línea (SVG propio, muy sutil) */
+
 .sobre__forro-patron {
   position: absolute;
   top: 0; right: 0; bottom: 0; left: 0;
@@ -70,7 +62,7 @@
   mask-image: radial-gradient(130% 90% at 50% 18%, #000 42%, rgba(0, 0, 0, .3) 100%);
   will-change: opacity;
 }
-/* Sombra del doblez superior sobre el forro */
+
 .sobre__forro::after {
   content: '';
   position: absolute;
@@ -79,7 +71,6 @@
   background: linear-gradient(180deg, rgba(var(--sobre-sombra), .22) 0%, rgba(var(--sobre-sombra), .07) 38%, rgba(var(--sobre-sombra), 0) 100%);
 }
 
-/* ── Bolsa y solapa ── */
 .sobre__bolsa { will-change: transform; }
 .sobre__sombra { will-change: transform, opacity; pointer-events: none; }
 .sobre__solapa {
@@ -98,9 +89,6 @@
   pointer-events: none;
 }
 
-/* ── Textos impresos en el sobre ──
-   Dedicatoria en la solapa, en letra manuscrita; firma e indicación bajo
-   el sello. Nada más: así lo pidieron los novios. */
 .sobre__dedicatoria {
   position: absolute;
   left: 0; right: 0;
@@ -132,7 +120,7 @@
   font-weight: 600;
   font-size: clamp(12.5px, 3.3vw, 15px);
   letter-spacing: .3em;
-  text-indent: .3em;           /* compensa el espaciado de la última letra */
+  text-indent: .3em;
   text-transform: uppercase;
   color: var(--olivo-hondo, #4E5330);
 }
@@ -148,7 +136,6 @@
   vertical-align: -.14em;
 }
 
-/* ── Sello de lacre blanco ── */
 .sobre__sello-lugar {
   position: absolute;
   top: auto; right: auto; bottom: auto; left: auto;
@@ -166,7 +153,7 @@
   border-radius: 50%;
   pointer-events: none;
 }
-/* Ondas en olivo claro que invitan a tocar */
+
 .sobre__halo {
   top: -6%; right: -6%; bottom: -6%; left: -6%;
   border: 1px solid rgba(163, 166, 126, .8);
@@ -182,7 +169,7 @@
   opacity: 0;
   will-change: transform, opacity;
 }
-/* La sombra es lo que despega al lacre blanco del papel blanco */
+
 .sobre__sombra-sello {
   top: -12%; right: -12%; bottom: -12%; left: -12%;
   transform: translate(3%, 9%);
@@ -228,7 +215,7 @@
   will-change: transform, opacity;
 }
 .sobre__mitad svg { width: 100%; height: 100%; overflow: visible; }
-/* La grieta: una línea quebrada; las mitades se traslapan un pelo */
+
 .sobre__mitad--izq {
   clip-path: polygon(0 0, 52.6% 0, 47.6% 17%, 54.6% 33%, 46.6% 50%, 53.6% 67%, 48.6% 83%, 51.6% 100%, 0 100%);
   transform-origin: 30% 60%;
@@ -238,9 +225,6 @@
   transform-origin: 70% 60%;
 }
 
-/* Monograma grabado en el lacre: tres capas del mismo símbolo.
-   «color» pinta las iniciales; --monograma-acento el «&» y
-   --monograma-fondo el contorno que corta las letras (ver pagina.html). */
 .sobre__mono--sombra {
   color: rgba(var(--sobre-sombra), .62);
   --monograma-acento: rgba(var(--sobre-sombra), .62);
@@ -257,7 +241,6 @@
   --monograma-fondo: #F2EFE7;
 }
 
-/* ── Grano de papel sobre todo el conjunto ── */
 .sobre__grano {
   position: absolute;
   top: 0; right: 0; bottom: 0; left: 0;
@@ -266,7 +249,7 @@
   background-image: url('../assets/svg/grano.svg');
   background-size: 320px 320px;
 }
-/* Viñeta muy leve: da volumen al papel */
+
 .sobre__grano::after {
   content: '';
   position: absolute;
@@ -274,7 +257,6 @@
   background: radial-gradient(120% 90% at 50% 45%, rgba(var(--sobre-sombra), 0) 55%, rgba(var(--sobre-sombra), .1) 100%);
 }
 
-/* ── Entrada al cargar ── */
 .sobre__dedicatoria, .sobre__pie { animation: sobre-aparece 1.4s var(--suave) .5s both; }
 .sobre__pie { animation-delay: .9s; }
 .sobre__sello-lugar { animation: sobre-posa 1.3s var(--entrada) .15s both; }
@@ -297,7 +279,6 @@
   100% { opacity: 0; transform: scale(1.62); }
 }
 
-/* En pausa: pestaña oculta o sobre abriéndose */
 .sobre--pausa .sobre__sello,
 .sobre--pausa .sobre__halo,
 .sobre--abriendo .sobre__sello { animation-play-state: paused; }
@@ -305,13 +286,11 @@
 .sobre--abriendo .sobre__sello { pointer-events: none; cursor: default; }
 .sobre--abriendo { pointer-events: none; }
 
-/* ── Pantallas anchas: el patrón respira más y la dedicatoria baja un poco ── */
 @media (min-aspect-ratio: 1/1) {
   .sobre__forro-patron { background-size: 280px 280px; }
   .sobre__dedicatoria { top: clamp(44px, 11vh, 110px); }
 }
 
-/* ── Pantallas bajas (celular acostado) ── */
 @media (max-height: 480px) {
   #sobre { --sobre-punta: 52%; }
   .sobre__dedicatoria { top: 12px; }
@@ -320,14 +299,12 @@
   .sobre__amor { display: none; }
 }
 
-/* ── Movimiento reducido: sin respiración ni halo en movimiento ── */
 @media (prefers-reduced-motion: reduce) {
   .sobre__sello, .sobre__halo { animation: none; }
   .sobre__halo:not(.sobre__halo--eco) { opacity: .6; transform: scale(1.08); }
   .sobre__prensa { transition: none; }
 }
 
-/* ── Temas de contraste (Windows): el lacre se dibuja con borde real ── */
 @media (forced-colors: active) {
   .sobre__sello { border: 1px solid ButtonText; }
 }

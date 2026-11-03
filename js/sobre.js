@@ -1,27 +1,27 @@
-// Sobre de bienvenida: lo primero que ve el invitado.
-// Un sobre marfil a pantalla completa, cerrado con un sello de lacre blanco
-// que lleva grabado el monograma A&V. Al tocar el sello, este se parte, la
-// solapa se levanta, la bolsa se desliza y aparece la invitación, que ya está
-// debajo. Construye su propio DOM dentro de <div id="sobre"></div>.
-// Se comunica solo con eventos en document: emite 'petalos:rafaga' y
-// 'sobre:abierto' (DISENO.md §4). El monograma es el símbolo #monograma-av
-// de src/pagina.html (en la demo se copia tal cual).
+
+
+
+
+
+
+
+
 
 import { CONFIG } from './config.js';
 
 const SVG = 'http://www.w3.org/2000/svg';
 const n = (v) => Number(v).toFixed(1);
 
-// Contorno irregular del lacre (viewBox 0 0 200 200), con sus goterones.
+
 const CONTORNO = 'M191.5 100C191.7 104.7 190.3 109.6 189.1 114.1C187.9 118.7 186.4 123.3 184.2 127.4C182.1 131.5 178.4 134.8 176.1 138.8C173.8 142.7 172.6 147.2 170.4 151.1C168.1 155.1 166 159.6 162.6 162.6C159.3 165.7 154.5 167.4 150.4 169.4C146.3 171.4 142 172.6 137.9 174.4C133.9 176.3 130.3 179.1 126.1 180.4C122 181.8 117.4 182 113.1 182.7C108.7 183.3 104.4 184.3 100 184.3C95.6 184.4 91.1 183.8 86.9 183C82.6 182.1 79.1 179.3 74.3 179.1C69.6 178.8 63.8 181.5 58.4 181.7C53 181.9 46 182.6 41.8 180.2C37.5 177.7 35.6 171.4 33.1 166.9C30.6 162.4 28.8 157.6 27 153C25.2 148.5 23.6 144 22.4 139.5C21.2 135 20.7 130.5 19.7 126.1C18.8 121.7 16.7 117.6 16.6 113.2C16.5 108.9 18.4 104.3 19.2 100C19.9 95.7 21.5 92 21.3 87.5C21.2 83.1 18.5 78.1 18.5 73.5C18.6 69 19.9 64.2 21.7 60.1C23.6 56 27 52.6 29.9 49C32.7 45.5 35.4 41.8 38.8 38.8C42.1 35.8 46.4 33.9 50 31.1C53.6 28.4 56.6 24.9 60.3 22.1C64 19.4 67.9 15.9 72.3 14.6C76.6 13.3 81.8 14.8 86.5 14.5C91.1 14.2 95.4 13.3 100 12.7C104.6 12.1 109.6 10.3 114.1 10.9C118.6 11.5 122.9 14.5 127.2 16.4C131.4 18.2 135.8 19.7 139.6 22.2C143.4 24.7 147.1 27.8 149.9 31.4C152.7 34.9 153.6 40.2 156.6 43.4C159.5 46.7 164.4 47.8 167.8 50.8C171.1 53.7 174.4 57.1 176.7 60.9C178.9 64.8 179.1 69.5 181.1 73.7C183 77.8 186.5 81.6 188.2 86C190 90.4 191.4 95.3 191.5 100Z';
 
-// Sombras del papel: gris neutro, nunca café
+
 const SOMBRA = '#3A3A35';
 
 const escapar = (texto) => String(texto)
   .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
-/* ── Definiciones compartidas del lacre (degradados y filtros) ── */
+ 
 function definiciones() {
   return `
 <svg class="sobre__defs" aria-hidden="true" focusable="false" xmlns="${SVG}">
@@ -62,11 +62,11 @@ function definiciones() {
 </svg>`;
 }
 
-/* ── El sello: lacre blanco con borde irregular, cuenco prensado y el
-      monograma grabado en bajorrelieve (sombra arriba a la izquierda, luz
-      abajo a la derecha). Los colores de cada capa van en css/sobre.css ── */
+
+
+
 function dibujoSello() {
-  // El símbolo mide 440 × 300: se centra dentro del cuenco (r = 66)
+
   const mono = (clase, dx, dy) =>
     `<use class="sobre__mono ${clase}" href="#monograma-av" x="${n(45 + dx)}" y="${n(63.5 + dy)}" width="110" height="75"/>`;
   return `
@@ -94,7 +94,7 @@ function dibujoSello() {
 </svg>`;
 }
 
-/* ── Papel: bolsa, solapa y sombra, dibujadas en pixeles de la ventana ── */
+ 
 function geometria(raiz) {
   const ancho = raiz.clientWidth || window.innerWidth;
   const alto = raiz.clientHeight || window.innerHeight;
@@ -102,13 +102,13 @@ function geometria(raiz) {
   return {
     ancho, alto,
     medio: ancho / 2,
-    yPunta: alto * (punta / 100) + 5,   // punta de la solapa
-    yValle: alto * (punta / 100) - alto * 0.065   // donde se juntan los dobleces
+    yPunta: alto * (punta / 100) + 5,
+    yValle: alto * (punta / 100) - alto * 0.065
   };
 }
 
 function trazoSolapa({ ancho, medio, yPunta }, margen = 0) {
-  // Triángulo con la punta apenas redondeada
+
   const r = 16;
   const dx = r * (medio / Math.hypot(medio, yPunta));
   const dy = r * (yPunta / Math.hypot(medio, yPunta));
@@ -169,11 +169,11 @@ function dibujoSombraSolapa(g) {
 
 function dibujoSolapa(g) {
   const { ancho, medio, yPunta } = g;
-  // Filete paralelo al canto, como en la papelería fina (dorado apenas insinuado)
+
   const largo = Math.hypot(medio, yPunta);
   const sep = 13;
-  const fx = sep * (largo / yPunta);           // corrimiento horizontal en el borde de arriba
-  const fy = yPunta - sep * (largo / medio);   // punta del filete
+  const fx = sep * (largo / yPunta);
+  const fy = yPunta - sep * (largo / medio);
   return `
 <svg viewBox="0 0 ${n(ancho)} ${n(g.alto)}" preserveAspectRatio="none" aria-hidden="true" focusable="false" xmlns="${SVG}">
   <defs>
@@ -193,7 +193,7 @@ function dibujoSolapa(g) {
 </svg>`;
 }
 
-/* ── Inicio ── */
+ 
 export function iniciarSobre(opciones = {}) {
   const raiz = typeof opciones.contenedor === 'string'
     ? document.querySelector(opciones.contenedor)
@@ -201,31 +201,31 @@ export function iniciarSobre(opciones = {}) {
 
   const avisar = () => document.dispatchEvent(new CustomEvent('sobre:abierto'));
 
-  // Sin contenedor no hay sobre: la página nunca se queda bloqueada.
+
   if (!raiz) {
     document.body.classList.remove('bloqueado');
     return null;
   }
-  if (raiz._sobre) return raiz._sobre;   // idempotente
+  if (raiz._sobre) return raiz._sobre;
 
   if (opciones.omitir) {
     raiz.remove();
     document.body.classList.remove('bloqueado');
-    // En el siguiente turno, para que los demás módulos alcancen a escuchar
+
     setTimeout(avisar, 0);
     return null;
   }
 
   const reducido = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const { ella, el } = CONFIG.novios;
-  // Textos del sobre (los pidieron así los novios; se pueden cambiar por opciones)
+
   const dedicatoria = opciones.dedicatoria || 'Esta invitación es exclusiva para ti';
   const firma = opciones.firma || CONFIG.novios.firma || 'Vero & Abraham';
-  const indicacion = typeof opciones.indicacion === 'string' ? opciones.indicacion : '';   // los novios pidieron quitar «toca aquí para abrir»
-  // La firma lleva el «&» en letra manuscrita
+  const indicacion = typeof opciones.indicacion === 'string' ? opciones.indicacion : '';
+
   const firmaHtml = escapar(firma).replace(/\s*&amp;\s*/, ' <i>&amp;</i> ');
-  // La dedicatoria se parte en dos renglones por la mitad (en el espacio más
-  // cercano al centro); en pantallas bajas el CSS la vuelve a juntar.
+
+
   const dedicatoriaHtml = (() => {
     const texto = escapar(dedicatoria);
     const medio = texto.length / 2;
@@ -297,7 +297,7 @@ ${definiciones()}
     grano: $('.sobre__grano')
   };
 
-  /* ── Dibujo del papel a la medida de la ventana ── */
+   
   let ultimaMedida = '';
   function dibujar() {
     const g = geometria(raiz);
@@ -314,15 +314,15 @@ ${definiciones()}
     temporizador = setTimeout(dibujar, 80);
   };
 
-  /* ── Mientras está cerrado: página bloqueada y fuera del teclado ── */
+   
   const apartados = [];
-  // «inert» llegó en Safari 15.5 / Chrome 102; antes de eso, aria-hidden y una trampa de Tab
+
   const tieneInert = 'inert' in HTMLElement.prototype;
   function apartarPagina() {
     for (const hermano of document.body.children) {
       if (hermano === raiz || hermano.contains(raiz)) continue;
       if (/^(SCRIPT|STYLE|LINK|TEMPLATE|NOSCRIPT)$/.test(hermano.tagName)) continue;
-      // El símbolo del monograma (svg de 0 × 0 en body) se necesita para dibujar el sello
+
       if (hermano.tagName === 'svg' && hermano.querySelector('#monograma-av')) continue;
       if (hermano.inert || hermano.getAttribute('aria-hidden') === 'true') continue;
       if (tieneInert) hermano.inert = true;
@@ -337,7 +337,7 @@ ${definiciones()}
     });
   }
 
-  let estado = 'cerrado';   // cerrado → abriendo → abierto
+  let estado = 'cerrado';
   let animaciones = [];
   let seguro = 0;
 
@@ -345,10 +345,10 @@ ${definiciones()}
 
   function alTeclear(evento) {
     if (estado !== 'cerrado' || evento.defaultPrevented) return;
-    // Sin «inert» el teclado podría irse a la página tapada: el foco se queda en el sello
+
     if (!tieneInert && evento.key === 'Tab') { evento.preventDefault(); sello.focus({ preventScroll: true }); return; }
     if (evento.key !== 'Enter' && evento.key !== ' ' && evento.key !== 'Spacebar') return;
-    if (evento.target === sello) return;   // el botón ya lo resuelve solo
+    if (evento.target === sello) return;
     evento.preventDefault();
     abrir();
   }
@@ -359,7 +359,7 @@ ${definiciones()}
     window.removeEventListener('resize', alRedimensionar);
     document.removeEventListener('visibilitychange', alCambiarVisibilidad);
     document.removeEventListener('keydown', alTeclear);
-    animaciones.forEach((a) => { try { a.cancel(); } catch (e) { /* ya terminó */ } });
+    animaciones.forEach((a) => { try { a.cancel(); } catch (e) {   } });
     animaciones = [];
     devolverPagina();
     document.body.classList.remove('bloqueado');
@@ -373,7 +373,7 @@ ${definiciones()}
     const teniaFoco = raiz.contains(document.activeElement);
     limpiar();
     avisar();
-    // El foco pasa al título de la portada para que el lector de pantalla anuncie la invitación
+
     if (teniaFoco) {
       const titulo = document.getElementById('portada-titulo');
       if (titulo) {
@@ -399,7 +399,7 @@ ${definiciones()}
     raiz.classList.add('sobre--abriendo');
     sello.setAttribute('aria-disabled', 'true');
 
-    // Movimiento reducido (o navegador sin Web Animations): fundido simple
+
     if (reducido || typeof raiz.animate !== 'function') {
       if (typeof raiz.animate !== 'function') { terminar(); return; }
       const fundido = animar(raiz, [{ opacity: 1 }, { opacity: 0 }], { duration: 400, easing: 'ease' });
@@ -413,14 +413,14 @@ ${definiciones()}
     const CAIDA = 'cubic-bezier(.5, 0, .9, .55)';
     const caida = Math.round(caja.height * 1.5);
 
-    // 1) El sello se hunde…
+
     animar(partes.prensa, [
       { transform: 'scale(1)' },
       { transform: 'scale(.9)', offset: 0.55, easing: SUAVE },
       { transform: 'scale(.97)' }
     ], { duration: 340, easing: SUAVE });
 
-    // …se parte en dos mitades que caen y se desvanecen
+
     const mitad = (el, lado) => animar(el, [
       { transform: 'translate3d(0, 0, 0) rotate(0deg)', opacity: 1, easing: SUAVE },
       { transform: `translate3d(${lado * 9}px, 3px, 0) rotate(${lado * 5}deg)`, opacity: 1, offset: 0.24, easing: CAIDA },
@@ -438,14 +438,14 @@ ${definiciones()}
     animar(partes.sombraSello, [{ opacity: 1 }, { opacity: 0 }], { duration: 520, delay: 320, easing: SUAVE });
     animar(partes.pie, [{ opacity: 1 }, { opacity: 0 }], { duration: 620, delay: 120, easing: SUAVE });
 
-    // Ráfaga desde el sello (el módulo de partículas ahora lanza hojitas)
+
     setTimeout(() => {
       document.dispatchEvent(new CustomEvent('petalos:rafaga', {
         detail: { x: centro.x, y: centro.y, cantidad: 26, fuerza: 1 }
       }));
     }, 320);
 
-    // 2) La solapa se levanta girando sobre su borde superior
+
     animar(partes.solapa, [
       { transform: 'rotateX(0deg)' },
       { transform: 'rotateX(106deg)' }
@@ -456,13 +456,13 @@ ${definiciones()}
       { transform: 'translate3d(0, 0, 0) scale(1)', opacity: 1 },
       { transform: 'translate3d(0, 26px, 0) scale(1.03)', opacity: 0 }
     ], { duration: 900, delay: 760, easing: 'ease-in' });
-    // El forro se acomoda mientras queda a la vista
+
     animar(partes.forro, [
       { transform: 'translate3d(0, 14px, 0) scale(1.07)' },
       { transform: 'translate3d(0, 0, 0) scale(1)' }
     ], { duration: 2000, delay: 760, easing: SUAVE });
 
-    // 3) La bolsa se desliza hacia abajo y el conjunto se desvanece
+
     animar(partes.bolsa, [
       { transform: 'translate3d(0, 0, 0)' },
       { transform: 'translate3d(0, 62%, 0)' }
@@ -471,22 +471,22 @@ ${definiciones()}
       { transform: 'translate3d(0, 0, 0) scale(1)' },
       { transform: 'translate3d(0, -28px, 0) scale(1.04)' }
     ], { duration: 1150, delay: 1950, easing: VAIVEN, composite: 'replace' });
-    // Las hojitas del forro se despiden un poco antes, para no encimarse con la portada
+
     animar(partes.patron, [{ opacity: 1 }, { opacity: 0 }], { duration: 700, delay: 2150, easing: 'ease-in-out' });
     const fundido = animar(raiz, [{ opacity: 1 }, { opacity: 0 }], { duration: 820, delay: 2260, easing: 'ease-in-out' });
 
-    seguro = setTimeout(terminar, 3600);   // por si la pestaña se durmió a media animación
+    seguro = setTimeout(terminar, 3600);
     fundido.finished.then(terminar, () => {});
   }
 
-  /* ── Comprobación: si css/sobre.css no llegó, el sello no se puede tocar ── */
+   
   if (getComputedStyle(raiz).position !== 'fixed' || sello.offsetWidth < 40 || sello.offsetHeight < 40) {
     raiz.remove();
     document.body.classList.remove('bloqueado');
     return null;
   }
 
-  /* ── Montaje ── */
+   
   document.body.classList.add('bloqueado');
   apartarPagina();
   dibujar();
@@ -496,15 +496,15 @@ ${definiciones()}
   window.addEventListener('resize', alRedimensionar, { passive: true });
   alCambiarVisibilidad();
 
-  // La dedicatoria y el «&» del monograma usan la letra manuscrita de la
-  // página (--f-mano): se pide por adelantado para que no aparezcan en serif
+
+
   try {
     const mano = getComputedStyle(document.documentElement).getPropertyValue('--f-mano').split(',')[0].trim();
     if (mano && document.fonts?.load) {
       document.fonts.load(`500 32px ${mano}`, dedicatoria).catch(() => {});
       document.fonts.load(`600 74px ${mano}`, '&').catch(() => {});
     }
-  } catch (e) { /* sin Font Loading API: la fuente llega sola */ }
+  } catch (e) {   }
 
   if (opciones.enfocar !== false) {
     try { sello.focus({ preventScroll: true }); } catch (e) { sello.focus(); }
@@ -514,7 +514,7 @@ ${definiciones()}
     elemento: raiz,
     abrir,
     get estado() { return estado; },
-    // Retira el sobre sin animación ni evento
+
     destruir() { if (estado !== 'abierto') { estado = 'abierto'; limpiar(); } }
   };
   raiz._sobre = control;

@@ -1,18 +1,13 @@
-/* ═══════════════════════════════════════════════════════════════
-   Confirmación de asistencia (#rsvp)
-   Tarjeta de papel con remate en arco, como un nicho colonial.
-   Solo se animan transform y opacity (y el trazo de las marcas).
-   ═══════════════════════════════════════════════════════════════ */
+
 
 .rsvp {
-  /* Ancho real de la tarjeta: de él sale el radio del arco */
+
   --rsvp-ancho: min(500px, calc(100vw - 2 * var(--margen)));
   --rsvp-radio: calc(var(--rsvp-ancho) / 2);
   overflow: hidden;
   overflow: clip;
 }
 
-/* ── Encabezado ── */
 .rsvp__titulo { margin-top: clamp(10px, 2vh, 18px); }
 .rsvp__limite {
   margin-top: clamp(12px, 2vh, 20px);
@@ -22,7 +17,6 @@
 .rsvp__limite[hidden] { display: none; }
 .rsvp__limite strong { font-weight: 600; color: var(--petalo); white-space: nowrap; }
 
-/* ── Chispas ── */
 .rsvp__chispas { top: 0; right: 0; bottom: 0; left: 0; }
 .rsvp__capa { position: absolute; top: 0; right: 0; bottom: 0; left: 0; }
 .rsvp__chispa {
@@ -43,13 +37,12 @@
   100% { opacity: .85; transform: scale(1) rotate(18deg); }
 }
 
-/* ── Tarjeta en arco ── */
 .rsvp__marco {
   position: relative;
   width: var(--rsvp-ancho);
   margin: clamp(34px, 6vh, 60px) auto 0;
 }
-/* Resplandor cálido detrás del papel, como una vela tras la ventana */
+
 .rsvp__halo {
   position: absolute;
   top: -16%; right: -30%; bottom: -8%; left: -30%;
@@ -69,7 +62,7 @@
 .rsvp__tarjeta.papel::after {
   border-radius: calc(var(--rsvp-radio) - 9px) calc(var(--rsvp-radio) - 9px) 2px 2px;
 }
-/* Segundo filete, más fino: el marco de la ventana */
+
 .rsvp__tarjeta::before {
   content: '';
   position: absolute;
@@ -79,13 +72,12 @@
   pointer-events: none;
 }
 
-/* ── Remate: monograma y ramas ── */
 .rsvp__remate {
   display: flex;
   align-items: flex-end;
   justify-content: center;
 }
-/* Separación con márgenes: «gap» en flex no existe en navegadores de 2020 o antes */
+
 .rsvp__remate > * + * { margin-left: clamp(6px, 2vw, 12px); }
 .rsvp__rama {
   width: clamp(30px, 9vw, 40px);
@@ -147,27 +139,25 @@
 }
 .rsvp__filete i { width: 5px; height: 5px; margin: 0 10px; background: currentColor; transform: rotate(45deg); }
 
-/* ── Formulario ── */
 .rsvp__formulario {
   position: relative;
-  z-index: 1; /* por encima de los filetes del papel */
+  z-index: 1;
   margin-top: clamp(20px, 4vw, 30px);
   display: grid;
-  /* La columna no crece con su contenido: con zoom el formulario sigue cabiendo */
+
   grid-template-columns: minmax(0, 1fr);
   gap: clamp(26px, 5vw, 32px);
   text-align: left;
   transition: opacity .4s var(--suave), transform .5s var(--suave);
 }
 .rsvp__formulario[hidden] { display: none; }
-/* El formulario solo aparece cuando js/rsvp.js está activo; si no, el enlace directo */
+
 .rsvp__directo { position: relative; z-index: 1; margin-top: 24px; text-align: center; }
 .rsvp__directo p + p { margin-top: 18px; }
 .rsvp:not(.es-funcional) .rsvp__formulario { display: none; }
 .rsvp.es-funcional .rsvp__directo { display: none; }
 .rsvp__formulario.es-saliendo { opacity: 0; transform: translate3d(0, -10px, 0); pointer-events: none; }
 
-/* Campo de línea fina con etiqueta flotante */
 .rsvp-campo__caja { position: relative; padding-top: 20px; }
 .rsvp-campo__entrada {
   display: block;
@@ -206,7 +196,7 @@ textarea.rsvp-campo__entrada {
   transition: transform .5s var(--entrada), opacity .4s var(--suave);
   will-change: transform;
 }
-/* La etiqueta sube y se vuelve versalita espaciada */
+
 .rsvp-campo__entrada:focus ~ .rsvp-campo__etiqueta,
 .rsvp-campo__entrada:not(:placeholder-shown) ~ .rsvp-campo__etiqueta {
   transform: translate3d(0, -29px, 0) scale(.74);
@@ -224,7 +214,6 @@ textarea.rsvp-campo__entrada {
 .rsvp-campo__entrada[aria-invalid="true"] { border-bottom-color: var(--vino); }
 .rsvp-campo__entrada[aria-invalid="true"] ~ .rsvp-campo__linea { background: var(--vino); transform: scaleX(1); }
 
-/* Autorrelleno del navegador: que no pinte el papel de azul o amarillo */
 .rsvp-campo__entrada:-webkit-autofill {
   -webkit-text-fill-color: var(--cafe-texto);
   -webkit-box-shadow: 0 0 0 40px #FAF6EC inset;
@@ -243,7 +232,6 @@ textarea.rsvp-campo__entrada {
   color: rgba(78, 70, 50, .8);
 }
 
-/* Mensajes de validación */
 .rsvp-error {
   font-size: 16.5px;
   font-style: italic;
@@ -256,7 +244,6 @@ textarea.rsvp-campo__entrada {
   animation: rsvp-aparecer .5s var(--entrada) both;
 }
 
-/* ── ¿Asistirás? ── */
 .rsvp-opciones { border: 0; min-width: 0; }
 .rsvp-leyenda {
   padding: 0;
@@ -304,7 +291,7 @@ textarea.rsvp-campo__entrada {
   isolation: isolate;
   transition: color .45s var(--suave), transform .5s var(--suave);
 }
-/* El relleno café entra con un fundido (opacity), no cambiando el fondo */
+
 .rsvp-opcion__cara::before {
   content: '';
   position: absolute;
@@ -327,7 +314,7 @@ textarea.rsvp-campo__entrada {
   stroke-width: 1.5;
   stroke-linecap: round;
   stroke-linejoin: round;
-  margin-left: -30px;       /* no ocupa lugar hasta que se elige */
+  margin-left: -30px;
   margin-right: 10px;
   opacity: 0;
   transition: opacity .3s var(--suave);
@@ -354,7 +341,6 @@ textarea.rsvp-campo__entrada {
 }
 .rsvp-opciones[aria-invalid="true"] .rsvp-opcion__cara { box-shadow: inset 0 0 0 1px var(--vino); }
 
-/* ── Número de personas ── */
 .rsvp-personas {
   display: flex;
   flex-direction: column;
@@ -369,7 +355,7 @@ textarea.rsvp-campo__entrada {
   justify-content: space-between;
   gap: 2px 12px;
 }
-/* Respaldo sin gap en flexbox (los navegadores modernos ignoran el bloque) */
+
 @supports not (inset: 0) {
   .rsvp-personas__texto { gap: 0; }
   .rsvp-personas__texto > * + * { margin-top: 2px; }
@@ -429,9 +415,8 @@ textarea.rsvp-campo__entrada {
 .rsvp-contador__numero.es-sube { animation: rsvp-sube .45s var(--entrada) both; }
 .rsvp-contador__numero.es-baja { animation: rsvp-baja .45s var(--entrada) both; }
 
-/* ── Envío ── */
 .rsvp__envio { text-align: center; margin-top: 4px; }
-/* Con zoom o letra agrandada el texto pasa a dos renglones en vez de cortarse */
+
 .rsvp__enviar { width: 100%; padding-left: 14px; padding-right: 14px; letter-spacing: .18em; white-space: normal; text-align: center; }
 .rsvp-aviso {
   font-size: 19px;
@@ -457,7 +442,6 @@ textarea.rsvp-campo__entrada {
   transform: rotate(45deg);
 }
 
-/* ── Agradecimiento ── */
 .rsvp__gracias {
   position: relative;
   z-index: 1;
@@ -520,7 +504,6 @@ textarea.rsvp-campo__entrada {
   text-underline-offset: 5px;
 }
 
-/* ── Animaciones puntuales ── */
 @keyframes rsvp-aparecer {
   from { opacity: 0; transform: translate3d(0, 12px, 0); }
   to   { opacity: 1; transform: none; }

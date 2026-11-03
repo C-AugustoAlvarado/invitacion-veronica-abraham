@@ -1,23 +1,8 @@
-/* ═══════════════════════════════════════════════════════════════
-   MODO BÁSICO — css/basico.css (se enlaza AL FINAL, después de rsvp.css)
-   Lo activa la clase «basico» en <html> (script en línea de <head> en
-   src/pagina.html): navegador que no puede con la experiencia completa,
-   archivos que no llegaron a tiempo, o ?basico en la dirección.
-   Página estática y legible: sin sobre, sin nada oculto, con fondo
-   propio en cada sección. Si js/main.js logra cargar, añade la clase
-   «funcional» (calendario, copiar y formulario activos).
-   REGLA DE ESTE ARCHIVO: solo CSS viejo. Nada de inset, gap, clamp(),
-   min(), max(), aspect-ratio, svh/lvh ni var(): medidas en px y
-   colores escritos con su número (paleta v2: marfil #F6F2EA, tinta
-   #2B2B28, olivo #6B7042 / #4E5330 / #A3A67E / #D9DBC7, dorado tenue
-   #CDBF9E, noche #26261F). El menú trae su propio bloque en menu.css.
-   ═══════════════════════════════════════════════════════════════ */
 
-/* Contenido que solo existe en modo básico o sin JavaScript */
+
 .solo-basico { display: none; }
 html:not(.js) .solo-basico { display: block; }
 
-/* ── Página ── */
 html.basico { scroll-behavior: auto; }
 .basico body {
   height: auto;
@@ -32,7 +17,6 @@ html.basico { scroll-behavior: auto; }
 .basico .petalos-lienzo { display: none !important; }
 .basico main { overflow: hidden; }
 
-/* Nada espera a un revelado */
 .basico [data-revelar],
 .basico [data-letras] .palabra {
   opacity: 1 !important;
@@ -46,7 +30,6 @@ html.basico { scroll-behavior: auto; }
   transition: none !important;
 }
 
-/* ── Estructura ── */
 .basico .seccion { padding: 72px 22px; }
 .basico .contenedor { max-width: 640px; }
 .basico .portada {
@@ -60,14 +43,13 @@ html.basico { scroll-behavior: auto; }
 .basico .historia { padding-top: 72px; }
 .basico .cierre { padding-bottom: 70px; }
 
-/* Secciones nocturnas: fondo propio, tinta marfil */
 .basico .seccion--noche { background: #26261F; color: #F6F2EA; }
 .basico .seccion--noche .t-sobretitulo,
 .basico .seccion--noche .t-titulo { color: #D9DBC7; }
 .basico .seccion--noche .t-script { color: #F6F2EA; }
 .basico .seccion--noche .t-nombres { color: #D9DBC7; }
 .basico .seccion--noche .boton--linea { color: #F6F2EA; }
-/* Las tarjetas de papel siempre son claras con tinta oscura */
+
 .basico .papel,
 .basico .seccion--noche .papel { background: #FBF9F4; color: #2B2B28; padding: 26px; }
 .basico .papel .t-sobretitulo,
@@ -79,7 +61,6 @@ html.basico { scroll-behavior: auto; }
 .basico .seccion--noche .papel .boton--linea { color: #4E5330; }
 .basico .papel::after { top: 9px; right: 9px; bottom: 9px; left: 9px; }
 
-/* ── Tipografía en px ── */
 .basico .t-script { font-size: 42px; }
 .basico .t-script--chica { font-size: 30px; }
 .basico .t-titulo { font-size: 28px; }
@@ -96,7 +77,6 @@ html.basico { scroll-behavior: auto; }
 .basico .ornamento::after { width: 48px; }
 .basico .ornamento i { margin: 0 14px; }
 
-/* ── Adornos: tamaño fijo o fuera ── */
 .basico .portada__rama,
 .basico .historia__cielo,
 .basico .historia__hojas,
@@ -111,7 +91,6 @@ html.basico { scroll-behavior: auto; }
 .basico .rsvp__halo { display: none; }
 .basico [data-parallax] { -webkit-transform: none; transform: none; }
 
-/* ── 1 · Portada ── */
 .basico .portada__monograma { width: 220px; margin: 0 auto; }
 .basico .portada__fecha { font-size: 30px; }
 .basico .portada__padres { display: block; }
@@ -123,7 +102,6 @@ html.basico { scroll-behavior: auto; }
 .basico .portada__opciones { font-size: 16px; }
 .basico .portada__separador { color: #A3A67E; }
 
-/* ── 2 · Historia ── */
 .basico .historia__cuadro { margin: 26px auto 0; }
 .basico .historia__carrusel { padding: 0; }
 .basico .historia__fotos { display: block; text-align: center; overflow: visible; padding: 0; }
@@ -132,7 +110,6 @@ html.basico { scroll-behavior: auto; }
 .basico .polaroid { display: inline-block; vertical-align: top; margin: 10px; }
 .basico .polaroid__cara { -webkit-transform: none; transform: none; }
 
-/* ── 3 · La boda y vestimenta ── */
 .basico .boda__lugares { display: block; }
 .basico .lugar + .lugar { margin-top: 56px; }
 .basico .lugar__arte { width: 240px; margin-left: auto; margin-right: auto; }
@@ -142,7 +119,6 @@ html.basico { scroll-behavior: auto; }
 .basico .dato__muestras { display: block; text-align: center; }
 .basico .muestra { display: inline-block; margin: 0 6px; }
 
-/* ── 4 · Atardecer: una estampa quieta ── */
 .basico .atardecer {
   height: auto;
   color: #F6F2EA;
@@ -178,7 +154,6 @@ html.basico { scroll-behavior: auto; }
 .basico .atardecer__velo { opacity: 1; }
 .basico .atardecer__suelo { display: none; }
 
-/* ── 5 · Itinerario ── */
 .basico .prog-cabecera { margin-bottom: 64px; }
 .basico .prog-titulo { margin-top: 12px; font-family: 'La Belle Aurore', 'Dancing Script', cursive; font-weight: 400; font-size: 44px; }
 .basico .prog-entrada { font-size: 18px; color: #ECE6D9; }
@@ -209,7 +184,6 @@ html.basico { scroll-behavior: auto; }
 .basico .prog-anillos__par,
 .basico .prog-anillo__brillo { -webkit-animation: none; animation: none; }
 
-/* ── 7 · Regalos ── */
 .basico .regalos__titulo { font-size: 36px; margin-top: 14px; }
 .basico .regalos__texto { color: #F1EDE2; }
 .basico .regalos__lista { display: block; max-width: 440px; margin: 52px auto 0; }
@@ -226,7 +200,6 @@ html.basico { scroll-behavior: auto; }
 .basico .regalos__nota { margin-top: 40px; font-size: 18px; color: #D9DBC7; }
 .basico .copiar__icono svg { top: 0; left: 0; }
 
-/* ── 8 · Confirmación ── */
 .basico .rsvp__titulo { margin-top: 12px; }
 .basico .rsvp__limite { margin-top: 14px; color: #F1EDE2; }
 .basico .rsvp__marco { width: auto; max-width: 500px; margin: 34px auto 0; }
@@ -251,7 +224,7 @@ html.basico { scroll-behavior: auto; }
 .basico .rsvp-opciones__par { display: block; margin-top: 14px; }
 .basico .rsvp-opcion + .rsvp-opcion { margin-top: 12px; }
 .basico .rsvp-opcion__radio { top: 0; left: 0; }
-/* El relleno oscuro de la opción elegida: sin él, el texto claro no se lee */
+
 .basico .rsvp-opcion__cara::before { top: 0; right: 0; bottom: 0; left: 0; }
 .basico .rsvp-opcion__marca { margin-right: 10px; }
 .basico .rsvp-personas > * + * { margin-top: 14px; }
@@ -259,11 +232,10 @@ html.basico { scroll-behavior: auto; }
 .basico .rsvp__gracias { margin-top: 26px; }
 .basico .rsvp__gracias-acciones { display: block; margin-top: 26px; }
 .basico .rsvp__gracias-acciones > * + * { margin-top: 10px; }
-/* Mientras js/rsvp.js no esté activo se ve el enlace directo (css/rsvp.css) */
+
 .basico .rsvp__directo { margin-top: 24px; }
 .basico .rsvp__directo .boton { display: block; margin-top: 16px; }
 
-/* ── 9 · Recomendaciones: los tres apartados apilados ── */
 .basico .recom__pestanas { display: none; }
 .basico .recom__apartado { margin-top: 44px; }
 .basico .recom__apartado + .recom__apartado { padding-top: 44px; border-top: 1px solid #5A5A4A; }
@@ -285,7 +257,6 @@ html.basico { scroll-behavior: auto; }
 .basico .recom-tarjeta--compacta { padding: 16px 20px 12px; }
 .basico .visitar__ramita { width: 200px; margin: 18px auto 14px; }
 
-/* ── 10 · Cierre ── */
 .basico .cierre__nota { margin-top: 12px; }
 .basico .planner { margin: 30px auto 0; }
 .basico .planner__nombre { font-size: 28px; color: #2B2B28; }
@@ -299,7 +270,6 @@ html.basico { scroll-behavior: auto; }
 .basico .cierre__nombres { margin-top: 14px; color: #D9DBC7; }
 .basico .cierre__lugar { margin-top: 18px; font-size: 12px; color: #F6F2EA; opacity: 1; }
 
-/* ── Pantallas anchas ── */
 @media (min-width: 400px) {
   .basico .portada__fecha { font-size: 40px; }
 }

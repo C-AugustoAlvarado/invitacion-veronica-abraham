@@ -1,16 +1,9 @@
-/* ═══════════════════════════════════════════════════════════════
-   IMPRESIÓN — css/impresion.css (se enlaza al final, con media="print")
-   Imprimir o «Guardar como PDF»: todo el contenido a la vista, tinta
-   oscura sobre papel blanco, sin sobre, sin capas de ambiente y sin
-   nada que espere a un revelado. En pantalla no cambia nada.
-   Va en hoja propia y al final para ganarle a las demás por orden.
-   ═══════════════════════════════════════════════════════════════ */
+
 
 @media print {
   html, body { background: #fff !important; }
   body, body.bloqueado { overflow: visible !important; height: auto !important; }
 
-  /* Lo que solo tiene sentido en pantalla */
   #sobre, #ambiente, .petalos-lienzo, .decorado, .menu,
   .portada__rama, .portada__lema, .portada__reloj,
   .historia__cielo, .historia__hojas, .historia__vuelo,
@@ -19,7 +12,6 @@
   .atardecer__sol, .atardecer__capa, .atardecer__velo, .atardecer__suelo,
   .rsvp__halo, .rsvp__formulario, [data-calendario] { display: none !important; }
 
-  /* Nada espera a un revelado ni a que se raspe la fecha */
   [data-revelar], [data-letras] .palabra,
   .cuenta .cuenta__unidad, .cuenta .cuenta__mensaje {
     opacity: 1 !important;
@@ -36,14 +28,13 @@
   }
   .portada__calendario { animation: none !important; opacity: 1 !important; }
   .recom__apartado { display: block !important; }
-  /* Con pestañas activas, los nombres de los apartados estaban solo para lectores */
+
   .recom--pestanas .recom__nombre-apartado { position: static !important; width: auto !important; height: auto !important; clip: auto !important; clip-path: none !important; }
-  /* El hilo del itinerario depende del scroll: en papel va completo */
+
   .prog-linea.prog-lista { --hilo: 1; }
   .prog-hito { --luz: 1; }
   .rsvp .rsvp__directo { display: block !important; }
 
-  /* Secciones compactas */
   .seccion, .portada { min-height: 0 !important; padding-top: 28px !important; padding-bottom: 28px !important; }
   .atardecer { height: auto !important; padding: 28px 0 !important; background: none !important; }
   .atardecer__escena { position: static !important; height: auto !important; }
@@ -55,7 +46,6 @@
     animation: none !important;
   }
 
-  /* Los fondos no se imprimen: la tinta clara de la noche pasa a café */
   .seccion--noche, .seccion--noche *,
   .atardecer, .atardecer * {
     color: #2B2B28 !important;
@@ -64,7 +54,6 @@
   .seccion--noche { background: none !important; }
   .boton { box-shadow: none !important; border: 1px solid #4E5330; }
 
-  /* Una sola columna, centrada */
   .historia__fotos, .boda__lugares, .vestimenta__datos, .regalos__lista, .recom__rejilla {
     grid-template-columns: minmax(0, 1fr) !important;
     max-width: 460px !important;
@@ -72,19 +61,22 @@
     margin-right: auto !important;
   }
   .lugar__arte { width: 240px !important; margin: 0 auto !important; }
-  /* El carrusel se imprime completo, en filas */
+
   .historia__carrusel { padding: 0 !important; }
   .carrusel__pista { display: flex !important; flex-wrap: wrap !important; justify-content: center !important; overflow: visible !important; }
   .carrusel__pista::before, .carrusel__pista::after, .carrusel__flecha { display: none !important; }
   .polaroid { flex: 0 0 42% !important; margin: 8px !important; }
-  /* Chromium rasteriza la sombra difuminada como un rectángulo gris: solo el aro del papel */
+
   .polaroid__cara { box-shadow: 0 0 0 1px rgba(78, 83, 48, .2) !important; transform: none !important; }
+  .papel, .recom-tarjeta--destacada, .cierre__sello { box-shadow: 0 0 0 1px rgba(78, 83, 48, .2) !important; }
 
   .papel, .dato, .prog-hito, .regalo, .planner, .cierre__medallon, .cierre__despedida, .polaroid {
     page-break-inside: avoid;
     break-inside: avoid;
   }
-  /* Sobre papel blanco no hace falta fundir la acuarela con el paspartú; además el grupo de
-     transparencia que emite Chromium para el blend sale con una franja en Vista Previa (PDFKit) */
+
   .historia__lienzo img { mix-blend-mode: normal !important; }
+
+  .historia__lienzo { overflow: visible !important; }
+  .historia__lienzo::after { display: none !important; }
 }

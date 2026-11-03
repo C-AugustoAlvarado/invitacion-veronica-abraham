@@ -1,26 +1,14 @@
-/* ═══════════════════════════════════════════════════════════════
-   Secciones de la invitación (atardecer, cierre y reglas compartidas;
-   recepción, atardecer y cierre). Las demás secciones tienen su
-   propio archivo. Ninguna sección pinta fondo: todas flotan sobre
-   el ambiente continuo de base.css.
-   ═══════════════════════════════════════════════════════════════ */
 
-/* Scroll suave para los enlaces internos, pero solo cuando la página ya está
-   colocada (js/main.js pone .scroll-suave al terminar de cargar). Con smooth
-   desde el inicio, Safari de iPhone ANIMA el salto al ancla de la URL y, si en
-   medio se reacomoda el destino, la animación se suma al salto: la página
-   terminaba unos 8 000 px más abajo de la sección pedida. */
+
 html.scroll-suave { scroll-behavior: smooth; }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 
-/* Los decorados se salen de la pantalla sin provocar scroll lateral */
 main { overflow-x: clip; }
-/* Respaldo para Safari anterior a 16 (iOS 15), que no conoce overflow: clip */
+
 @supports not (overflow: clip) {
   .portada, .historia, .boda { overflow: hidden; }
 }
 
-/* Mientras el sobre se monta, la pantalla ya es papel crema */
 .js #sobre:empty {
   position: fixed;
   top: 0; right: 0; bottom: 0; left: 0;
@@ -30,36 +18,12 @@ main { overflow-x: clip; }
 
 .icono { flex: none; }
 
-
-
-/* Portada, historia y «La boda» viven en css/portada.css, css/historia.css y css/boda.css (v2) */
-
-/* ═══════════ 6 · Atardecer ═══════════
-   Escena fija (sticky) mientras la sección pasa: el sol baja y las
-   siluetas suben según el avance --p que escribe el motor. El scroll
-   sigue siendo el del dedo.
-
-   Medidas (21-oct-2026, a pedido de los novios: el tramo largo «se
-   pasmaba» y parecía el final de la página). La sección mide 1.4
-   pantallas: la escena entra (1 pantalla), queda fija solo 0.4 y se va
-   mientras el itinerario asoma por abajo. El ocaso no cabe en 0.4: dura
-   desde que la escena se fija hasta que ya subió un tercio, con la
-   noche del itinerario ya a la vista. Así siempre se ve que hay más.
-
-   Con --p (0 = el borde superior toca el pie de la ventana, 1 = el pie
-   de la sección sale por arriba; recorrido = 1 + 1.4 = 2.4 pantallas):
-     fija de p = 1/2.4 ≈ .4167 (contain 0 %) a p = 1.4/2.4 ≈ .5833
-     ocaso (--q) de p ≈ .4167 a p = .72 (cover 72 %) → ×3.297
-     frase: entra de p = .1875 (cover 18.75 %) a p = .375 (cover 37.5 %) y se
-     despide de p ≈ .5833 (contain 100 %, la escena empieza a irse) a p = .66
-     (cover 66 %), antes de meterse bajo la barra del menú
-   Los mismos tramos van en animation-range más abajo. */
 .atardecer {
   position: relative;
   height: 140vh;
   height: 140lvh;
   --q: clamp(0, calc((var(--p, 0) - .4167) * 3.297), 1);
-  /* El velo arranca un poco después que el sol: la ciudad se apaga al final */
+
   --qv: clamp(0, calc((var(--q) - .12) / .88), 1);
   color: var(--crema);
 }
@@ -74,12 +38,11 @@ main { overflow-x: clip; }
 
 .atardecer__sol {
   left: 50%;
-  /* El sol arranca debajo del último renglón de la frase (3 renglones en
-     pantallas angostas; los 26 px son el sobretítulo con su margen) */
+
   --frase-fin: calc(clamp(64px, 11vh, 120px) + 3vh + 26px + 3 * 1.2 * clamp(34px, 6.4vw, 66px));
   --sol-ini: max(27vh, calc(var(--frase-fin) + 16px));
 }
-/* En 320 px la frase cae en cuatro renglones: el sol arranca más abajo */
+
 @media (max-width: 359px) {
   .atardecer__sol { --frase-fin: calc(clamp(64px, 11vh, 120px) + 3vh + 26px + 4 * 1.2 * clamp(34px, 6.4vw, 66px)); }
   top: var(--sol-ini);
@@ -88,7 +51,7 @@ main { overflow-x: clip; }
   margin-left: calc(clamp(120px, 30vw, 230px) / -2);
   border-radius: 50%;
   background: radial-gradient(circle at 50% 46%, #FFF6DF 0%, #FBE3AE 42%, #F2C27E 72%, #EBAE6C 100%);
-  /* El halo es fijo (no se anima): se pinta una vez en la capa del sol */
+
   box-shadow:
     0 0 60px 18px rgba(248, 214, 150, .55),
     0 0 160px 70px rgba(240, 176, 110, .38);
@@ -96,7 +59,7 @@ main { overflow-x: clip; }
   opacity: calc(1 - var(--q) * .5);
   will-change: transform;
 }
-/* Desde 600 px la frase cabe en 2 renglones */
+
 @media (min-width: 600px) {
   .atardecer__sol {
     --frase-fin: calc(clamp(64px, 11vh, 120px) + 3vh + 26px + 2 * 1.2 * clamp(34px, 6.4vw, 66px));
@@ -109,11 +72,10 @@ main { overflow-x: clip; }
   top: clamp(64px, 11vh, 120px);
   padding: 0 var(--margen);
   text-align: center;
-  z-index: 2;   /* siempre encima de las siluetas y del velo */
+  z-index: 2;
   opacity: min(clamp(0, calc(var(--p, 0) * 5.333 - 1), 1), clamp(0, calc((.66 - var(--p, 0)) * 13.04), 1));
   transform: translate3d(0, calc((1 - var(--q)) * 3vh), 0);
-  /* Se mueve y se funde cada cuadro: con capa propia la sombra del texto
-     se pinta una sola vez */
+
   will-change: transform, opacity;
 }
 .atardecer__frase .t-sobretitulo { color: var(--marfil-hondo); text-shadow: 0 1px 3px rgba(43, 40, 32, .5); margin-bottom: 12px; }
@@ -139,7 +101,6 @@ main { overflow-x: clip; }
 .atardecer__capa--ciudad { height: 52%; transform: translate3d(0, calc((1 - var(--q)) * 12vh), 0); }
 .atardecer__capa--acueducto { height: 44%; transform: translate3d(0, calc((1 - var(--q)) * 24vh), 0); }
 
-/* Al anochecer, un velo oscurece la ciudad desde abajo (color de --noche) */
 .atardecer__velo {
   left: 0;
   right: 0;
@@ -151,8 +112,6 @@ main { overflow-x: clip; }
   will-change: opacity;
 }
 
-/* Ventanas bajas (teléfono acostado, laptop con zoom): la frase sube y se
-   achica, y las siluetas bajan, para que no se encimen */
 @media (max-height: 480px) {
   .atardecer__frase { top: 20px; }
   .atardecer__frase .t-script { font-size: clamp(24px, 9vh, 40px); }
@@ -161,8 +120,6 @@ main { overflow-x: clip; }
   .atardecer__capa--acueducto { height: 34%; }
 }
 
-/* Respaldo sin animation-timeline: el compositor interpola entre los
-   valores que escribe el motor (rellena cuadros a 30 por segundo) */
 @supports not (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) {
     .js .atardecer__sol,
@@ -172,10 +129,6 @@ main { overflow-x: clip; }
   }
 }
 
-/* El primer plano se funde con la noche que sigue: sin costura. El suelo
-   del acueducto (#39352B en la imagen) no es --noche: el degradado empieza
-   unos centímetros arriba del borde y lo lleva al color exacto de la noche
-   justo donde termina la escena. */
 .atardecer__suelo {
   left: 0;
   right: 0;
@@ -185,16 +138,6 @@ main { overflow-x: clip; }
   pointer-events: none;
 }
 
-/* ── Movimiento ligado al scroll ──
-   Donde el navegador lo permite (Chrome 115+, Safari 26+), el sol y las
-   siluetas se mueven con animaciones CSS atadas al scroll, sin JavaScript.
-   En Chrome las calcula el compositor: van al ritmo exacto del dedo aunque el
-   teléfono esté ocupado o en modo de bajo consumo. En Safari las calcula el
-   compositor solo desde 26.4; antes, el hilo principal. En los demás
-   navegadores queda el respaldo de arriba, con --p escrito por el motor.
-   «contain 0 %» es el instante en que la escena se fija; «cover 72 %», cuando
-   ya subió un tercio de pantalla y el itinerario asoma (los mismos tramos
-   que --q y la opacidad de la frase, arriba). */
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) {
     .js .atardecer { view-timeline: --atardecer block; }
@@ -203,7 +146,7 @@ main { overflow-x: clip; }
     .js .atardecer__capa,
     .js .atardecer__velo,
     .js .atardecer__frase {
-      animation-duration: 1ms;   /* lo exige algún navegador; el avance lo marca el scroll */
+      animation-duration: 1ms;
       animation-timing-function: linear;
       animation-fill-mode: both;
       animation-timeline: --atardecer;
@@ -230,17 +173,16 @@ main { overflow-x: clip; }
   from { transform: translate3d(0, var(--sube), 0); }
   to { transform: translate3d(0, 0, 0); }
 }
-/* El velo espera el 12 % del tramo: es el mismo retraso que --qv */
+
 @keyframes atardecer-velo { from, 12% { opacity: 0; } to { opacity: 1; } }
-/* De cover 18.75 % a 66 %: entra hasta el 37.5 % (39.7 % del tramo), se queda
-   y se despide desde contain 100 % (83.8 % del tramo) */
+
 @keyframes atardecer-frase { from { opacity: 0; } 39.7%, 83.8% { opacity: 1; } to { opacity: 0; } }
 
 @media (prefers-reduced-motion: reduce) {
   .atardecer { height: auto; --q: 1; --qv: 1; }
   .atardecer__escena { position: relative; }
   .atardecer__frase { opacity: 1; }
-  /* La frase entra cuando el ambiente aún es claro: lleva su propio halo */
+
   .atardecer__frase::before {
     content: '';
     position: absolute;
@@ -252,8 +194,6 @@ main { overflow-x: clip; }
   .atardecer__frase .t-script { text-shadow: 0 2px 30px rgba(43, 40, 32, .45), 0 1px 3px rgba(43, 40, 32, .55); }
 }
 
-/* Sin JavaScript nadie escribe --p ni oscurece el ambiente: la escena
-   queda quieta, con la frase visible y su propio cielo de ocaso */
 html:not(.js) .atardecer {
   height: auto;
   --q: 1;
@@ -262,13 +202,11 @@ html:not(.js) .atardecer {
 }
 html:not(.js) .atardecer__escena { position: relative; }
 html:not(.js) .atardecer__frase { opacity: 1; }
-/* Si el cielo fijo quedó sin tamaño (.sin-ambiente, lo marca el motor) la
-   escena solo necesita su fondo: aquí el motor sí escribe --p */
+
 .sin-ambiente .atardecer {
   background: linear-gradient(180deg, #4A3A2E 0%, #7A4A3A 34%, #B9744F 66%, #E2A66B 100%);
 }
 
-/* ═══════════ 11 · Cierre ═══════════ */
 .cierre { padding-bottom: clamp(70px, 12vh, 140px); }
 .cierre__nota { margin-top: .7em; opacity: .92; }
 
@@ -318,8 +256,7 @@ html:not(.js) .atardecer__frase { opacity: 1; }
     0 0 90px 10px rgba(205, 191, 158, .16),
     0 34px 60px -30px rgba(0, 0, 0, .7);
 }
-/* Las nutrias de los novios (acuarela, 1220×973) centradas en el medallón: al 78 % del
-   ancho la diagonal cabe dentro del círculo */
+
 .cierre__nutrias {
   position: absolute;
   top: 50%; left: 50%;
@@ -342,9 +279,6 @@ html:not(.js) .atardecer__frase { opacity: 1; }
   .cierre__lugar .cierre__raya { display: none; }
 }
 
-/* ═══════════ Respaldo sin aspect-ratio ═══════════
-   (Safari anterior a 15, Chrome anterior a 88.) Sin él estas cajas medirían
-   0 de alto, porque su contenido es absoluto. Va al final para ganar por orden. */
 @supports not (aspect-ratio: 1) {
   .atardecer__sol { height: clamp(120px, 30vw, 230px); }
   .cierre__sello::before { content: ''; display: block; padding-top: 100%; }

@@ -1,25 +1,27 @@
-// Menú superior: barra fija con accesos rápidos a las secciones.
-// El HTML (src/menu.html) ya funciona solo, con anclas normales; aquí se le
-// añade lo que necesita JavaScript: aparecer cuando se abre el sobre, el panel
-// de celular, los desplegables de los grupos (La boda, Recomendaciones, ¿Qué
-// visitar?) con ratón y teclado, el resaltado de la sección activa y el
-// desplazamiento suave. Se comunica solo con eventos en document: escucha
-// 'sobre:abierto' y 'ambiente:cambio', y emite 'menu:navegar' (DISENO.md §4).
-//
-// Contrato con el HTML:
-//   [data-menu]            el <nav>
-//   [data-menu-abrir]      botón «Menú» (celular); se le quita «hidden»
-//   [data-menu-panel]      panel que cae bajo la barra en celular
-//   [data-menu-grupo]      cada grupo con desplegable; dentro:
-//     el primer [data-menu-enlace]  cabeza: enlace a la sección del grupo
-//     [data-menu-desplegar]         botón con la flecha (aria-expanded); se le quita «hidden»
-//     [data-menu-sub]               lista de apartados
-//     data-menu-abarca="id id…"     secciones sin entrada propia que encienden al grupo
-//   [data-menu-enlace]     todo enlace que resalta y navega con suavidad
-//   .es-abierto en el grupo abierto; .es-activo y aria-current en los enlaces activos.
 
-// Color de la barra para meta theme-color: mientras el menú esté a la vista, lo
-// que toca el borde superior de la pantalla es marfil, no el cielo del ambiente.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { sinTraslado } from './anclas.js';
+
 const COLOR_BARRA = '#F6F2EA';
 
 export function iniciarMenu(opciones = {}) {
@@ -27,7 +29,7 @@ export function iniciarMenu(opciones = {}) {
     ? document.querySelector(opciones.contenedor)
     : (opciones.contenedor || document.getElementById('menu') || document.querySelector('[data-menu]'));
   if (!nav) return null;
-  if (nav._menu) return nav._menu;   // idempotente
+  if (nav._menu) return nav._menu;
 
   const boton = nav.querySelector('[data-menu-abrir]');
   const panel = nav.querySelector('[data-menu-panel]');
@@ -38,7 +40,7 @@ export function iniciarMenu(opciones = {}) {
     try { return href.startsWith('#') ? decodeURIComponent(href.slice(1)) : ''; } catch (error) { return ''; }
   };
 
-  /* ── Grupos con desplegable ── */
+   
   const grupos = [...nav.querySelectorAll('[data-menu-grupo]')].map((el) => {
     const cabeza = el.querySelector('[data-menu-enlace]');
     const desplegar = el.querySelector('[data-menu-desplegar]');
@@ -59,7 +61,7 @@ export function iniciarMenu(opciones = {}) {
   const grupoDe = (el) => grupos.find((g) => g.el === el || g.el.contains(el));
   const grupoDeId = (id) => grupos.find((g) => g.id === id || g.idsSub.includes(id) || g.abarca.includes(id));
 
-  /* ── Punto de corte: se lee de css/menu.css (--menu-corte) para no tenerlo dos veces ── */
+   
   let corte = parseInt(getComputedStyle(nav).getPropertyValue('--menu-corte'), 10);
   if (!corte || Number.isNaN(corte)) corte = 960;
   const consultaAncha = window.matchMedia(`(min-width: ${corte}px)`);
@@ -67,7 +69,7 @@ export function iniciarMenu(opciones = {}) {
   const consultaRaton = window.matchMedia('(hover: hover) and (pointer: fine)');
   const ancha = () => consultaAncha.matches;
 
-  /* ── Barra del navegador del color del menú ── */
+   
   const metaTema = opciones.fijarColorBarra === false ? null : document.querySelector('meta[name="theme-color"]');
   let visible = false;
   function fijarColorBarra() {
@@ -75,10 +77,10 @@ export function iniciarMenu(opciones = {}) {
       metaTema.setAttribute('content', COLOR_BARRA);
     }
   }
-  // El motor escribe el color del ambiente justo antes de avisar: se vuelve a pisar
+
   document.addEventListener('ambiente:cambio', fijarColorBarra);
 
-  /* ── Aparecer: con el sobre cerrado se espera a 'sobre:abierto' ── */
+   
   function mostrar(inmediata) {
     if (visible) return;
     visible = true;
@@ -86,19 +88,19 @@ export function iniciarMenu(opciones = {}) {
     nav.classList.add('menu--visible');
     fijarColorBarra();
     if (inmediata) {
-      // Dos cuadros después se devuelve la transición, para las animaciones siguientes
+
       requestAnimationFrame(() => requestAnimationFrame(() => nav.classList.remove('menu--inmediata')));
     }
   }
   const alAbrirSobre = () => {
-    // La portada se revela primero; la barra baja un instante después
+
     setTimeout(() => mostrar(false), opciones.retraso ?? 420);
   };
   const sobreCerrado = document.body.classList.contains('bloqueado');
   if (sobreCerrado) document.addEventListener('sobre:abierto', alAbrirSobre, { once: true });
   else mostrar(true);
 
-  /* ── Grupos: abrir y cerrar (uno abierto cierra a los demás) ── */
+   
   let activaActual = '';
   const abierto = (g) => g.el.classList.contains('es-abierto');
   function fijarGrupo(g, estado) {
@@ -122,13 +124,13 @@ export function iniciarMenu(opciones = {}) {
   function cerrarGrupos(enfocarCabeza) {
     grupos.forEach((g) => cerrarGrupo(g, enfocarCabeza && document.activeElement && g.el.contains(document.activeElement)));
   }
-  // Acordeón del celular: abierto el grupo de la sección activa, los demás cerrados
+
   function acomodarAcordeon() {
     const activo = grupoDeId(activaActual);
     grupos.forEach((g) => fijarGrupo(g, g === activo));
   }
 
-  /* ── Panel de celular ── */
+   
   let yAlAbrir = 0;
   const panelAbierto = () => nav.classList.contains('menu--abierto');
   function abrirPanel() {
@@ -147,20 +149,20 @@ export function iniciarMenu(opciones = {}) {
     }
   }
   if (boton) {
-    boton.hidden = false;   // solo sirve con JavaScript
+    boton.hidden = false;
     boton.addEventListener('click', () => (panelAbierto() ? cerrarPanel(false) : abrirPanel()));
   }
 
-  /* ── Botón de la flecha: clic alterna el grupo ── */
+   
   grupos.forEach((g) => {
     if (!g.desplegar) return;
-    g.desplegar.hidden = false;   // solo sirve con JavaScript
+    g.desplegar.hidden = false;
     g.desplegar.addEventListener('click', () => {
       if (abierto(g)) cerrarGrupo(g, false);
       else abrirGrupo(g);
     });
 
-    // Ratón de escritorio: se abre al pasar y se cierra al salir, con un respiro
+
     g.el.addEventListener('mouseenter', () => {
       if (!ancha() || !consultaRaton.matches) return;
       abrirGrupo(g);
@@ -170,22 +172,22 @@ export function iniciarMenu(opciones = {}) {
       clearTimeout(g.temporizador);
       g.temporizador = setTimeout(() => cerrarGrupo(g, false), 220);
     });
-    // Tab fuera del grupo (escritorio) lo cierra
+
     g.el.addEventListener('focusout', (evento) => {
       if (!ancha()) return;
       if (evento.relatedTarget && g.el.contains(evento.relatedTarget)) return;
-      // Esperar: el foco puede ir a parar dentro del mismo grupo (Safari lo avisa tarde)
+
       setTimeout(() => { if (!g.el.contains(document.activeElement)) cerrarGrupo(g, false); }, 0);
     });
   });
-  // Al cambiar de maquetación, nada queda abierto a medias
+
   function acomodar() {
     cerrarPanel(false);
     grupos.forEach((g) => fijarGrupo(g, false));
   }
   acomodar();
 
-  // En celular el panel se cierra si el foco se va con Tab fuera de él
+
   nav.addEventListener('focusout', () => {
     if (ancha() || !panelAbierto()) return;
     setTimeout(() => {
@@ -193,8 +195,8 @@ export function iniciarMenu(opciones = {}) {
       if (panel && !panel.contains(activo) && activo !== boton) cerrarPanel(false);
     }, 0);
   });
-  // Y si el foco llega a cualquier otro sitio de la página (Safari no enfoca los
-  // botones al hacer clic, así que el focusout del grupo no siempre avisa)
+
+
   function alEnfocar(evento) {
     const destino = evento.target;
     if (!(destino instanceof Node) || nav.contains(destino)) {
@@ -206,7 +208,7 @@ export function iniciarMenu(opciones = {}) {
   }
   document.addEventListener('focusin', alEnfocar);
 
-  /* ── Teclado ── */
+   
   const focables = (ambito) => {
     if (!ambito) return [];
     return [...ambito.querySelectorAll('a[href], button')].filter((el) => !el.hidden && el.getClientRects().length > 0);
@@ -242,6 +244,13 @@ export function iniciarMenu(opciones = {}) {
             return;
           }
           moverFoco(g.enlacesSub, paso, objetivo);
+        } else if (boton && objetivo === boton) {
+
+
+          evento.preventDefault();
+          if (!panelAbierto()) abrirPanel();
+          const lista = panel ? focables(panel) : [];
+          (paso > 0 ? lista[0] : lista[lista.length - 1])?.focus();
         } else if (panelAbierto() && panel && panel.contains(objetivo)) {
           evento.preventDefault();
           moverFoco(focables(panel), paso, objetivo);
@@ -262,7 +271,15 @@ export function iniciarMenu(opciones = {}) {
     }
   });
 
-  /* ── Tocar fuera cierra ── */
+
+
+  document.addEventListener('keydown', (evento) => {
+    if (evento.key !== 'Escape' || (evento.target instanceof Node && nav.contains(evento.target))) return;
+    if (ancha()) { const abiertoAhora = grupoAbierto(); if (abiertoAhora) cerrarGrupo(abiertoAhora, true); }
+    else if (panelAbierto()) cerrarPanel(true);
+  });
+
+   
   function alTocarFuera(evento) {
     const objetivo = evento.target;
     if (ancha()) {
@@ -275,26 +292,26 @@ export function iniciarMenu(opciones = {}) {
   }
   document.addEventListener('pointerdown', alTocarFuera, true);
 
-  // Si el invitado se pone a bajar con el panel abierto, el panel se retira
+
   function alDesplazar() {
     if (panelAbierto() && Math.abs(window.scrollY - yAlAbrir) > 60) cerrarPanel(false);
   }
   window.addEventListener('scroll', alDesplazar, { passive: true });
 
-  /* ── Enlaces: desplazamiento suave, cierre y resaltado inmediato ── */
-  let viaje = '';            // id al que se va; el observador espera a que el scroll se asiente
+   
+  let viaje = '';
   let temporizadorViaje = 0;
   const tieneCaja = (el) => el.getClientRects().length > 0;
   function irA(destino) {
-    // Un apartado dentro de pestañas (#hospedaje, #donde-comer…) puede estar oculto
-    // o no ser el elegido: se pulsa su pestaña antes de desplazarse hasta él
+
+
     const pestana = document.querySelector(`[role="tab"][aria-controls="${destino.id}"]`);
     if (pestana && pestana.getAttribute('aria-selected') !== 'true') pestana.click();
-    // Si sigue sin caja, se va hasta la sección que lo contiene
+
     const blanco = tieneCaja(destino) ? destino : (destino.closest('section') || destino);
-    blanco.scrollIntoView({ behavior: consultaReducido.matches ? 'auto' : 'smooth', block: 'start' });
+    sinTraslado(blanco, () => blanco.scrollIntoView({ behavior: consultaReducido.matches ? 'auto' : 'smooth', block: 'start' }));
     if (!blanco.hasAttribute('tabindex')) blanco.setAttribute('tabindex', '-1');
-    try { blanco.focus({ preventScroll: true }); } catch (error) { /* navegador viejo */ }
+    try { blanco.focus({ preventScroll: true }); } catch (error) {   }
     document.dispatchEvent(new CustomEvent('menu:navegar', { detail: { id: destino.id } }));
   }
   function alPulsarEnlace(evento) {
@@ -303,8 +320,8 @@ export function iniciarMenu(opciones = {}) {
     if (!enlace || !nav.contains(enlace)) return;
     const id = idDe(enlace);
     const destino = id ? document.getElementById(id) : null;
-    // En el panel de celular la cabeza de un grupo solo despliega (o pliega) su submenú;
-    // navegan los apartados (lo pidieron los novios el 22-oct-2026)
+
+
     if (!ancha()) {
       const g = grupoDe(enlace);
       if (g && g.cabeza === enlace) {
@@ -313,15 +330,15 @@ export function iniciarMenu(opciones = {}) {
         return;
       }
     }
-    // Tableta táctil con la fila completa: sin hover, el primer toque en la cabeza de un
-    // grupo cerrado lo despliega; el segundo toque navega
+
+
     if (ancha() && !consultaRaton.matches) {
       const g = grupoDe(enlace);
       if (g && g.cabeza === enlace && !abierto(g)) { evento.preventDefault(); abrirGrupo(g); return; }
     }
     cerrarPanel(false);
     if (ancha()) cerrarGrupos(false);
-    if (!destino) return;   // sin destino (sección aún no montada), el ancla sigue su curso normal
+    if (!destino) return;
     evento.preventDefault();
     viaje = id;
     activar(id);
@@ -341,16 +358,16 @@ export function iniciarMenu(opciones = {}) {
   };
   window.addEventListener('scroll', alAsentarse, { passive: true });
 
-  /* ── Sección activa ──
-     Una franja a la altura del 38–50 % de la ventana: el destino que la cruza
-     es el activo. Un apartado (#itinerario, #hospedaje…) enciende también a la
-     cabeza de su grupo; una sección «abarcada» (#vestimenta) solo a la cabeza. */
-  const porId = new Map();   // id → enlace
+  
+
+
+
+  const porId = new Map();
   enlaces.forEach((enlace) => { const id = idDe(enlace); if (id) porId.set(id, enlace); });
-  // Secciones que no tienen entrada pero marcan dónde se está (apagan el resaltado)
+
   const apagan = opciones.apagan || ['portada', 'atardecer', 'cierre'];
 
-  const cruzando = new Map();   // elemento → true mientras cruza la franja
+  const cruzando = new Map();
   let observados = new Set();
 
   const observador = new IntersectionObserver((entradas) => {
@@ -364,9 +381,9 @@ export function iniciarMenu(opciones = {}) {
   function elegirActiva() {
     const candidatos = [...cruzando.keys()];
     if (!candidatos.length) return;
-    // El más bajo en la página: el que viene entrando por abajo (o la tarjeta
-    // dentro de la sección, que empieza después de ella). A la misma altura
-    // (dos tarjetas lado a lado) gana el primero del documento.
+
+
+
     const tops = new Map(candidatos.map((el) => [el, Math.round(el.getBoundingClientRect().top)]));
     candidatos.sort((a, b) => {
       const d = tops.get(a) - tops.get(b);
@@ -400,7 +417,7 @@ export function iniciarMenu(opciones = {}) {
   }
   observarSecciones();
 
-  /* ── Cambios de tamaño ── */
+   
   const alCambiarAncho = () => { acomodar(); };
   consultaAncha.addEventListener?.('change', alCambiarAncho);
 
@@ -408,10 +425,10 @@ export function iniciarMenu(opciones = {}) {
     mostrar: () => mostrar(true),
     abrir: abrirPanel,
     cerrar() { cerrarPanel(false); grupos.forEach((g) => cerrarGrupo(g, false)); },
-    // Abre el desplegable de un grupo (por el id de su sección: 'boda', 'recomendaciones'…)
+
     abrirGrupo: (id) => abrirGrupo(grupos.find((g) => g.id === id || g.el.dataset.menuGrupo === id)),
     activar,
-    // Vuelve a buscar las secciones (por si un módulo las montó después)
+
     actualizar: observarSecciones,
     destruir() {
       grupos.forEach((g) => clearTimeout(g.temporizador));

@@ -1,26 +1,26 @@
-// Motor de scroll: parallax, revelados, progreso y ambiente continuo.
-// Contrato completo en DISENO.md §5. El scroll siempre es nativo: aquí solo
-// se lee su posición y se suaviza el movimiento de las capas.
+
+
+
 
 const limitar = (v, a, b) => Math.min(b, Math.max(a, v));
 const suavizar = (t) => t * t * (3 - 2 * t);
 
-// Orden de las capas de #ambiente, de abajo hacia arriba.
+
 const ORDEN = ['dia', 'dorado', 'ocaso', 'noche'];
 
-// Color de la barra del navegador para cada ambiente (meta theme-color)
+
 const FONDOS = { dia: '#F8F4EB', dorado: '#EBDDC2', ocaso: '#7A4A3A', noche: '#26261F' };
 
 export function iniciarMotor(opciones = {}) {
   const raiz = document.documentElement;
-  // Las variables --amb-* se escriben aquí y no en :root: así solo se recalculan sus capas
+
   const fondoAmbiente = document.getElementById('ambiente') || raiz;
   const metaTema = document.querySelector('meta[name="theme-color"]');
   const consultaReducido = window.matchMedia('(prefers-reduced-motion: reduce)');
   const consultaMovil = window.matchMedia('(max-width: 760px)');
   let reducido = consultaReducido.matches;
-  // Animaciones CSS ligadas al scroll (Chrome 115+, Safari 26+; en Safari las
-  // calcula el compositor solo desde 26.4, antes el hilo principal)
+
+
   const animaConScroll = !reducido && typeof CSS !== 'undefined'
     && CSS.supports?.('animation-timeline: view()') === true;
 
@@ -31,13 +31,13 @@ export function iniciarMotor(opciones = {}) {
   let cuadro = 0;
   let reveladosActivos = false;
 
-  let capas = [];       // parallax
-  let avances = [];     // data-progreso
-  let ambientes = [];   // tramos de ambiente
+  let capas = [];
+  let avances = [];
+  let ambientes = [];
   let ultimoAmbiente = '';
   let ultimosPesos = '';
 
-  /* ── Texto partido en palabras ── */
+   
   function partirTexto(el) {
     if (el.dataset.letrasListo) return;
     el.dataset.letrasListo = '1';
@@ -66,7 +66,7 @@ export function iniciarMotor(opciones = {}) {
           }
           hijo.replaceWith(fragmento);
         } else if (hijo.nodeType === Node.ELEMENT_NODE && hijo.tagName !== 'BR') {
-          // Un elemento en línea (p. ej. la inicial grande) cuenta como una palabra
+
           if (!hijo.children.length && hijo.textContent.trim().length <= 2) {
             hijo.classList.add('palabra');
             hijo.style.setProperty('--i', i++);
@@ -84,9 +84,9 @@ export function iniciarMotor(opciones = {}) {
     el.append(lectores, visual);
   }
 
-  /* ── Trazos de SVG que se dibujan ── */
+   
   function prepararTrazos(el) {
-    if (el._formasTrazo) return;   // ya preparado: no volver a esconder un trazo dibujado
+    if (el._formasTrazo) return;
     const formas = el.matches('path, line, polyline, polygon, circle, ellipse, rect')
       ? [el]
       : [...el.querySelectorAll('path, line, polyline, polygon, circle, ellipse, rect')];
@@ -105,13 +105,13 @@ export function iniciarMotor(opciones = {}) {
     (el._formasTrazo || []).forEach((forma) => { forma.style.strokeDashoffset = '0'; });
   }
 
-  /* ── Revelados ── */
+   
   const pendientes = new Set();
-  // Un elemento recortado con clip-path (revelado «acuarela») no cuenta como
-  // visible para IntersectionObserver: en su lugar se vigila a su contenedor.
+
+
   const vigilados = new Map();
-  // Ojo: <picture> no genera caja (display: contents), así que nunca se
-  // «ve»; se sube hasta el primer ancestro que sí la tiene.
+
+
   const vigiaDe = (el) => {
     if (el.dataset.revelar !== 'acuarela') return el;
     let padre = el.parentElement;
@@ -129,11 +129,11 @@ export function iniciarMotor(opciones = {}) {
     }
   }, { threshold: [0, 0.15, 0.4], rootMargin: '0px 0px -6% 0px' });
 
-  // Chromium no pide una <img loading="lazy"> mientras su clip-path la deja sin área
-  // (el revelado «acuarela» arranca en circle(0%)): la imagen llegaba cuando el círculo ya
-  // casi había terminado de abrirse. Al acercarse su vigía (600 px) se le quita el lazy,
-  // así la imagen está lista antes de revelarse y la portada sigue sin descargarla.
-  const precalentables = new Map();   // vigía → Set<img>
+
+
+
+
+  const precalentables = new Map();
   const observadorPrecalentar = new IntersectionObserver((entradas) => {
     for (const entrada of entradas) {
       if (!entrada.isIntersecting) continue;
@@ -159,7 +159,7 @@ export function iniciarMotor(opciones = {}) {
   }
 
   function mostrar(el) {
-    if (el instanceof HTMLImageElement && el.loading === 'lazy') el.loading = 'eager';   // por si se revela sin haberse acercado
+    if (el instanceof HTMLImageElement && el.loading === 'lazy') el.loading = 'eager';
     el.classList.add('es-visible');
     if (el.hasAttribute('data-trazo')) dibujarTrazos(el);
     pendientes.delete(el);
@@ -195,19 +195,19 @@ export function iniciarMotor(opciones = {}) {
     pendientes.forEach(vigilar);
   }
 
-  /* ── Medición (sin transformaciones, para no medir el parallax) ── */
+   
   const observadorVisibles = new IntersectionObserver((entradas) => {
     for (const entrada of entradas) {
       const dato = entrada.target._motor;
       if (dato) dato.visible = entrada.isIntersecting;
-      // Solo las capas cercanas a la ventana piden capa propia (will-change en CSS)
+
       entrada.target.classList.toggle('en-vista', entrada.isIntersecting);
     }
   }, { rootMargin: '30% 0px 30% 0px' });
 
-  // Capa reflejada (data-parallax-espejo): el reflejo va dentro del transform
-  // que escribe el motor, porque la propiedad «scale» no existe en navegadores
-  // viejos. Si la hoja de estilos ya la refleja con «scale», no se repite.
+
+
+
   function conEspejo(el) {
     if (!el.hasAttribute('data-parallax-espejo')) return false;
     const propia = getComputedStyle(el).scale;
@@ -237,10 +237,10 @@ export function iniciarMotor(opciones = {}) {
       return dato;
     });
 
-    // Donde el navegador liga animaciones CSS al scroll, los elementos marcados
-    // con data-progreso-css se mueven solos (en Chrome 115+ y Safari 26.4+ los
-    // calcula el compositor): el motor no les escribe --p, salvo con
-    // movimiento reducido.
+
+
+
+
     avances = [...document.querySelectorAll('[data-progreso]')].filter((el) => (
       !(animaConScroll && el.hasAttribute('data-progreso-css'))
     )).map((el) => {
@@ -250,7 +250,7 @@ export function iniciarMotor(opciones = {}) {
         arriba: caja.top + y,
         altura: caja.height,
         modo: el.dataset.progreso,
-        // Respaldo de una escena con animación CSS: sigue la posición real
+
         directo: el.hasAttribute('data-progreso-css'),
         ultimo: ''
       };
@@ -270,7 +270,7 @@ export function iniciarMotor(opciones = {}) {
     pintar(true);
   }
 
-  /* ── Ambiente: mezcla entre el tramo actual y sus vecinos ── */
+   
   function calcularAmbiente(y) {
     if (!ambientes.length) return;
     const sonda = y + alto * 0.55;
@@ -278,8 +278,8 @@ export function iniciarMotor(opciones = {}) {
     let k = 0;
     for (let i = 0; i < ambientes.length; i++) if (ambientes[i].arriba <= sonda) k = i;
 
-    // La fusión de cada frontera no puede ser más larga que los tramos que separa:
-    // si lo fuera, dos fusiones se traslapan y el color salta.
+
+
     const fusionEn = (i) => {
       const antes = ambientes[i].arriba - ambientes[i - 1].arriba;
       const despues = ambientes[i + 1] ? ambientes[i + 1].arriba - ambientes[i].arriba : Infinity;
@@ -305,7 +305,7 @@ export function iniciarMotor(opciones = {}) {
     pesos[desde] += 1 - t;
     pesos[hacia] += t;
 
-    // Capas apiladas: la de abajo queda opaca y la de arriba se funde encima.
+
     const iDesde = ORDEN.indexOf(desde);
     const iHacia = ORDEN.indexOf(hacia);
     const baja = Math.min(iDesde, iHacia);
@@ -325,14 +325,14 @@ export function iniciarMotor(opciones = {}) {
       if (nombre !== ultimoAmbiente) {
         ultimoAmbiente = nombre;
         raiz.dataset.ambiente = nombre;
-        // Solo al cambiar de ambiente (unas pocas veces en todo el recorrido)
+
         if (metaTema && FONDOS[nombre]) metaTema.setAttribute('content', FONDOS[nombre]);
       }
       document.dispatchEvent(new CustomEvent('ambiente:cambio', { detail: { nombre, pesos } }));
     }
   }
 
-  /* ── Pintado de un cuadro ── */
+   
   function pintar(forzar) {
     const y = ySuave;
     const centroVentana = y + alto / 2;
@@ -347,22 +347,22 @@ export function iniciarMotor(opciones = {}) {
         let valor = `translate3d(${tx.toFixed(2)}px, ${ty.toFixed(2)}px, 0)`;
         if (c.giro) valor += ` rotate(${((d / alto) * c.giro).toFixed(3)}deg)`;
         if (c.escala) valor += ` scale(${(1 + c.escala * limitar(0.5 - d / alto, 0, 1)).toFixed(4)})`;
-        // Al principio, igual que «scale» (se aplica antes que transform): no invierte el giro
+
         if (c.espejo) valor = `scaleX(-1) ${valor}`;
         if (valor !== c.ultimo) { c.el.style.transform = valor; c.ultimo = valor; }
       }
     }
 
-    // Las escenas con respaldo (data-progreso-css, el atardecer) siguen la
-    // posición real del scroll: ahí el suavizado lo hace una transición CSS,
-    // que el navegador interpola también entre cuadros. Los demás avances, el
-    // parallax y el ambiente siguen con el valor suavizado.
+
+
+
+
     const yReal = window.scrollY;
     for (const a of avances) {
       const recorrido = a.modo === 'centro' ? alto / 2 + a.altura / 2 : alto + a.altura;
       const p = limitar(((a.directo ? yReal : y) + alto - a.arriba) / recorrido, 0, 1);
-      // Sin umbral: al desplazar despacio cada cuadro cuenta (un umbral hacía
-      // que la escena avanzara a saltos).
+
+
       const texto = p.toFixed(4);
       if (texto !== a.ultimo || forzar) {
         a.el.style.setProperty('--p', texto);
@@ -378,8 +378,8 @@ export function iniciarMotor(opciones = {}) {
     cuadro = 0;
     objetivo = window.scrollY;
     const resto = objetivo - ySuave;
-    // El suavizado depende del tiempo, no del número de cuadros: se siente
-    // igual a 30 (bajo consumo), 60 o 120 cuadros por segundo.
+
+
     const tiempo = typeof ahora === 'number' ? ahora : performance.now();
     const dt = ultimoCuadro ? limitar(tiempo - ultimoCuadro, 4, 64) : 16.667;
     ultimoCuadro = tiempo;
@@ -387,15 +387,15 @@ export function iniciarMotor(opciones = {}) {
     ySuave = reducido || Math.abs(resto) < 0.15 ? objetivo : ySuave + resto * avance;
     pintar(false);
     if (ySuave !== objetivo) cuadro = requestAnimationFrame(bucle);
-    else ultimoCuadro = 0;   // en reposo: el siguiente arranque no hereda un dt viejo
+    else ultimoCuadro = 0;
   }
   const pedirCuadro = () => { if (!cuadro) cuadro = requestAnimationFrame(bucle); };
 
-  /* ── Eventos ── */
+   
   let temporizador = 0;
   function alRedimensionar() {
-    // La barra del navegador móvil cambia el alto al hacer scroll: no es un
-    // cambio real de diseño y volver a medir haría saltar el parallax.
+
+
     const cambioReal = window.innerWidth !== ancho || Math.abs(window.innerHeight - alto) > 140;
     if (!cambioReal) return;
     clearTimeout(temporizador);
@@ -414,7 +414,7 @@ export function iniciarMotor(opciones = {}) {
   consultaReducido.addEventListener?.('change', alCambiarMovimiento);
   if (document.fonts?.ready) document.fonts.ready.then(medir);
 
-  // Si el contenido cambia de alto (imágenes, módulos que se montan), se vuelve a medir.
+
   let altoDocumento = 0;
   const observadorAlto = new ResizeObserver(() => {
     const nuevo = document.documentElement.scrollHeight;
@@ -428,7 +428,7 @@ export function iniciarMotor(opciones = {}) {
   raiz.classList.add('js');
   prepararRevelados();
   medir();
-  // Si el cielo fijo no tiene tamaño, las secciones nocturnas traen su propio fondo
+
   const capaNoche = document.querySelector('#ambiente > .amb--noche');
   if (capaNoche && (!capaNoche.offsetWidth || !capaNoche.offsetHeight)) raiz.classList.add('sin-ambiente');
   if (opciones.revelarAlIniciar !== false) activarRevelados();
@@ -436,7 +436,7 @@ export function iniciarMotor(opciones = {}) {
   return {
     medir,
     activarRevelados,
-    // Vuelve a buscar elementos (por si un módulo agregó contenido después)
+
     actualizar() {
       prepararRevelados();
       if (reveladosActivos) [...pendientes].forEach((el) => (reducido ? mostrar(el) : vigilar(el)));

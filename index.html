@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- ARCHIVO GENERADO: no lo edites a mano. Edita src/ y corre «npm run construir». -->
+
 <html lang="es-MX">
 <head>
 <meta charset="utf-8">
@@ -22,6 +22,8 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="assets/svg/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="preload" href="assets/fuentes/la-belle-aurore.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fuentes/dancing-script.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fuentes/cormorant-normal.woff2" as="font" type="font/woff2" crossorigin>
@@ -43,6 +45,7 @@
 <link rel="modulepreload" href="js/main.js">
 <link rel="modulepreload" href="js/config.js">
 <link rel="modulepreload" href="js/motor.js">
+<link rel="modulepreload" href="js/anclas.js">
 <link rel="modulepreload" href="js/sobre.js">
 <style>
   /* Pantalla de espera: va en línea para que exista aunque una hoja no llegue.
@@ -159,9 +162,8 @@
 <noscript><style>#sobre{display:none}</style></noscript>
 </head>
 <body>
+<a class="saltar" href="#invitacion">Saltar al contenido</a>
 
-<!-- Monograma A&V: distintivo de la boda. Se usa con <svg class="monograma"><use href="#monograma-av"/></svg>.
-     Letras tipo Bodoni dibujadas a mano; el «&» usa la letra manuscrita de la página. -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
   <defs>
     <g id="monograma-a">
@@ -174,7 +176,7 @@
       <polygon points="236,30 244,30 150,250 160,243"/>
       <rect x="10" y="30" width="72" height="7"/><rect x="218" y="30" width="44" height="7"/>
     </g>
-    <!-- Hoja y rama de olivo de línea (mismo dibujo que preview.jpg) -->
+
     <g id="hoja-olivo">
       <path d="M0 0 C 7 -6.5 24 -7.5 44 0 C 24 7.5 7 6.5 0 0 Z" fill="#A3A67E" stroke="#6B7042" stroke-width="1.4" stroke-linejoin="round"/>
       <path d="M4 0 L 40 0" stroke="#F6F2EA" stroke-width="1.1" opacity=".9"/>
@@ -220,24 +222,12 @@
   } else if (window.__basico) window.__basico();
 </script>
 
-<!-- El menú va fuera de <main> para quedar por encima de las hojitas delanteras -->
-<!-- Menú superior (v2, estructura del 21-oct-2026): barra fija con accesos rápidos.
-     Cuatro entradas y el botón R.S.V.P.; tres de ellas abren un desplegable:
-       · Nuestra historia
-       · La boda ▾ Itinerario · Dress code · Valet parking · Mesa de regalos
-       · Recomendaciones ▾ Hospedaje · Make up
-       · ¿Qué visitar? ▾ Dónde comer · Dónde ir · Pátzcuaro
-     Se lee completa sin JavaScript (anclas normales, botones ocultos, desplegables a la
-     vista); js/menu.js la enriquece. Cada grupo lleva data-menu-grupo; su primer enlace es
-     la cabeza (lleva a la sección) y data-menu-abarca enumera secciones sin entrada propia
-     que también encienden al grupo (p. ej. #vestimenta, donde viven Dress code y Valet). -->
 <nav id="menu" class="menu" aria-label="Secciones de la invitación" data-menu>
   <div class="menu__barra">
     <a class="menu__inicio" href="#portada" aria-label="Volver al inicio de la invitación">
       <svg class="monograma" aria-hidden="true" focusable="false"><use href="#monograma-av"/></svg>
     </a>
 
-    <!-- Solo en celular y solo con JavaScript (el script le quita «hidden») -->
     <button class="menu__abrir" type="button" aria-expanded="false" aria-controls="menu-panel" data-menu-abrir hidden>
       <span class="menu__abrir-texto">Menú</span>
       <span class="menu__abrir-icono" aria-hidden="true"><i></i><i></i></span>
@@ -307,7 +297,6 @@
 
   <section id="portada" class="seccion portada" data-ambiente="dia" aria-labelledby="portada-titulo">
 
-    <!-- Ramita de olivo en línea: se reutiliza en los decorados de las esquinas -->
     <svg class="portada__simbolos" width="0" height="0" aria-hidden="true" focusable="false">
       <defs>
         <g id="portada-hoja">
@@ -328,7 +317,6 @@
       </defs>
     </svg>
 
-    <!-- Decorado: dos ramitas grandes, a distinta profundidad, que apenas se insinúan -->
     <div class="decorado portada__rama portada__rama--izq" data-parallax="0.16" data-parallax-giro="3" aria-hidden="true">
       <svg viewBox="0 0 140 70" focusable="false"><use href="#portada-ramita"/></svg>
     </div>
@@ -338,7 +326,6 @@
 
     <div class="contenedor portada__contenido">
 
-      <!-- 1 · Monograma entre dos hojitas (los trazos se dibujan al entrar) -->
       <header class="portada__cabecera" data-revelar-grupo>
         <h1 id="portada-titulo" class="portada__titulo">
           <span class="solo-lectores">Verónica y Abraham</span>
@@ -371,7 +358,6 @@
           </span>
         </h1>
 
-        <!-- 2 · Fecha manuscrita y lugar -->
         <p class="portada__fecha" data-revelar="subir">
           <time datetime="2027-03-06">06&nbsp;·&nbsp;marzo&nbsp;·&nbsp;2027</time>
         </p>
@@ -379,7 +365,6 @@
         <div class="ornamento portada__ornamento" data-revelar="linea" aria-hidden="true"><i></i></div>
       </header>
 
-      <!-- 3 · Texto de invitación y padres -->
       <div class="portada__invitacion contenedor--angosto">
         <p class="t-cuerpo portada__texto" data-revelar="subir">
           Con mucho cariño e ilusión nos complace invitarlos a ser parte de la celebración de nuestro enlace matrimonial. Queremos compartir con ustedes la alegría de este día tan especial en compañía de nuestros padres:
@@ -401,9 +386,6 @@
         <p class="t-cuerpo portada__texto portada__texto--cierre" data-revelar="subir"><time datetime="2027-03-06">06.03.2027</time> · Morelia, Michoacán</p>
       </div>
 
-      <!-- 4 · Cuenta regresiva y calendario. El cielo de arriba lo cruza el avioncito de
-           js/avion.js (css/avion.css): cruza debajo de los botones del calendario y por su puerta
-           saltan los paracaidistas que aterrizan en «Nuestra historia». Oculto sin JavaScript y en modo básico. -->
       <div class="portada__cuenta avion-cielo">
         <div class="avion" data-avion aria-hidden="true">
           <div class="avion__nave" hidden>
@@ -414,27 +396,27 @@
                 <path d="M-29 34.4 H -33" opacity=".2"/>
                 <path d="M-37 34.8 H -39" opacity=".1"/>
               </g>
-              <!-- cola: deriva en flecha y estabilizador -->
+
               <path d="M34 24.6 C 27 19, 21 12, 18 5.5 C 15.5 5.3, 13 6, 11.5 7.4 C 11 15, 12 23, 14.5 30.3"/>
               <path d="M15 32 L 3 32.6 L 4 35.4 L 16 35.6"/>
-              <!-- fuselaje -->
+
               <path d="M150 32 C 146 26, 128 23, 104 23 L 72 24 C 50 25, 30 28, 14 30.5 L 14 34 C 34 37, 60 40.5, 96 41.5 C 124 42, 144 39, 150 32 Z"/>
-              <!-- parabrisas y ventanilla -->
+
               <path d="M112 23.3 C 115 25, 117.5 27.5, 119 30.5" opacity=".75"/>
               <path d="M104 23.2 L 104 30" opacity=".55"/>
-              <!-- puerta abierta: por aquí saltan (PUERTA en js/avion.js) -->
+
               <path d="M80 24 L 80 39.5" opacity=".75"/>
               <path d="M92 23.6 L 92 40" opacity=".75"/>
               <path d="M81.5 31 L 90.5 31" opacity=".35"/>
-              <!-- ala alta y montante -->
+
               <path d="M54 18 L 126 15.5 C 130 15.4, 130.5 18, 127 18.6 L 58 21.5 C 54 21.7, 52 19, 54 18 Z"/>
               <path d="M106 18.4 L 88 36" opacity=".7"/>
-              <!-- tren de aterrizaje -->
+
               <path d="M86 41 L 84.5 46.5"/>
               <circle cx="84.5" cy="48.5" r="2.4"/>
               <path d="M126 41 L 126 46"/>
               <circle cx="126" cy="48" r="2"/>
-              <!-- hélice -->
+
               <ellipse cx="152.5" cy="32.5" rx="2" ry="12.5" opacity=".3"/>
               <g class="avion__helice"><path d="M152.5 21 L 152.5 44" stroke-width="1.5"/></g>
               <circle cx="152.5" cy="32.5" r="1.5" fill="currentColor" stroke="none"/>
@@ -443,13 +425,12 @@
         </div>
         <p class="portada__lema" data-revelar="subir">Cada segundo nos acerca</p>
 
-        <!-- La cuenta la arma js/cuenta.js; sin JavaScript no se muestra (fecha.css / basico.css) -->
         <div class="portada__reloj" data-revelar="subir" data-revelar-retraso="120">
           <div class="cuenta" data-cuenta></div>
         </div>
 
         <div class="portada__calendario" data-calendario data-revelar="subir" data-revelar-retraso="240">
-          <!-- Enlace de verdad: sirve aunque js/calendario.js no llegue a cargar -->
+
           <a class="boton portada__boton" data-calendario-principal target="_blank" rel="noopener"
              href="https://calendar.google.com/calendar/render?action=TEMPLATE&amp;text=Boda+de+Ver%C3%B3nica+y+Abraham&amp;dates=20270306T220000Z%2F20270307T080000Z&amp;ctz=America%2FMexico_City&amp;details=Ceremonia%3A+16%3A00+hrs+en+la+Catedral+de+Morelia.+Recepci%C3%B3n%3A+17%3A00+hrs+en+el+Hotel+Casa+Grande%2C+Portal+Matamoros+98%2C+Centro+Hist%C3%B3rico.+C%C3%B3digo+de+vestimenta%3A+formal.%0A%0AInvitaci%C3%B3n%3A+https%3A%2F%2Fbodaveroyabraham.com%2F&amp;location=Catedral+de+Morelia%2C+Av.+Francisco+I.+Madero+Poniente+S%2FN%2C+Centro+Hist%C3%B3rico%2C+58000+Morelia%2C+Michoac%C3%A1n%2C+M%C3%A9xico">Agregar a mi calendario</a>
           <p class="portada__opciones">
@@ -467,8 +448,6 @@
 
   <section id="historia" class="seccion historia" data-ambiente="dorado" aria-labelledby="historia-titulo">
 
-    <!-- Ramita de olivo en línea (misma hoja que en la portada): único adorno de la sección.
-         Se define aquí para que el fragmento se baste solo (demo/historia.html). -->
     <svg class="historia__simbolos" width="0" height="0" aria-hidden="true" focusable="false">
       <defs>
         <g id="historia-hoja">
@@ -489,14 +468,8 @@
       </defs>
     </svg>
 
-    <!-- 1 · Cielo: los dos paracaídas descienden por la sección (parallax positivo = se quedan
-         atrás de la página, así bajan respecto al texto). El balanceo va en la imagen interior
-         para no pelear con el transform que escribe el motor en el envoltorio. -->
     <div class="historia__cielo" aria-hidden="true">
-      <!-- js/avion.js (css/avion.css) hace saltar a los paracaidistas desde el avión de la
-           portada: anima la caída en .avion-salto y la apertura en .avion-campana; la imagen
-           conserva su vaivén y el envoltorio exterior, el parallax del motor. La figurita en
-           caída libre (.avion-figura) solo se ve durante el salto. -->
+
       <div class="decorado historia__vuelo historia__vuelo--a" data-parallax="0.3" data-parallax-x="0.05" data-parallax-giro="5">
         <div class="avion-salto" data-avion-salto="a">
           <svg class="avion-figura" style="display:none" viewBox="0 0 64 40" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" focusable="false">
@@ -533,11 +506,10 @@
 
     <div class="contenedor historia__contenido">
 
-      <!-- 2 · Encabezado -->
       <header class="historia__encabezado centrado" data-revelar-grupo>
         <p class="t-sobretitulo" data-revelar="subir">Nuestra historia</p>
         <h2 id="historia-titulo" class="historia__titulo" data-letras>Todo comenzó en caída libre</h2>
-        <!-- Guirnalda: dos ramitas que se dibujan al entrar (data-trazo necesita los trazos en línea, no <use>) -->
+
         <svg class="historia__guirnalda" viewBox="80 0 300 70" fill="none" stroke="currentColor" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round" data-trazo aria-hidden="true" focusable="false">
           <g transform="translate(300 0) scale(-1 1)">
             <path d="M4 56 C 40 50, 92 40, 136 16"/>
@@ -564,28 +536,11 @@
         </svg>
       </header>
 
-      <!-- 3 · Relato y, debajo, el carrusel con las siete polaroids (en escritorio se ven tres) -->
       <div class="historia__cuerpo">
         <div class="historia__relato" data-revelar="subir">
           <p class="t-cuerpo">Nuestra historia comenzó en caída libre, con el corazón a mil por hora y el suelo a kilómetros de distancia. Cuando nos conocimos, entendimos que nos unía algo más fuerte que el tiempo, la distancia y el destino: coincidimos en un viaje sin imaginar que lo mejor de esa experiencia sería lo que vendría después. Desde entonces hemos seguido atreviéndonos juntos, y hoy queremos dar el siguiente gran salto rodeados de las personas que más queremos.</p>
         </div>
 
-        <!-- Siete polaroids con las acuarelas que mandaron los novios (24-oct-2026, y el 26-oct cambiaron
-             las de sombreros, banca y autobús; una por foto,
-             hechas sobre el mismo recorte 4:5; originales en Cambios/Acuarelas/. España no mandó la
-             suya y quedó fuera). Van en un carrusel horizontal de izquierda a derecha: scroll nativo
-             con scroll-snap (css/historia.css); en celular se recorre con el dedo o con dos flechas
-             muy discretas, en escritorio con flechas más visibles. Nunca avanza solo y no hay nada
-             que tocar en la polaroid: solo la acuarela. js/carrusel.js pide las imágenes cuando la
-             pista se acerca (van sin src, así la portada no las descarga) y maneja las flechas;
-             llevan loading="eager" a propósito: con «lazy» Chromium no pedía las que quedan fuera
-             de la pista hasta deslizar hasta ellas (y el constructor pone lazy si falta);
-             sin JavaScript la pista se desplaza igual y el <noscript> pone las imágenes.
-             El revelado va en el carrusel entero (no en cada polaroid): dentro de una pista que
-             se desliza, las vecinas que asoman se quedaban invisibles en Safari de iPhone.
-             Sin pie de foto (los novios los quitaron el 26-oct-2026): la polaroid conserva su borde
-             ancho abajo. El marcado es estático: no depende de main.js; el alt va escrito en cada
-             <img loading="lazy" decoding="async"> y js/config.js (fotos) solo guarda la referencia de cada acuarela. -->
         <div class="historia__carrusel carrusel" data-carrusel data-revelar="subir">
           <button class="carrusel__flecha carrusel__flecha--izq" type="button" aria-label="Acuarela anterior" hidden>
             <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 5 8 12l7 7"/></svg>
@@ -647,16 +602,13 @@
         </div>
       </div>
 
-      <!-- 4 · La pedida de mano: la acuarela de Chantilly como pieza enmarcada (desde el 26-oct-2026, la que
-           mandaron los novios en el estilo de las polaroids; antes, la acuarela del Save the Date, castillo.jpg) -->
       <figure class="historia__cuadro">
         <div class="decorado historia__hojas" aria-hidden="true">
           <svg viewBox="0 0 140 70" focusable="false"><use href="#historia-ramita"/></svg>
         </div>
         <div class="historia__paspartu papel">
           <div class="historia__lienzo">
-            <!-- Acuarela de la pedida que mandaron los novios el 26-oct-2026 (Cambios/Acuarelas/chantilly.png),
-                 en el mismo estilo que las polaroids; AVIF 1400 px + JPEG de respaldo (scripts/imagen.swift). -->
+
             <picture>
               <source srcset="assets/img/chantilly.avif" type="image/avif">
               <img loading="lazy" decoding="async" src="assets/img/chantilly.jpg" width="1400" height="808" data-revelar="acuarela"
@@ -675,8 +627,7 @@
   </section>
 
   <section id="boda" class="seccion boda" data-ambiente="dorado" aria-labelledby="boda-titulo">
-    <!-- Hojitas de olivo en línea (tinta + relleno plano): acompañan, no llevan información.
-         El parallax va en el envoltorio; el dibujo gira con CSS. -->
+
     <div class="decorado boda__ramita boda__ramita--a" aria-hidden="true" data-parallax="-0.16" data-parallax-giro="-5">
       <svg viewBox="0 0 200 120" focusable="false">
         <defs>
@@ -784,11 +735,6 @@
     </div>
   </section>
 
-  <!-- Interludio: el sol se pone sobre Morelia mientras la sección pasa (1.4 pantallas).
-       data-ambiente: dos tramos de ocaso y uno de noche, para que el cielo siga encendido
-       mientras la frase se lee y anochezca junto con el velo de la ciudad (motor.js funde
-       cada frontera a lo largo de un tramo). Las capas se piden desde el principio, con
-       prioridad baja: cuando el invitado llega, la escena ya está pintada. -->
   <section id="atardecer" class="atardecer" data-ambiente="ocaso ocaso noche" data-progreso data-progreso-css aria-labelledby="atardecer-frase">
     <div class="atardecer__escena">
       <div class="atardecer__sol" aria-hidden="true"></div>
@@ -808,7 +754,6 @@
 
   <section id="itinerario" class="seccion seccion--noche prog" data-ambiente="noche" aria-labelledby="prog-titulo">
 
-    <!-- Estrellas lejanas: dan profundidad con parallax, no llevan información -->
     <div class="decorado prog-cielo prog-cielo--a" aria-hidden="true" data-parallax="0.22">
       <svg viewBox="0 0 120 120" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" focusable="false">
         <path class="prog-estrella" style="--d:7.5s;--r:-1.2s" d="M30 22 Q31.1 26.9 36 28 Q31.1 29.1 30 34 Q28.9 29.1 24 28 Q28.9 26.9 30 22 Z"/>
@@ -839,7 +784,7 @@
       <header class="prog-cabecera centrado" data-revelar-grupo>
         <p class="t-sobretitulo" data-revelar="subir">Itinerario</p>
         <h2 id="prog-titulo" class="t-script prog-titulo" data-letras>Así viviremos el día</h2>
-        <!-- Ornamento de la sección: una ramita de olivo en lugar del rombo -->
+
         <div class="ornamento prog-ornamento" data-revelar="crecer" aria-hidden="true">
           <svg class="prog-ramita" viewBox="0 0 48 20" focusable="false">
             <path class="prog-ramita__tallo" d="M3 12 C12 9.4 28 8.6 45 10.4"/>
@@ -855,7 +800,6 @@
 
       <div class="prog-linea" data-progreso>
 
-        <!-- Hilo de luz: se dibuja con --p; en su punta viaja la luciérnaga -->
         <div class="prog-hilo" aria-hidden="true">
           <span class="prog-hilo__guia"></span>
           <span class="prog-hilo__oro"></span>
@@ -870,7 +814,6 @@
 
         <ol class="prog-hitos">
 
-          <!-- 16:00 · Misa: la fachada de la Catedral con sus dos torres -->
           <li class="prog-hito" data-revelar-grupo>
             <span class="prog-nodo" aria-hidden="true"><i></i></span>
             <div class="prog-texto">
@@ -908,7 +851,6 @@
             </div>
           </li>
 
-          <!-- 17:30 · Recepción y coctel: dos copas que brindan -->
           <li class="prog-hito" data-revelar-grupo>
             <span class="prog-nodo" aria-hidden="true"><i></i></span>
             <div class="prog-texto">
@@ -944,7 +886,6 @@
             </div>
           </li>
 
-          <!-- 19:00 · Banquete: cloche sobre su plato, entre tenedor y cuchillo -->
           <li class="prog-hito" data-revelar-grupo>
             <span class="prog-nodo" aria-hidden="true"><i></i></span>
             <div class="prog-texto">
@@ -970,7 +911,6 @@
             </div>
           </li>
 
-          <!-- 21:00 · Encendido y fuegos artificiales: estallidos sobre la silueta de las torres -->
           <li class="prog-hito" data-revelar-grupo>
             <span class="prog-nodo" aria-hidden="true"><i></i></span>
             <div class="prog-texto">
@@ -1021,7 +961,6 @@
             </div>
           </li>
 
-          <!-- 24:00 · Trasnochados: el antojito de medianoche, bajo cubierta y bajo las estrellas -->
           <li class="prog-hito" data-revelar-grupo>
             <span class="prog-nodo" aria-hidden="true"><i></i></span>
             <div class="prog-texto">
@@ -1050,7 +989,6 @@
             </div>
           </li>
 
-          <!-- 2:00 · Fin: luna con estrellas sobre una nube -->
           <li class="prog-hito" data-revelar-grupo>
             <span class="prog-nodo" aria-hidden="true"><i></i></span>
             <div class="prog-texto">
@@ -1077,9 +1015,6 @@
         <span class="prog-fin" aria-hidden="true"><i></i></span>
       </div>
 
-      <!-- Remate: luna creciente, estrellas que titilan muy despacio y, colgando de la punta
-           de la luna por un hilo fino, los dos anillos entrelazados (uno dorado, otro olivo).
-           La luna es el remate visual: ya no lleva frase. -->
       <div class="prog-remate" data-revelar-grupo>
         <div class="prog-remate__cielo" aria-hidden="true">
           <span class="prog-remate__halo"></span>
@@ -1087,9 +1022,7 @@
             <path d="M160.6 38.4 C140.6 42 126 59 126 79.6 C126 102.8 144.8 121.6 168 121.6 C180.2 121.6 191 116.4 198.6 108 C175.6 110.8 156 93.6 155.4 70.8 C155.1 58.4 157 47.2 160.6 38.4 Z"/>
             <path d="M136.6 84 C137.8 94.6 143.8 103.6 152.6 108.6"/>
             <path d="M141.4 62.6 C143.4 57.4 146.8 53 151 49.8"/>
-            <!-- Anillos: el grupo pivota en la punta de la luna (198.6 108); el par, en el nudo (198.6 129).
-                 Cada aro deja un hueco donde el otro le pasa por encima: así se ven entrelazados sin
-                 pintar nada del color del fondo. Los brillos son arcos cortos casi blancos. -->
+
             <g class="prog-anillos">
               <path class="prog-anillos__hilo" d="M198.6 108 C198.9 116.4 198.4 122.7 198.6 129"/>
               <g class="prog-anillos__par">
@@ -1123,24 +1056,15 @@
     </div>
   </section>
 
-  <!-- Vestimenta, valet y solo adultos (v2, cambios de los novios del 21-oct-2026 y texto de Vero del 24-oct).
-       · #dress-code, #valet y #solo-adultos son destinos de los submenús de «La boda».
-       · El código de vestimenta es «Formal» (ya no «Etiqueta rigurosa», que se leía como smoking).
-       · El icono es un gancho de ropa de línea: su pregunta (el garfio) y la barra.
-       · Los bocetos de prendas «Ellos / Ellas» del 24-oct se quitaron el 26-oct a petición de los novios
-         («dejarlo como estaba antes»): la tarjeta vuelve a ser gancho, «Formal», nota de colores y muestras.
-       · Costo y horario del valet: salen de CONFIG.valet.detalle (el constructor y main.js los escriben en el
-         data-config; vacío = «Por confirmar»). Desde el 1-nov-2026: cortesía de los novios, las 24 horas. -->
   <section id="vestimenta" class="seccion seccion--noche vestimenta" data-ambiente="noche" aria-labelledby="vestimenta-titulo">
     <div class="contenedor vestimenta__contenido">
       <h2 id="vestimenta-titulo" class="t-sobretitulo vestimenta__titulo centrado" data-revelar="subir">Detalles para ese día</h2>
 
       <div class="vestimenta__datos" data-revelar-grupo>
 
-        <!-- ── Código de vestimenta ── -->
         <article id="dress-code" class="papel dato dato--vestimenta" data-revelar="subir" aria-labelledby="dress-code-titulo">
           <div class="dato__texto">
-            <!-- Gancho de ropa: garfio en forma de pregunta, cuello, hombros y barra -->
+
             <svg class="dato__icono" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
               <path d="M24 21.2v-2.6c0-2.1 1.5-3.1 2.9-4 1.6-1 2.4-2.3 2.4-3.8 0-2.6-2.3-4.6-5.3-4.6-2.6 0-4.7 1.5-5.2 3.8"/>
               <path d="M24 21.2 8.4 32.9c-1.6 1.2-.8 3.7 1.2 3.7h28.8c2 0 2.8-2.5 1.2-3.7L24 21.2Z"/>
@@ -1157,7 +1081,6 @@
           </div>
         </article>
 
-        <!-- ── Valet parking ── -->
         <article id="valet" class="papel dato dato--valet" data-revelar="subir" aria-labelledby="valet-titulo">
           <div class="dato__texto">
             <svg class="dato__icono" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
@@ -1168,7 +1091,7 @@
             <h3 id="valet-titulo" class="t-sobretitulo dato__titulo">Valet parking</h3>
             <p class="dato__principal">Llega sin preocupaciones</p>
             <p class="t-nota dato__nota">Ese día contaremos con servicio de valet parking en la recepción del hotel.</p>
-            <!-- Costo y horario (CONFIG.valet.detalle) -->
+
             <p class="t-nota dato__pendiente">
               <span class="dato__pendiente-etiqueta">Costo y horario</span>
               <span class="dato__pendiente-valor" data-config="valet.detalle">Cortesía de los novios, las 24 horas</span>
@@ -1176,12 +1099,9 @@
           </div>
         </article>
 
-        <!-- ── Solo adultos ──
-             PROPUESTA de redacción: Vero solo escribió «agregar sin niños» (24-oct-2026). La frase manuscrita y la
-             nota son nuestras hasta que los novios las aprueben o manden la suya. -->
         <article id="solo-adultos" class="papel dato dato--adultos" data-revelar="subir" aria-labelledby="solo-adultos-titulo">
           <div class="dato__texto">
-            <!-- Dos copas de champaña que brindan, con tres chispas arriba -->
+
             <svg class="dato__icono" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
               <g transform="rotate(-12 18 38)">
                 <path d="M14.4 9h7.2l-.6 11.6c-.2 3.6-1.6 5.6-3 5.6s-2.8-2-3-5.6L14.4 9Z"/>
@@ -1205,7 +1125,6 @@
 
   <section id="regalos" class="seccion seccion--noche regalos" data-ambiente="noche" aria-labelledby="regalos-titulo">
 
-    <!-- Chispas doradas de la noche (decorado, a distintas profundidades) -->
     <div class="regalos__chispas decorado" aria-hidden="true">
       <div class="regalos__capa" data-parallax="0.18">
         <i class="regalos__chispa" style="--x:9%;  --y:7%;  --t:1.1; --d:0s"></i>
@@ -1232,7 +1151,6 @@
 
       <ul class="regalos__lista" role="list" data-revelar-grupo>
 
-        <!-- El Palacio de Hierro -->
         <li class="regalos__celda" data-parallax="0.04">
           <article class="papel regalo" data-regalo="palacio" data-revelar="subir" aria-labelledby="regalo-palacio">
             <svg class="regalo__icono" viewBox="0 0 64 64" width="64" height="64" aria-hidden="true" focusable="false">
@@ -1283,7 +1201,6 @@
 
   <section id="rsvp" class="seccion seccion--noche rsvp" data-ambiente="noche" aria-labelledby="rsvp-titulo">
 
-    <!-- Chispas doradas de la noche (decorado) -->
     <div class="rsvp__chispas decorado" aria-hidden="true">
       <div class="rsvp__capa" data-parallax="0.2">
         <i class="rsvp__chispa" style="--x:8%;  --y:12%; --t:1;   --d:.4s"></i>
@@ -1312,7 +1229,6 @@
 
         <div class="papel rsvp__tarjeta" data-rsvp-tarjeta data-revelar="subir">
 
-          <!-- Remate en arco: monograma entre dos ramas de olivo -->
           <div class="rsvp__remate" aria-hidden="true">
             <svg class="rsvp__rama" viewBox="0 0 40 60" width="40" height="60" focusable="false">
               <g class="rsvp__rama-lavado">
@@ -1355,7 +1271,6 @@
           <p class="rsvp__fecha" aria-hidden="true">6 · marzo · 2027</p>
           <div class="rsvp__filete" aria-hidden="true"><i></i></div>
 
-          <!-- Formulario -->
           <form class="rsvp__formulario" data-rsvp-formulario novalidate onsubmit="return false" aria-labelledby="rsvp-titulo">
 
             <div class="rsvp-campo" data-rsvp-campo="nombre">
@@ -1431,13 +1346,10 @@
             </div>
           </form>
 
-          <!-- Confirmación directa: se ve mientras el formulario no esté activo.
-               El contenido lo escribe scripts/construir.mjs con los datos de js/config.js -->
           <div class="rsvp__directo" data-rsvp-directo>
             <p class="t-cuerpo">Para confirmar tu asistencia, escríbenos por WhatsApp.</p><p><a class="boton boton--lleno" href="https://wa.me/524433010331?text=%C2%A1Hola!%20Quiero%20confirmar%20mi%20asistencia%20a%20la%20boda%20de%20Ver%C3%B3nica%20y%20Abraham.%20Mi%20nombre%20es%3A%20" target="_blank" rel="noopener noreferrer">Confirmar por WhatsApp</a></p>
           </div>
 
-          <!-- Agradecimiento (aparece al enviar) -->
           <div class="rsvp__gracias" data-rsvp-gracias role="group" aria-labelledby="rsvp-gracias-titulo" tabindex="-1" hidden>
             <svg class="rsvp__corazon" viewBox="0 0 64 64" width="64" height="64" aria-hidden="true" focusable="false">
               <path class="rsvp__corazon-lavado" d="M33 54C18 44 9 35 10 25c.500-7 6-11 12-10.500 4.500.5 8 3 10.500 7.500 2.500-4.500 6-7 10.500-7.500 6-.5 11.500 3.500 12 10.500 1 10-8 19-22.500 29z"/>
@@ -1459,8 +1371,6 @@
 
   <section id="recomendaciones" class="seccion seccion--noche recomendaciones" data-ambiente="noche" aria-labelledby="recomendaciones-titulo" data-recom>
 
-    <!-- Iconos de línea compartidos por las dos secciones con pestañas
-         (#recomendaciones y #que-visitar): cama, brocha, teléfono, pin, enlace -->
     <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
       <defs>
         <symbol id="recom-i-cama" viewBox="0 0 24 24"><path d="M3 19v-9M3 14h18M21 19v-6a2 2 0 0 0-2-2h-9v3M5.25 10.25a1.75 1.75 0 1 0 3.5 0 1.75 1.75 0 1 0-3.5 0"/></symbol>
@@ -1471,7 +1381,6 @@
       </defs>
     </svg>
 
-    <!-- Hojitas de olivo a distinta profundidad (decorado) -->
     <div class="recom__hojas decorado" aria-hidden="true">
       <svg class="recom__rama recom__rama--a" viewBox="0 0 220 220" data-parallax="0.16" data-parallax-giro="-4">
         <path class="recom__tallo" d="M14 206C40 150 84 96 158 44c18-12 34-20 50-24"/>
@@ -1501,8 +1410,6 @@
         <p class="recom__frase" data-revelar="subir">Nuestros rincones favoritos</p>
       </header>
 
-      <!-- Pestañas: solo existen con JavaScript (js/recomendaciones.js quita «hidden»).
-           Sin él, los dos apartados se leen apilados y completos. -->
       <div class="recom__pestanas" role="tablist" aria-label="Apartados de recomendaciones" hidden data-recom-pestanas>
         <button type="button" class="recom__pestana" role="tab" id="pestana-hospedaje" aria-selected="true" aria-controls="hospedaje" data-recom-pestana="hospedaje">
           <svg class="recom__pestana-icono" aria-hidden="true" focusable="false"><use href="#recom-i-cama"/></svg>
@@ -1514,9 +1421,6 @@
         </button>
       </div>
 
-      <!-- ═══════════ Hospedaje ═══════════
-           Orden pedido por Abraham (21 oct 2026): primero el hotel de la recepción;
-           Hotel Misión Catedral y Holiday Inn Express hasta el final. -->
       <div id="hospedaje" class="recom__apartado" role="tabpanel" aria-labelledby="hospedaje-titulo" tabindex="-1" data-recom-apartado="hospedaje">
         <header class="recom__cabecera centrado">
           <h3 id="hospedaje-titulo" class="recom__nombre-apartado"><svg class="recom__icono-apartado" aria-hidden="true" focusable="false"><use href="#recom-i-cama"/></svg>Hospedaje</h3>
@@ -1534,12 +1438,11 @@
                 <p class="recom-tarjeta__zona">Centro Histórico</p>
               </div>
               <p class="recom-tarjeta__texto">Hotel boutique: un oasis privado donde la elegancia colonial se fusiona con el confort moderno.</p>
-              <!-- Código de reservación que mandó Vero el 1-nov-2026 (tal cual lo escribió). El botón lo viste
-                   js/copiar.js ([data-copiar]); sin JavaScript se oculta y queda el código a la vista. -->
+
               <div class="recom-tarjeta__codigo">
                 <p class="recom-tarjeta__codigo-etiqueta">Código de reservación</p>
                 <p class="recom-tarjeta__codigo-valor">BODA VERÓNICA Y ABRAHAM</p>
-                <button class="copiar recom-tarjeta__copiar" type="button" data-copiar="BODA VERÓNICA Y ABRAHAM" aria-label="Copiar el código de reservación">Copiar código</button>
+                <button class="copiar recom-tarjeta__copiar" type="button" data-copiar="BODA VERÓNICA Y ABRAHAM" aria-label="Copiar código de reservación">Copiar código</button>
               </div>
               <div class="recom-tarjeta__pie">
                 <a class="recom-tarjeta__tel" href="tel:+528000874200"><svg aria-hidden="true" focusable="false"><use href="#recom-i-telefono"/></svg><span class="solo-lectores">Teléfono: </span>800 087 4200</a>
@@ -1560,7 +1463,7 @@
               <div class="recom-tarjeta__pie">
                 <a class="recom-tarjeta__tel" href="tel:+524433125419"><svg aria-hidden="true" focusable="false"><use href="#recom-i-telefono"/></svg><span class="solo-lectores">Teléfono: </span>443 312 5419</a>
                 <a class="boton boton--linea recom-tarjeta__boton" href="https://maps.app.goo.gl/MhYZzAjqTxQCMzRe9" target="_blank" rel="noopener noreferrer"><svg class="recom-tarjeta__boton-icono" aria-hidden="true" focusable="false"><use href="#recom-i-pin"/></svg>Ubicación<span class="solo-lectores"> de Cantera Diez Hotel Boutique (se abre en Google Maps)</span></a>
-                <a class="boton boton--linea recom-tarjeta__boton" href="https://canteradiezhotel.com/es/inicio" target="_blank" rel="noopener noreferrer"><svg class="recom-tarjeta__boton-icono" aria-hidden="true" focusable="false"><use href="#recom-i-enlace"/></svg>Ver hotel<span class="solo-lectores">: sitio de Cantera Diez Hotel Boutique (se abre en una pestaña nueva)</span></a>
+                <a class="boton boton--linea recom-tarjeta__boton" href="https://canteradiezhotel.com/" target="_blank" rel="noopener noreferrer"><svg class="recom-tarjeta__boton-icono" aria-hidden="true" focusable="false"><use href="#recom-i-enlace"/></svg>Ver hotel<span class="solo-lectores">: sitio de Cantera Diez Hotel Boutique (se abre en una pestaña nueva)</span></a>
               </div>
             </article>
           </li>
@@ -1620,7 +1523,7 @@
                 <h4 id="hotel-mision-catedral" class="recom-tarjeta__nombre">Hotel Misión Catedral</h4>
                 <p class="recom-tarjeta__zona">Centro Histórico</p>
               </div>
-              <!-- Descripción y teléfono que mandó Vero el 1-nov-2026 -->
+
               <p class="recom-tarjeta__texto">Justo frente a la Catedral de Morelia, ofrece una excelente ubicación para disfrutar del Centro Histórico de la ciudad. Esta elegante casona antigua cuenta con habitaciones con balcón hacia una de las avenidas más relevantes de Morelia y otras con vista al patio central.</p>
               <div class="recom-tarjeta__pie">
                 <a class="recom-tarjeta__tel" href="tel:+525591601680"><svg aria-hidden="true" focusable="false"><use href="#recom-i-telefono"/></svg><span class="solo-lectores">Teléfono: </span>55 9160 1680</a>
@@ -1649,8 +1552,6 @@
         </ul>
       </div>
 
-      <!-- ═══════════ Make up ═══════════
-           Solo nombre y teléfono (Abraham, 21 oct 2026: sin dirección del estudio). -->
       <div id="maquillaje" class="recom__apartado" role="tabpanel" aria-labelledby="maquillaje-titulo" tabindex="-1" data-recom-apartado="maquillaje">
         <header class="recom__cabecera centrado">
           <h3 id="maquillaje-titulo" class="recom__nombre-apartado"><svg class="recom__icono-apartado" aria-hidden="true" focusable="false"><use href="#recom-i-brocha"/></svg>Make up</h3>
@@ -1694,13 +1595,9 @@
 
     </div>
   </section>
-  <!-- ¿Qué visitar? (v2, 21 oct 2026): tres apartados con pestañas, mismas clases
-       .recom__* que #recomendaciones (css/recomendaciones.css, basico.css) y el mismo
-       módulo js/recomendaciones.js. Sin JavaScript los tres se leen apilados. -->
+
   <section id="que-visitar" class="seccion seccion--noche que-visitar" data-ambiente="noche" aria-labelledby="que-visitar-titulo" data-recom>
 
-    <!-- Iconos de línea propios de la sección (tenedor, arco, camino). El pin y el
-         teléfono se comparten con #recomendaciones (#recom-i-pin, #recom-i-telefono). -->
     <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
       <defs>
         <symbol id="visitar-i-tenedor" viewBox="0 0 24 24"><path d="M6 3v5a3 3 0 0 0 6 0V3M9 3v18M17.5 3c-2 2.2-3 5-3 8 0 1.4.9 2 2 2h1v8M17.5 3v10"/></symbol>
@@ -1714,7 +1611,7 @@
       <header class="recom__encabezado centrado" data-revelar-grupo>
         <p class="t-sobretitulo" data-revelar="subir">Para disfrutar Morelia</p>
         <h2 id="que-visitar-titulo" class="t-titulo" data-revelar="subir">¿Qué visitar?</h2>
-        <!-- Ramita de olivo tendida que se dibuja al entrar (el motor anima el trazo) -->
+
         <svg class="visitar__ramita" viewBox="0 0 240 40" data-trazo aria-hidden="true" focusable="false">
           <path class="visitar__ramita-tallo" d="M6 21C60 13 118 27 234 17"/>
           <g class="visitar__ramita-hojas">
@@ -1741,8 +1638,6 @@
         <p class="recom__frase" data-revelar="subir">Para pasear y saborear</p>
       </header>
 
-      <!-- Pestañas: solo existen con JavaScript (js/recomendaciones.js quita «hidden»).
-           Sin él, los tres apartados se leen apilados y completos. -->
       <div class="recom__pestanas" role="tablist" aria-label="Apartados de qué visitar" hidden data-recom-pestanas>
         <button type="button" class="recom__pestana" role="tab" id="pestana-donde-comer" aria-selected="true" aria-controls="donde-comer" data-recom-pestana="donde-comer">
           <svg class="recom__pestana-icono" aria-hidden="true" focusable="false"><use href="#visitar-i-tenedor"/></svg>
@@ -1758,7 +1653,6 @@
         </button>
       </div>
 
-      <!-- ═══════════ Dónde comer ═══════════ -->
       <div id="donde-comer" class="recom__apartado" role="tabpanel" aria-labelledby="donde-comer-titulo" tabindex="-1" data-recom-apartado="donde-comer">
         <header class="recom__cabecera centrado">
           <h3 id="donde-comer-titulo" class="recom__nombre-apartado"><svg class="recom__icono-apartado" aria-hidden="true" focusable="false"><use href="#visitar-i-tenedor"/></svg>Dónde comer</h3>
@@ -1826,7 +1720,6 @@
         </ul>
       </div>
 
-      <!-- ═══════════ Dónde ir ═══════════ -->
       <div id="donde-ir" class="recom__apartado" role="tabpanel" aria-labelledby="donde-ir-titulo" tabindex="-1" data-recom-apartado="donde-ir">
         <header class="recom__cabecera centrado">
           <h3 id="donde-ir-titulo" class="recom__nombre-apartado"><svg class="recom__icono-apartado" aria-hidden="true" focusable="false"><use href="#visitar-i-arco"/></svg>Dónde ir</h3>
@@ -1846,8 +1739,6 @@
         </div>
       </div>
 
-      <!-- ═══════════ Pátzcuaro ═══════════
-           Texto exacto de Vero (docs/cambios-novios-2026-10-21.md). -->
       <div id="patzcuaro" class="recom__apartado" role="tabpanel" aria-labelledby="patzcuaro-titulo" tabindex="-1" data-recom-apartado="patzcuaro">
         <header class="recom__cabecera centrado">
           <h3 id="patzcuaro-titulo" class="recom__nombre-apartado"><svg class="recom__icono-apartado" aria-hidden="true" focusable="false"><use href="#visitar-i-camino"/></svg>Pátzcuaro</h3>
@@ -1872,7 +1763,7 @@
             </ul>
           </div>
           <div class="recom-tarjeta__pie">
-            <!-- Enlace genérico a Maps hasta que los novios manden el suyo -->
+
             <a class="boton boton--linea recom-tarjeta__boton" href="https://www.google.com/maps/search/?api=1&amp;query=P%C3%A1tzcuaro%2C%20Michoac%C3%A1n" target="_blank" rel="noopener noreferrer"><svg class="recom-tarjeta__boton-icono" aria-hidden="true" focusable="false"><use href="#recom-i-pin"/></svg>Cómo llegar<span class="solo-lectores"> a Pátzcuaro (se abre en Google Maps)</span></a>
           </div>
         </article>
@@ -1900,9 +1791,7 @@
     <div class="contenedor centrado cierre__despedida" data-revelar-grupo>
       <div class="cierre__medallon" data-parallax="0.07">
         <div class="cierre__sello" data-revelar="crecer">
-          <!-- Las nutrias que mandaron los novios (22-oct-2026): acuarela de la pareja, ella con velo y
-               flores, él con moño. Original en docs/referencia/nutrias-clienta.png; la pareja AVIF/PNG
-               se genera con «swift scripts/imagen.swift Cambios/Nutrias.png nutrias 1000 0.6 0.5». -->
+
           <picture><source srcset="assets/img/nutrias.avif" type="image/avif"><img class="cierre__nutrias" src="assets/img/nutrias.png" alt="Verónica y Abraham como dos nutrias: ella con velo y corona de flores, él con moño" width="1220" height="973" loading="lazy" decoding="async"></picture>
         </div>
       </div>

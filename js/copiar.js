@@ -1,8 +1,8 @@
-// Mesa de regalos y botones de copiar.
-// 1) Llena las tarjetas de #regalos con CONFIG.regalos. Si un dato viene
-//    vacío, la tarjeta conserva su «Por confirmar» (nunca se inventa nada).
-// 2) Cualquier botón [data-copiar="texto"] de la página copia ese texto al
-//    portapapeles, confirma con «Copiado» y vuelve a su estado a los 2 s.
+
+
+
+
+
 
 import { CONFIG } from './config.js';
 
@@ -10,10 +10,10 @@ const SVG = 'http://www.w3.org/2000/svg';
 const DURACION_COPIADO = 2000;
 
 let iniciado = false;
-let avisos = null;               // región aria-live compartida
+let avisos = null;
 const temporizadores = new WeakMap();
 
-/* ── Utilidades ── */
+ 
 function crear(etiqueta, clase, texto) {
   const el = document.createElement(etiqueta);
   if (clase) el.className = clase;
@@ -36,8 +36,8 @@ function crearIcono(clase, trazos, atributos = {}) {
   return svg;
 }
 
-// Agrupa un dato para leerlo fácil. La CLABE (18 dígitos) se parte en
-// banco · plaza · cuenta; los demás números largos, de cuatro en cuatro.
+
+
 export function agrupar(valor) {
   const texto = String(valor).trim();
   const digitos = texto.replace(/[\s-]/g, '');
@@ -48,7 +48,7 @@ export function agrupar(valor) {
   if (digitos.length <= 6) return [digitos];
   const grupos = [];
   for (let i = 0; i < digitos.length; i += 4) grupos.push(digitos.slice(i, i + 4));
-  // Un último grupo de un solo dígito se lee mal: se une al anterior
+
   if (grupos.length > 1 && grupos[grupos.length - 1].length === 1) {
     const suelto = grupos.pop();
     grupos[grupos.length - 1] += suelto;
@@ -56,7 +56,7 @@ export function agrupar(valor) {
   return grupos;
 }
 
-// Lo que va al portapapeles: los números, sin espacios; el texto, tal cual.
+
 function limpiarParaCopiar(valor) {
   const texto = String(valor).trim();
   const digitos = texto.replace(/[\s-]/g, '');
@@ -67,7 +67,7 @@ function esEnlaceSeguro(enlace) {
   return typeof enlace === 'string' && /^https?:\/\//i.test(enlace.trim());
 }
 
-/* ── Botón de copiar ── */
+ 
 export function crearBotonCopiar(texto, descripcion) {
   const boton = crear('button', 'copiar');
   boton.type = 'button';
@@ -80,8 +80,8 @@ export function crearBotonCopiar(texto, descripcion) {
   return boton;
 }
 
-// Un botón escrito a mano en el HTML (<button data-copiar="…">Copiar</button>)
-// recibe aquí el icono y los dos textos.
+
+
 function vestirBoton(boton) {
   if (boton.querySelector('.copiar__textos')) return;
   const etiqueta = boton.textContent.trim() || 'Copiar';
@@ -117,7 +117,7 @@ function anunciar(mensaje) {
     avisos.dataset.copiarAvisos = '';
     document.body.appendChild(avisos);
   }
-  // Se vacía primero para que el lector repita el aviso aunque sea el mismo
+
   avisos.textContent = '';
   setTimeout(() => { avisos.textContent = mensaje; }, 60);
 }
@@ -127,12 +127,12 @@ async function escribirEnPortapapeles(texto) {
     try {
       await navigator.clipboard.writeText(texto);
       return true;
-    } catch (e) { /* sin permiso: se intenta el respaldo */ }
+    } catch (e) {   }
   }
   return copiarConRespaldo(texto);
 }
 
-// Respaldo para navegadores sin API de portapapeles (o sin permiso)
+
 function copiarConRespaldo(texto) {
   const activo = document.activeElement;
   const area = document.createElement('textarea');
@@ -152,7 +152,7 @@ function copiarConRespaldo(texto) {
     logrado = false;
   }
   area.remove();
-  try { activo?.focus?.({ preventScroll: true }); } catch (e) { /* nada */ }
+  try { activo?.focus?.({ preventScroll: true }); } catch (e) {   }
   return logrado;
 }
 
@@ -168,7 +168,7 @@ async function alCopiar(boton) {
   boton.classList.remove('es-copiado', 'es-fallido');
 
   if (logrado) {
-    // Reinicia el dibujo de la palomita si se copia dos veces seguidas
+
     void boton.offsetWidth;
     boton.classList.add('es-copiado');
     anunciar(nombre ? `Copiado: ${nombre}` : 'Copiado');
@@ -189,7 +189,7 @@ function alHacerClic(evento) {
   alCopiar(boton);
 }
 
-/* ── Tarjetas de la mesa de regalos ── */
+ 
 function llenarRegalos(regalos) {
   const seccion = document.getElementById('regalos');
   if (!seccion || !Array.isArray(regalos)) return;
@@ -212,7 +212,7 @@ function llenarRegalos(regalos) {
     acciones.textContent = '';
 
     if (!valor) {
-      // Pendiente: sin botón de copiar ni datos a medias
+
       dato.appendChild(crear('p', 'regalo__pendiente', 'Por confirmar'));
       acciones.hidden = true;
       tarjeta.classList.remove('regalo--listo');
@@ -223,12 +223,12 @@ function llenarRegalos(regalos) {
 
     const grupos = agrupar(valor);
     const parrafo = crear('p', 'regalo__valor');
-    // Un dato largo (la CLABE) baja un punto para caber en un solo renglón
+
     if (grupos.join('').length > 12) parrafo.classList.add('regalo__valor--largo');
     for (const grupo of grupos) parrafo.appendChild(crear('span', 'regalo__grupo', grupo));
     dato.appendChild(parrafo);
 
-    // La transferencia siempre muestra al titular: si falta, se dice («Por confirmar»)
+
     const titular = String(regalo.titular ?? '').trim() || (regalo.id === 'transferencia' ? 'Por confirmar' : '');
     const detalles = [['Titular', titular], ['Banco', regalo.banco]]
       .filter(([, texto]) => String(texto ?? '').trim());
@@ -261,7 +261,7 @@ function llenarRegalos(regalos) {
   }
 }
 
-/* ── Las chispas solo titilan con la sección en pantalla y la pestaña visible ── */
+ 
 function vigilarSeccion(seccion) {
   if (!seccion || seccion.dataset.regalosVigilada) return;
   seccion.dataset.regalosVigilada = '1';
@@ -276,8 +276,8 @@ function vigilarSeccion(seccion) {
   document.addEventListener('visibilitychange', aplicar);
 }
 
-/* ── Inicio ──
-   opciones.regalos: lista que sustituye a CONFIG.regalos (para pruebas). */
+
+
 export function iniciarCopiar(opciones = {}) {
   llenarRegalos(opciones.regalos || CONFIG.regalos);
   vigilarSeccion(document.getElementById('regalos'));
@@ -285,7 +285,7 @@ export function iniciarCopiar(opciones = {}) {
 
   if (!iniciado) {
     iniciado = true;
-    // Un solo escucha delegado: también sirve a botones que aparezcan después
+
     document.addEventListener('click', alHacerClic);
   }
   return { llenarRegalos, crearBotonCopiar, agrupar };
