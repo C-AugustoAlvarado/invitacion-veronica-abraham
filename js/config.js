@@ -6,7 +6,7 @@ export const CONFIG = {
   // Dirección pública de la invitación, con diagonal al final. Se usa para la
   // vista previa al compartir el enlace (WhatsApp exige dirección completa).
   // Al cambiar de dominio: editar aquí y correr «npm run publicar».
-  sitio: 'https://c-augustoalvarado.github.io/invitacion-veronica-abraham/',
+  sitio: 'https://bodaveroyabraham.com/',
 
   novios: { ella: 'Verónica', el: 'Abraham', monograma: 'A&V' },
 
