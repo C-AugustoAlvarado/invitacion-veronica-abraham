@@ -62,6 +62,8 @@
   }
   .lugar__arte { width: 240px !important; margin: 0 auto !important; }
 
+  .boda__lugares::before { display: none !important; }
+
   .historia__carrusel { padding: 0 !important; }
   .carrusel__pista { display: flex !important; flex-wrap: wrap !important; justify-content: center !important; overflow: visible !important; }
   .carrusel__pista::before, .carrusel__pista::after, .carrusel__flecha { display: none !important; }
