@@ -26,7 +26,7 @@ export const CONFIG = {
     zona: 'America/Mexico_City',
     lugar: 'Catedral de Morelia, Av. Francisco I. Madero Poniente S/N, Centro Histórico, 58000 Morelia, Michoacán, México',
     detalle: 'Ceremonia: 16:00 hrs en la Catedral de Morelia. '
-      + 'Recepción: 17:00 hrs en el Hotel Casa Grande, Portal Matamoros 98, Centro Histórico. '
+      + 'Recepción: 17:30 hrs en el Hotel Casa Grande, Portal Matamoros 98, Centro Histórico. '
       + 'Código de vestimenta: formal.'
   },
 
