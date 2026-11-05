@@ -33,22 +33,7 @@ function aplicarDatos() {
 
 
 
-  const medios = document.querySelector('[data-planner]');
-  if (medios) {
-    const p = CONFIG.planner || {};
-    const botones = [];
-    const soloDigitos = (p.telefono || '').replace(/\D/g, '');
-    if (soloDigitos) {
-      botones.push(`<a class="boton boton--lleno" href="https://wa.me/${soloDigitos}" target="_blank" rel="noopener">WhatsApp</a>`);
-      botones.push(`<a class="boton boton--linea" href="tel:+${soloDigitos}">Llamar</a>`);
-    }
-    if (p.correo) botones.push(`<a class="boton boton--linea" href="mailto:${encodeURIComponent(p.correo).replace('%40', '@')}">Correo</a>`);
-    if (p.instagram) {
-      const usuario = p.instagram.replace(/^@/, '').replace(/^https?:\/\/(www\.)?instagram\.com\//, '').replace(/\/$/, '');
-      botones.push(`<a class="boton boton--linea" href="https://www.instagram.com/${encodeURIComponent(usuario)}/" target="_blank" rel="noopener">Instagram</a>`);
-    }
-    if (botones.length) medios.innerHTML = botones.join('');
-  }
+
 }
 
  
@@ -91,13 +76,11 @@ async function iniciarBasico() {
     document.body.classList.remove('bloqueado');
     document.getElementById('sobre')?.remove();
   }
-  const [, , rsvp] = await Promise.all([
+  await Promise.all([
     cargar('./calendario.js', 'iniciarCalendario'),
     cargar('./copiar.js', 'iniciarCopiar'),
-    cargar('./rsvp.js', 'iniciarRsvp'),
     cargar('./carrusel.js', 'iniciarCarrusel')
   ]);
-  if (rsvp) document.documentElement.classList.add('funcional');
 }
 
 async function iniciar() {
@@ -234,8 +217,7 @@ async function iniciar() {
     cargar('./cuenta.js', 'iniciarCuenta'),
     cargar('./calendario.js', 'iniciarCalendario'),
     cargar('./programa.js', 'iniciarPrograma'),
-    cargar('./copiar.js', 'iniciarCopiar'),
-    cargar('./rsvp.js', 'iniciarRsvp')
+    cargar('./copiar.js', 'iniciarCopiar')
   ]);
 
 

@@ -10,7 +10,7 @@
   .boda__ramita, .recom__rama, .recom__hojas, .recom__pestanas,
   .prog-chispa, .prog-cielo,
   .atardecer__sol, .atardecer__capa, .atardecer__velo, .atardecer__suelo,
-  .rsvp__halo, .rsvp__formulario, [data-calendario] { display: none !important; }
+  .rsvp__halo, [data-calendario] { display: none !important; }
 
   [data-revelar], [data-letras] .palabra,
   .cuenta .cuenta__unidad, .cuenta .cuenta__mensaje {
@@ -33,7 +33,6 @@
 
   .prog-linea.prog-lista { --hilo: 1; }
   .prog-hito { --luz: 1; }
-  .rsvp .rsvp__directo { display: block !important; }
 
   .seccion, .portada { min-height: 0 !important; padding-top: 28px !important; padding-bottom: 28px !important; }
   .atardecer { height: auto !important; padding: 28px 0 !important; background: none !important; }
@@ -53,6 +52,7 @@
   }
   .seccion--noche { background: none !important; }
   .boton { box-shadow: none !important; border: 1px solid #4E5330; }
+  .boton--lleno, .boton--olivo { background: none !important; color: #2B2B28 !important; }
 
   .historia__fotos, .boda__lugares, .vestimenta__datos, .regalos__lista, .recom__rejilla {
     grid-template-columns: minmax(0, 1fr) !important;
@@ -72,7 +72,7 @@
   .polaroid__cara { box-shadow: 0 0 0 1px rgba(78, 83, 48, .2) !important; transform: none !important; }
   .papel, .recom-tarjeta--destacada, .cierre__sello { box-shadow: 0 0 0 1px rgba(78, 83, 48, .2) !important; }
 
-  .papel, .dato, .prog-hito, .regalo, .planner, .cierre__medallon, .cierre__despedida, .polaroid {
+  .papel, .dato, .prog-hito, .regalo, .cierre__medallon, .cierre__despedida, .polaroid {
     page-break-inside: avoid;
     break-inside: avoid;
   }

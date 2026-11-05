@@ -201,7 +201,6 @@ html.basico { scroll-behavior: auto; }
 .basico .copiar__icono svg { top: 0; left: 0; }
 
 .basico .rsvp__titulo { margin-top: 12px; }
-.basico .rsvp__limite { margin-top: 14px; color: #F1EDE2; }
 .basico .rsvp__marco { width: auto; max-width: 500px; margin: 34px auto 0; }
 .basico .rsvp__tarjeta {
   border-radius: 140px 140px 3px 3px;
@@ -218,23 +217,21 @@ html.basico { scroll-behavior: auto; }
 .basico .rsvp__monograma em { color: #4E5330; }
 .basico .rsvp__fecha { opacity: 1; color: #3A3A35; }
 .basico .rsvp__filete i { margin: 0 10px; }
-.basico .rsvp__formulario { display: block; margin-top: 22px; }
-.basico .rsvp__formulario[hidden] { display: none; }
-.basico .rsvp__formulario > * + * { margin-top: 26px; }
-.basico .rsvp-opciones__par { display: block; margin-top: 14px; }
-.basico .rsvp-opcion + .rsvp-opcion { margin-top: 12px; }
-.basico .rsvp-opcion__radio { top: 0; left: 0; }
 
-.basico .rsvp-opcion__cara::before { top: 0; right: 0; bottom: 0; left: 0; }
-.basico .rsvp-opcion__marca { margin-right: 10px; }
-.basico .rsvp-personas > * + * { margin-top: 14px; }
-.basico .rsvp-contador__boton { margin: 0 2px; }
-.basico .rsvp__gracias { margin-top: 26px; }
-.basico .rsvp__gracias-acciones { display: block; margin-top: 26px; }
-.basico .rsvp__gracias-acciones > * + * { margin-top: 10px; }
-
-.basico .rsvp__directo { margin-top: 24px; }
-.basico .rsvp__directo .boton { display: block; margin-top: 16px; }
+.basico .rsvp__contacto { margin-top: 22px; }
+.basico .rsvp__invitacion { font-size: 19px; color: #3A3A35; }
+.basico .rsvp__planner { margin-top: 26px; }
+.basico .rsvp__planner-nombre { font-size: 28px; color: #2B2B28; }
+.basico .rsvp__planner-oficio { color: #4E5330; }
+.basico .rsvp__planner:after { background: #6B7042; }
+.basico .rsvp__telefono { margin-top: 14px; }
+.basico .rsvp__telefono a { font-size: 20px; color: #4E5330; }
+.basico .rsvp__telefono-etiqueta { color: #6E6B63; }
+.basico .rsvp__accion { margin-top: 10px; }
+.basico .rsvp__whatsapp { display: block; width: auto; max-width: none; background: #4E5330; color: #FBF9F4; }
+.basico .rsvp__whatsapp-icono { display: inline-block; vertical-align: middle; margin: -3px 10px 0 0; }
+.basico .rsvp__horario { margin-top: 22px; font-size: 16px; color: #3A3A35; }
+.basico .rsvp__horario-etiqueta { color: #4E5330; }
 
 .basico .recom__pestanas { display: none; }
 .basico .recom__apartado { margin-top: 44px; }
@@ -257,12 +254,6 @@ html.basico { scroll-behavior: auto; }
 .basico .recom-tarjeta--compacta { padding: 16px 20px 12px; }
 .basico .visitar__ramita { width: 200px; margin: 18px auto 14px; }
 
-.basico .cierre__nota { margin-top: 12px; }
-.basico .planner { margin: 30px auto 0; }
-.basico .planner__nombre { font-size: 28px; color: #2B2B28; }
-.basico .planner__medios { display: block; }
-.basico .planner__medios .boton { margin: 6px; }
-.basico .cierre__despedida { margin-top: 90px; }
 .basico .cierre__medallon { width: 240px; margin: 0 auto 26px; }
 .basico .cierre__sello { height: 240px; background: #FBF9F4; }
 .basico .cierre__nutrias { top: 45px; left: 11%; width: 78%; height: auto; -webkit-transform: none; transform: none; }

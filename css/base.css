@@ -122,6 +122,7 @@ a { color: inherit; }
 
 ::selection { background: var(--petalo); color: var(--cafe); }
 
+[tabindex="-1"]:focus { outline: none; }
 :focus-visible {
   outline: 2px solid var(--dorado);
   outline-offset: 4px;
@@ -480,9 +481,6 @@ html:not(.js) .solo-basico { display: block; }
   .boton,
   .copiar,
   .regalo__enlace,
-  .rsvp-opcion__cara,
-  .rsvp-contador__boton,
   .carrusel__flecha { border: 1px solid ButtonText; }
-  .rsvp-opcion__radio:checked + .rsvp-opcion__cara { border: 3px solid Highlight; }
   .amb--grano { mix-blend-mode: normal; }
 }

@@ -35,21 +35,19 @@ export const CONFIG = {
     recepcion: 'https://maps.app.goo.gl/oG4wzQVZz8JScBMo7'
   },
 
-
-
-  rsvp: {
-    whatsapp: '524433010331',
-    correo: '',
-    fechaLimite: '',
-    maximoPersonas: 6
-  },
-
   regalos: [
     { id: 'palacio', tienda: 'El Palacio de Hierro', etiqueta: 'Número de evento', valor: '406823', enlace: 'https://www.elpalaciodehierro.com/listaregalos#/event/406823' },
     { id: 'transferencia', tienda: 'BBVA', etiqueta: 'CLABE', valor: '012180028772723592', titular: 'Abraham Alvarado López', banco: '' }
   ],
 
-  planner: { nombre: 'Fany Valencia', telefono: '524433010331', correo: '', instagram: '' },
+
+
+
+  planner: {
+    nombre: 'Fany Valencia',
+    telefono: '524433010331',
+    horario: 'lunes a viernes, de 11:00 a 20:00 horas'
+  },
 
 
 

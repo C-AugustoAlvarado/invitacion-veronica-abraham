@@ -263,8 +263,8 @@ function llenarRegalos(regalos) {
 
  
 function vigilarSeccion(seccion) {
-  if (!seccion || seccion.dataset.regalosVigilada) return;
-  seccion.dataset.regalosVigilada = '1';
+  if (!seccion || seccion.dataset.chispasVigiladas) return;
+  seccion.dataset.chispasVigiladas = '1';
   let enPantalla = false;
   const aplicar = () => seccion.classList.toggle('es-activa', enPantalla && !document.hidden);
   if ('IntersectionObserver' in window) {
@@ -281,6 +281,7 @@ function vigilarSeccion(seccion) {
 export function iniciarCopiar(opciones = {}) {
   llenarRegalos(opciones.regalos || CONFIG.regalos);
   vigilarSeccion(document.getElementById('regalos'));
+  vigilarSeccion(document.getElementById('rsvp'));
   document.querySelectorAll('[data-copiar]').forEach(vestirBoton);
 
   if (!iniciado) {
